@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B5E292B28BE60C10018808A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B5E292A28BE60C10018808A /* Assets.xcassets */; };
 		3B67EB6528BCAEEA0048F8AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB6428BCAEEA0048F8AE /* AppDelegate.swift */; };
 		3B67EB6728BCAEEB0048F8AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B67EB6628BCAEEB0048F8AE /* Assets.xcassets */; };
 		3B67EB6A28BCAEEB0048F8AE /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B67EB6828BCAEEB0048F8AE /* MainMenu.xib */; };
@@ -23,7 +24,6 @@
 		3B67EB9C28BCB3070048F8AE /* NSColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* NSColorExtension.swift */; };
 		3B67EBA428BCB3610048F8AE /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B67EBA328BCB3610048F8AE /* Quartz.framework */; };
 		3B67EBA728BCB3610048F8AE /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBA628BCB3610048F8AE /* PreviewViewController.swift */; };
-		3B67EBA928BCB3610048F8AE /* PreviewProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBA828BCB3610048F8AE /* PreviewProvider.swift */; };
 		3B67EBAC28BCB3610048F8AE /* PreviewViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B67EBAA28BCB3610048F8AE /* PreviewViewController.xib */; };
 		3B67EBB128BCB3610048F8AE /* JSON Previewer.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3B67EBA128BCB3610048F8AE /* JSON Previewer.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3B67EBB928BCB5D70048F8AE /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBB828BCB5D70048F8AE /* Common.swift */; };
@@ -74,6 +74,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3B5E292A28BE60C10018808A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3B67EB6128BCAEEA0048F8AE /* PreviewJson.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PreviewJson.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B67EB6428BCAEEA0048F8AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3B67EB6628BCAEEB0048F8AE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "../../Library/CloudStorage/OneDrive-Personal/Programming/PreviewJson/Assets.xcassets"; sourceTree = SOURCE_ROOT; };
@@ -91,7 +92,6 @@
 		3B67EBA128BCB3610048F8AE /* JSON Previewer.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "JSON Previewer.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B67EBA328BCB3610048F8AE /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		3B67EBA628BCB3610048F8AE /* PreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewViewController.swift; sourceTree = "<group>"; };
-		3B67EBA828BCB3610048F8AE /* PreviewProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewProvider.swift; sourceTree = "<group>"; };
 		3B67EBAB28BCB3610048F8AE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PreviewViewController.xib; sourceTree = "<group>"; };
 		3B67EBAD28BCB3610048F8AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3B67EBAE28BCB3610048F8AE /* JSON_Previewer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = JSON_Previewer.entitlements; sourceTree = "<group>"; };
@@ -204,11 +204,11 @@
 			isa = PBXGroup;
 			children = (
 				3B67EBA628BCB3610048F8AE /* PreviewViewController.swift */,
-				3B67EBA828BCB3610048F8AE /* PreviewProvider.swift */,
 				3B67EBB828BCB5D70048F8AE /* Common.swift */,
 				3B67EBAA28BCB3610048F8AE /* PreviewViewController.xib */,
 				3B67EBAE28BCB3610048F8AE /* JSON_Previewer.entitlements */,
 				3B67EBAD28BCB3610048F8AE /* Info.plist */,
+				3B5E292A28BE60C10018808A /* Assets.xcassets */,
 			);
 			path = "JSON Previewer";
 			sourceTree = "<group>";
@@ -365,6 +365,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B5E292B28BE60C10018808A /* Assets.xcassets in Resources */,
 				3B67EBAC28BCB3610048F8AE /* PreviewViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -415,7 +416,6 @@
 				3B67EBBA28BCB61B0048F8AE /* Constants.swift in Sources */,
 				3B67EBA728BCB3610048F8AE /* PreviewViewController.swift in Sources */,
 				3B67EBB928BCB5D70048F8AE /* Common.swift in Sources */,
-				3B67EBA928BCB3610048F8AE /* PreviewProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

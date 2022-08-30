@@ -19,12 +19,13 @@ final class Common: NSObject {
     var doShowLightBackground: Bool   = false
     var doShowTag: Bool               = true
     
-    
     // MARK: - Private Properties
     
     private var doShowRawJson: Bool   = false
     private var doIndentScalars: Bool = false
     private var jsonIndent: Int       = BUFFOON_CONSTANTS.JSON_INDENT
+    private var maxKeyLengths: [Int]  = []
+    private var fontSize: CGFloat     = 0
     
     // YAML string attributes...
     private var keyAtts: [NSAttributedString.Key: Any] = [:]
@@ -74,6 +75,8 @@ final class Common: NSObject {
             font = NSFont.systemFont(ofSize: fontBaseSize)
         }
         
+        self.fontSize = fontBaseSize
+        
         // Set up the attributed string components we may use during rendering
         self.keyAtts = [
             .foregroundColor: NSColor.hexToColour(codeColour),
@@ -111,9 +114,12 @@ final class Common: NSObject {
                                                                                        attributes: self.valAtts)
         
         do {
-            // Attempt to parse the JSON data
+            // Attempt to parse the JSON data. First, get the data...
             let json: Any = try JSONSerialization.jsonObject(with: jsonFileData, options: [])
-            renderedString = prettify(json, 0, true)
+            
+            // ...then renderr it
+            self.maxKeyLengths.append(0)
+            renderedString = prettify(json, 0, 0, true)
             
             // Just in case...
             if renderedString.length == 0 {
@@ -123,15 +129,25 @@ final class Common: NSObject {
         } catch {
             // No JSON to render, or the JSON was mis-formatted
             // Assemble the error string
-            let errorString: NSMutableAttributedString = NSMutableAttributedString.init(string: "Could not render the JSON.",
+            let errorString: NSMutableAttributedString = NSMutableAttributedString.init(string: "Could not render the JSON. ",
                                                                                         attributes: self.keyAtts)
 
             // Should we include the raw Json?
             // At least the user can see the data this way
             if self.doShowRawJson {
+                errorString.append(NSMutableAttributedString.init(string: "Here is its raw form:",
+                                                                  attributes: self.keyAtts))
                 errorString.append(self.hr)
-                errorString.append(NSMutableAttributedString.init(string: "\(jsonFileData)\n",
-                                                                  attributes: self.valAtts))
+                
+                let encoding: String.Encoding = jsonFileData.stringEncoding ?? .utf8
+                
+                if let jsonFileString: String = String.init(data: jsonFileData, encoding: encoding) {
+                    errorString.append(NSMutableAttributedString.init(string: "\(jsonFileString)\n",
+                                                                      attributes: self.valAtts))
+                } else {
+                    errorString.append(NSMutableAttributedString.init(string: "Sorry, this JSON file uses an unsupported coding: \(encoding)\n",
+                                                                      attributes: self.valAtts))
+                }
             }
 
             renderedString = errorString
@@ -147,6 +163,7 @@ final class Common: NSObject {
      - Parameters:
         - baseString: The string to be indented.
         - indent:     The number of indent spaces to add.
+        - isKey:      Are we rendering an inset key (`true`) or value (`false`).
 
      - Returns: The indented string as an NSAttributedString.
      */
@@ -163,6 +180,37 @@ final class Common: NSObject {
         return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
     }
     
+    /**
+     Return a space-prefix NSAttributedString formed from an image in the app Bundle
+
+     - Parameters:
+        - indent:     The number of indent spaces to add.
+        - imageName:  The name of the image to load and insert.
+     
+     - Returns: The indented string as an optional NSAttributedString. Nil indicates an error
+     */
+    func getImageString(_ indent: Int = 1, _ imageName: String) -> NSAttributedString? {
+        
+        let insetImage: NSTextAttachment = NSTextAttachment()
+        insetImage.image = NSImage(named: imageName)
+        if insetImage.image != nil {
+            insetImage.image!.size = NSMakeSize(self.fontSize, self.fontSize)
+            let imageString: NSAttributedString = NSAttributedString(attachment: insetImage)
+            
+            let spaces = "                                                     "
+            let spaceString = String(spaces.suffix(indent))
+            
+            let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
+            indentedString.append(NSAttributedString.init(string: spaceString))
+            indentedString.setAttributes(self.valAtts,
+                                         range: NSMakeRange(0, indentedString.length))
+            indentedString.append(imageString)
+            return indentedString
+        }
+        
+        return nil
+    }
+    
     
     /**
      Render a unit of JSON as a NSAttributedString.
@@ -173,7 +221,7 @@ final class Common: NSObject {
 
      - Returns: The indented string as an NSAttributedString.
      */
-    func prettify(_ json: Any, _ indent: Int = 0, _ doIndentScalar: Bool = false) -> NSMutableAttributedString {
+    func prettify(_ json: Any, _ level: Int = 0, _ indent: Int = 0, _ doIndentScalar: Bool = false) -> NSMutableAttributedString {
         
         // Prep an NSMutableAttributedString
         let renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "",
@@ -183,42 +231,69 @@ final class Common: NSObject {
         // NOTE Booleans are 'Bool' and 'Int', so make sure we do the Bool
         //      check first
         if json is Bool {
-            renderedString.append(getIndentedString(json as! Bool ? "TRUE" : "FALSE", 1))
+            // Attempt to load the true/false symbol, but use a text version as a fallback on error
+            if let addString: NSAttributedString = getImageString(indent, json as! Bool ? "true" : "false") {
+                renderedString.append(addString)
+            } else {
+                renderedString.append(getIndentedString(json as! Bool ? "TRUE" : "FALSE", doIndentScalar ? indent : 1))
+            }
         } else if json is NSNull {
-            renderedString.append(getIndentedString("NULL", doIndentScalar ? indent : 1))
-        } else if json is Int || json is Float || json is Double || json is String {
+            // Attempt to load the null symbol, but use a text version as a fallback on error
+            if let addString: NSAttributedString = getImageString(indent, "null") {
+                renderedString.append(addString)
+            } else {
+                renderedString.append(getIndentedString("NULL", doIndentScalar ? indent : 1))
+            }
+        } else if json is Int || json is Float || json is Double {
+            // Display the number as is
             renderedString.append(getIndentedString("\(json)", doIndentScalar ? indent : 1))
+        } else if json is String {
+            // Display the string in curly quotes
+            // Need to do extra inset work here
+            renderedString.append(getIndentedString("“\(json)”", doIndentScalar ? indent : 1))
         } else if json is Dictionary<String, Any> {
             // For a dictionary, enumerate the key and value
             // NOTE Should be only one of each, but value may
             //      be an object or array
             let anyObject: [String: Any] = json as! [String: Any]
+            
+            // Get max key length
             anyObject.forEach { key, value in
-                let nextIsObject: Bool = (value is Dictionary<String, Any>)
-                renderedString.append(getIndentedString(key, indent, true))
-                if nextIsObject {
-                   renderedString.append(getIndentedString("\n", 0))
+                if key.count > self.maxKeyLengths[level] {
+                    self.maxKeyLengths[level] = key.count
                 }
-                renderedString.append(prettify(value, indent + self.jsonIndent))
+            }
+            
+            anyObject.forEach { key, value in
+                let valueIsObject: Bool = (value is Dictionary<String, Any>)
+                let valueIsArray: Bool = (value is Array<Any>)
+                
+                //renderedString.append(getIndentedString("⎬", indent, true))
+                renderedString.append(getIndentedString(key, indent, true))
+
+                // Speical case if the value is a Dictionary
+                if valueIsObject || valueIsArray {
+                    renderedString.append(self.newLine)
+                    self.maxKeyLengths.append(0)
+                    renderedString.append(prettify(value, level + 1, indent + self.maxKeyLengths[level] + 1))
+                } else {
+                    // Render the scalar value at the same depth
+                    renderedString.append(prettify(value, level, self.maxKeyLengths[level] - key.count + 1, true))
+                }
             }
             
             return renderedString
         } else if json is Array<Any> {
             let anyArray: [Any] = json as! [Any]
             var count: Int = 0
+            
             anyArray.forEach { value in
-                let nextIsObject: Bool = (value is Dictionary<String, Any> || value is Array<Any>)
-                if nextIsObject {
-                    if count == 0 {
-                        renderedString.append(getIndentedString("\n", 0))
-                    }
-                    renderedString.append(prettify(value, indent))
+                let valueIsObject: Bool = (value is Dictionary<String, Any> || value is Array<Any>)
+                if valueIsObject {
+                    self.maxKeyLengths.append(0)
+                    renderedString.append(prettify(value, level + 1, indent))
                 } else {
-                    if count == 0 {
-                        renderedString.append(prettify(value, indent, false))
-                    } else {
-                        renderedString.append(prettify(value, indent + 3, true))
-                    }
+                    renderedString.append(prettify(value, level + 1, indent, true))
                 }
                 
                 count += 1
@@ -227,7 +302,7 @@ final class Common: NSObject {
             return renderedString
         }
         
-        renderedString.append(getIndentedString("\n", indent))
+        renderedString.append(self.newLine)
         return renderedString
     }
 
