@@ -23,6 +23,7 @@ final class Common: NSObject {
     
     private var doShowRawJson: Bool   = false
     private var doIndentScalars: Bool = false
+    private var isThumbnail:Bool      = false
     private var jsonIndent: Int       = BUFFOON_CONSTANTS.JSON_INDENT
     private var maxKeyLengths: [Int]  = []
     private var fontSize: CGFloat     = 0
@@ -39,13 +40,15 @@ final class Common: NSObject {
 
     // MARK:- Lifecycle Functions
     
-    init(_ isThumbnail: Bool) {
+    init(_ isThumbnail: Bool = false) {
         
         super.init()
         
         var fontBaseSize: CGFloat       = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
         var fontBaseName: String        = BUFFOON_CONSTANTS.CODE_FONT_NAME
         var codeColour: String          = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+        
+        self.isThumbnail = isThumbnail
         
         // The suite name is the app group name, set in each extension's entitlements, and the host app's
         if let prefs = UserDefaults(suiteName: MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME) {
@@ -337,10 +340,10 @@ final class Common: NSObject {
 
                 // Is the value non-scalar?
                 if valueIsObject || valueIsArray {
-                    // Insert a new line
+                    // Insert a new line and add furniture
                     renderedString.append(self.newLine)
                     renderedString.append(getIndentedString(valueIsObject ? "{" : "[",
-                                                            indent + self.jsonIndent + self.maxKeyLengths[level],
+                                                            isThumbnail ? 2 : indent + self.jsonIndent + self.maxKeyLengths[level],
                                                             BUFFOON_CONSTANTS.ITEM_TYPE.MARKS))
                     
                     // Render the element on the next level
@@ -350,9 +353,8 @@ final class Common: NSObject {
                                                    indent + self.jsonIndent + self.maxKeyLengths[level]))
                     
                     // Bookend with furniture
-                    
                     renderedString.append(getIndentedString(valueIsObject ? "}" : "]",
-                                                            indent + self.jsonIndent + self.maxKeyLengths[level],
+                                                            isThumbnail ? 2 : indent + self.jsonIndent + self.maxKeyLengths[level],
                                                             BUFFOON_CONSTANTS.ITEM_TYPE.MARKS))
                     renderedString.append(self.newLine)
                 } else {
@@ -398,3 +400,5 @@ extension Data {
         return .init(rawValue: rawValue)
     }
 }
+
+

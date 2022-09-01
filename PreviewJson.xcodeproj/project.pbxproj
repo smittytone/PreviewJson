@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B1FA41E28C1242E001DA63C /* QuickLookThumbnailing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B1FA41D28C1242E001DA63C /* QuickLookThumbnailing.framework */; };
+		3B1FA41F28C1242E001DA63C /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B67EBA328BCB3610048F8AE /* Quartz.framework */; };
+		3B1FA42228C1242E001DA63C /* ThumbnailProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1FA42128C1242E001DA63C /* ThumbnailProvider.swift */; };
+		3B1FA42728C1242E001DA63C /* JSON Thumbnailer.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3B1FA41C28C1242E001DA63C /* JSON Thumbnailer.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3B1FA42B28C124A1001DA63C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9428BCB0A20048F8AE /* Constants.swift */; };
+		3B1FA42C28C124F4001DA63C /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBB828BCB5D70048F8AE /* Common.swift */; };
+		3B1FA42D28C12D99001DA63C /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE355BC28BCD0F600523296 /* Secrets.swift */; };
+		3B1FA42E28C12DB2001DA63C /* NSColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* NSColorExtension.swift */; };
 		3B5E292B28BE60C10018808A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B5E292A28BE60C10018808A /* Assets.xcassets */; };
 		3B67EB6528BCAEEA0048F8AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB6428BCAEEA0048F8AE /* AppDelegate.swift */; };
 		3B67EB6728BCAEEB0048F8AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B67EB6628BCAEEB0048F8AE /* Assets.xcassets */; };
@@ -36,6 +44,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		3B1FA42528C1242E001DA63C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3B67EB5928BCAEEA0048F8AE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3B1FA41B28C1242E001DA63C;
+			remoteInfo = "JSON Thumbnailer";
+		};
 		3B67EB7128BCAEEB0048F8AE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 3B67EB5928BCAEEA0048F8AE /* Project object */;
@@ -67,6 +82,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				3B67EBB128BCB3610048F8AE /* JSON Previewer.appex in Embed App Extensions */,
+				3B1FA42728C1242E001DA63C /* JSON Thumbnailer.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -74,6 +90,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3B1FA41C28C1242E001DA63C /* JSON Thumbnailer.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "JSON Thumbnailer.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B1FA41D28C1242E001DA63C /* QuickLookThumbnailing.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLookThumbnailing.framework; path = System/Library/Frameworks/QuickLookThumbnailing.framework; sourceTree = SDKROOT; };
+		3B1FA42128C1242E001DA63C /* ThumbnailProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailProvider.swift; sourceTree = "<group>"; };
+		3B1FA42328C1242E001DA63C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3B1FA42428C1242E001DA63C /* JSON_Thumbnailer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = JSON_Thumbnailer.entitlements; sourceTree = "<group>"; };
 		3B5E292A28BE60C10018808A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3B67EB6128BCAEEA0048F8AE /* PreviewJson.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PreviewJson.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B67EB6428BCAEEA0048F8AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -102,6 +123,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3B1FA41928C1242E001DA63C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3B1FA41E28C1242E001DA63C /* QuickLookThumbnailing.framework in Frameworks */,
+				3B1FA41F28C1242E001DA63C /* Quartz.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3B67EB5E28BCAEEA0048F8AE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -134,11 +164,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3B1FA42028C1242E001DA63C /* JSON Thumbnailer */ = {
+			isa = PBXGroup;
+			children = (
+				3B1FA42128C1242E001DA63C /* ThumbnailProvider.swift */,
+				3B1FA42428C1242E001DA63C /* JSON_Thumbnailer.entitlements */,
+				3B1FA42328C1242E001DA63C /* Info.plist */,
+			);
+			path = "JSON Thumbnailer";
+			sourceTree = "<group>";
+		};
 		3B67EB5828BCAEEA0048F8AE = {
 			isa = PBXGroup;
 			children = (
 				3B67EB6328BCAEEA0048F8AE /* PreviewJson */,
 				3B67EBA528BCB3610048F8AE /* JSON Previewer */,
+				3B1FA42028C1242E001DA63C /* JSON Thumbnailer */,
 				3B67EB7328BCAEEB0048F8AE /* PreviewJsonTests */,
 				3B67EB7D28BCAEEB0048F8AE /* PreviewJsonUITests */,
 				3B67EBA228BCB3610048F8AE /* Frameworks */,
@@ -153,6 +194,7 @@
 				3B67EB7028BCAEEB0048F8AE /* PreviewJsonTests.xctest */,
 				3B67EB7A28BCAEEB0048F8AE /* PreviewJsonUITests.xctest */,
 				3B67EBA128BCB3610048F8AE /* JSON Previewer.appex */,
+				3B1FA41C28C1242E001DA63C /* JSON Thumbnailer.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -196,6 +238,7 @@
 			isa = PBXGroup;
 			children = (
 				3B67EBA328BCB3610048F8AE /* Quartz.framework */,
+				3B1FA41D28C1242E001DA63C /* QuickLookThumbnailing.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -216,6 +259,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		3B1FA41B28C1242E001DA63C /* JSON Thumbnailer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3B1FA42A28C1242E001DA63C /* Build configuration list for PBXNativeTarget "JSON Thumbnailer" */;
+			buildPhases = (
+				3B1FA41828C1242E001DA63C /* Sources */,
+				3B1FA41928C1242E001DA63C /* Frameworks */,
+				3B1FA41A28C1242E001DA63C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "JSON Thumbnailer";
+			productName = "JSON Thumbnailer";
+			productReference = 3B1FA41C28C1242E001DA63C /* JSON Thumbnailer.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		3B67EB6028BCAEEA0048F8AE /* PreviewJson */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3B67EB8428BCAEEB0048F8AE /* Build configuration list for PBXNativeTarget "PreviewJson" */;
@@ -229,6 +289,7 @@
 			);
 			dependencies = (
 				3B67EBB028BCB3610048F8AE /* PBXTargetDependency */,
+				3B1FA42628C1242E001DA63C /* PBXTargetDependency */,
 			);
 			name = PreviewJson;
 			productName = PreviewJson;
@@ -298,6 +359,9 @@
 				LastSwiftUpdateCheck = 1340;
 				LastUpgradeCheck = 1340;
 				TargetAttributes = {
+					3B1FA41B28C1242E001DA63C = {
+						CreatedOnToolsVersion = 13.4.1;
+					};
 					3B67EB6028BCAEEA0048F8AE = {
 						CreatedOnToolsVersion = 13.4.1;
 					};
@@ -329,6 +393,7 @@
 			targets = (
 				3B67EB6028BCAEEA0048F8AE /* PreviewJson */,
 				3B67EBA028BCB3610048F8AE /* JSON Previewer */,
+				3B1FA41B28C1242E001DA63C /* JSON Thumbnailer */,
 				3B67EB6F28BCAEEB0048F8AE /* PreviewJsonTests */,
 				3B67EB7928BCAEEB0048F8AE /* PreviewJsonUITests */,
 			);
@@ -336,6 +401,13 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3B1FA41A28C1242E001DA63C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3B67EB5F28BCAEEA0048F8AE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -373,6 +445,18 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3B1FA41828C1242E001DA63C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3B1FA42E28C12DB2001DA63C /* NSColorExtension.swift in Sources */,
+				3B1FA42D28C12D99001DA63C /* Secrets.swift in Sources */,
+				3B1FA42C28C124F4001DA63C /* Common.swift in Sources */,
+				3B1FA42B28C124A1001DA63C /* Constants.swift in Sources */,
+				3B1FA42228C1242E001DA63C /* ThumbnailProvider.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3B67EB5D28BCAEEA0048F8AE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -422,6 +506,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		3B1FA42628C1242E001DA63C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3B1FA41B28C1242E001DA63C /* JSON Thumbnailer */;
+			targetProxy = 3B1FA42528C1242E001DA63C /* PBXContainerItemProxy */;
+		};
 		3B67EB7228BCAEEB0048F8AE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3B67EB6028BCAEEA0048F8AE /* PreviewJson */;
@@ -459,6 +548,60 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		3B1FA42828C1242E001DA63C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "JSON Thumbnailer/JSON_Thumbnailer.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = Y5J3K52DNA;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "JSON Thumbnailer/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "JSON Thumbnailer";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewJson.JSON-Thumbnailer";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		3B1FA42928C1242E001DA63C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "JSON Thumbnailer/JSON_Thumbnailer.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = Y5J3K52DNA;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "JSON Thumbnailer/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "JSON Thumbnailer";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.bps.PreviewJson.JSON-Thumbnailer";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		3B67EB8228BCAEEB0048F8AE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -581,7 +724,7 @@
 				CODE_SIGN_ENTITLEMENTS = PreviewJson/PreviewJson.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -610,7 +753,7 @@
 				CODE_SIGN_ENTITLEMENTS = PreviewJson/PreviewJson.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -707,7 +850,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "JSON Previewer/JSON_Previewer.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -734,7 +877,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "JSON Previewer/JSON_Previewer.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -759,6 +902,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3B1FA42A28C1242E001DA63C /* Build configuration list for PBXNativeTarget "JSON Thumbnailer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3B1FA42828C1242E001DA63C /* Debug */,
+				3B1FA42928C1242E001DA63C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		3B67EB5C28BCAEEA0048F8AE /* Build configuration list for PBXProject "PreviewJson" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -54,7 +54,7 @@ class PreviewViewController: NSViewController,
         self.renderTextScrollView.isHidden = false
         
         // Set the base values
-        let common: Common = Common.init(false)
+        let common: Common = Common.init()
         
         // Load the source file using a co-ordinator as we don't know what thread this function
         // will be executed in when it's called by macOS' QuickLook code
@@ -65,7 +65,7 @@ class PreviewViewController: NSViewController,
                 let data: Data = try Data.init(contentsOf: url, options: [.uncached])
                 let encoding: String.Encoding = data.stringEncoding ?? .utf8
                 
-                if let jsonFileString: String = String.init(data: data, encoding: encoding) {
+                if let _ = String.init(data: data, encoding: encoding) {
                     // Get the key string first
                     let jsonAttString: NSAttributedString = common.getAttributedString(data)
                     
@@ -100,7 +100,6 @@ class PreviewViewController: NSViewController,
                     // We can't access the preview NSTextView's NSTextStorage
                     reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
                 } else {
-                    // FROM 1.1.2
                     // We couldn't convert to data to a valid encoding
                     let errDesc: String = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) \(encoding)"
                     reportError = NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,

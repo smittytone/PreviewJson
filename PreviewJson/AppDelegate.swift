@@ -44,7 +44,6 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var fontSizeSlider: NSSlider!
     @IBOutlet weak var fontSizeLabel: NSTextField!
     @IBOutlet weak var useLightCheckbox: NSButton!
-    @IBOutlet weak var doIndentScalarsCheckbox: NSButton!
     @IBOutlet weak var doShowRawJsonCheckbox: NSButton!
     @IBOutlet weak var codeFontPopup: NSPopUpButton!
     @IBOutlet weak var codeIndentPopup: NSPopUpButton!
@@ -265,11 +264,8 @@ final class AppDelegate: NSObject,
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
             self.codeFontSize = CGFloat(defaults.float(forKey: "com-bps-previewjson-base-font-size"))
             self.indentDepth = defaults.integer(forKey: "com-bps-previewjson-json-indent")
-            
             self.doShowLightBackground = defaults.bool(forKey: "com-bps-previewjson-do-use-light")
             self.doShowRawJson = defaults.bool(forKey: "com-bps-previewjson-show-bad-json")
-            self.doIndentScalars = defaults.bool(forKey: "com-bps-previewjson-do-indent-scalars")
-            
             self.codeFontName = defaults.string(forKey: "com-bps-previewjson-base-font-name") ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
             self.codeColourHex = defaults.string(forKey: "com-bps-previewjson-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
         }
@@ -284,7 +280,6 @@ final class AppDelegate: NSObject,
         
         self.useLightCheckbox.state = self.doShowLightBackground ? .on : .off
         self.doShowRawJsonCheckbox.state = self.doShowRawJson ? .on : .off
-        self.doIndentScalarsCheckbox.state = self.doIndentScalars ? .on : .off
         
         let indents: [Int] = [1, 2, 4, 8]
         self.codeIndentPopup.selectItem(at: indents.firstIndex(of: self.indentDepth)!)
@@ -304,6 +299,15 @@ final class AppDelegate: NSObject,
 
         self.codeStylePopup.isEnabled = false
         selectFontByPostScriptName(self.codeFontName)
+        
+        // Check for mode
+        let appearance: NSAppearance = NSApp.effectiveAppearance
+        if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua]) {
+            if appearName == .aqua {
+                // We're in white mode
+                self.useLightCheckbox.isHidden = true
+            }
+        }
         
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
@@ -388,12 +392,6 @@ final class AppDelegate: NSObject,
             if self.doShowRawJson != state {
                 defaults.setValue(state,
                                   forKey: "com-bps-previewjson-show-bad-json")
-            }
-            
-            state = self.doIndentScalarsCheckbox.state == .on
-            if self.doIndentScalars != state {
-                defaults.setValue(state,
-                                  forKey: "com-bps-previewjson-do-indent-scalars")
             }
             
             let indents: [Int] = [1, 2, 4, 8]
