@@ -42,6 +42,13 @@ struct BUFFOON_CONSTANTS {
         static let TAG_HEIGHT                   = 204.8
         static let FONT_SIZE                    = 130.0
     }
+    
+    struct ITEM_TYPE {
+        
+        static let KEY                          = 0
+        static let VALUE                        = 1
+        static let MARKS                        = 2
+    }
 
     static let BASE_PREVIEW_FONT_SIZE: Float    = 16.0
     static let BASE_THUMB_FONT_SIZE: Float      = 22.0
@@ -61,7 +68,7 @@ struct BUFFOON_CONSTANTS {
     static let TAG_TEXT_MIN_SIZE                = 118
     
     static let CODE_FONT_NAME                   = "Menlo-Regular"
-    static let CODE_COLOUR_HEX                  = "460510"
+    static let CODE_COLOUR_HEX                  = "460510FF"
     static let THUMBNAIL_LINE_COUNT             = 38
     static let APP_CODE_PREVIEWER               = "com.bps.previewjson.JSON-Previewer"
 }

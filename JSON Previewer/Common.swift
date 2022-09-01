@@ -27,9 +27,10 @@ final class Common: NSObject {
     private var maxKeyLengths: [Int]  = []
     private var fontSize: CGFloat     = 0
     
-    // YAML string attributes...
+    // JSON string attributes...
     private var keyAtts: [NSAttributedString.Key: Any] = [:]
     private var valAtts: [NSAttributedString.Key: Any] = [:]
+    private var markAtts: [NSAttributedString.Key: Any] = [:]
     
     // String artifacts...
     private var hr: NSAttributedString      = NSAttributedString.init(string: "")
@@ -88,6 +89,11 @@ final class Common: NSObject {
             .font: font
         ]
         
+        self.markAtts = [
+            .foregroundColor: NSColor.hexToColour("FFFF00FF"),
+            .font: font
+        ]
+        
         self.hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
                                      attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
                                                   .strikethroughColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.white)])
@@ -118,8 +124,10 @@ final class Common: NSObject {
             let json: Any = try JSONSerialization.jsonObject(with: jsonFileData, options: [])
             
             // ...then renderr it
-            self.maxKeyLengths.append(0)
-            renderedString = prettify(json, 0, 0, true)
+            self.maxKeyLengths.removeAll()
+            self.maxKeyLengths = [0]
+            assembleColumns(json)
+            renderedString = prettify(json)
             
             // Just in case...
             if renderedString.length == 0 {
@@ -167,16 +175,28 @@ final class Common: NSObject {
 
      - Returns: The indented string as an NSAttributedString.
      */
-    func getIndentedString(_ baseString: String, _ indent: Int = 0, _ isKey: Bool = false) -> NSAttributedString {
+    func getIndentedString(_ baseString: String, _ indent: Int = 0, _ itemType: Int = BUFFOON_CONSTANTS.ITEM_TYPE.VALUE) -> NSAttributedString {
         
         let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
         let spaces = "                                                     "
         let spaceString = String(spaces.suffix(indent))
+        
+        var attributes: [NSAttributedString.Key: Any]
+        switch itemType {
+            case BUFFOON_CONSTANTS.ITEM_TYPE.KEY:
+                attributes = self.keyAtts
+            case BUFFOON_CONSTANTS.ITEM_TYPE.MARKS:
+                attributes = self.markAtts
+            default:
+                attributes = self.valAtts
+        }
+        
         let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
         indentedString.append(NSAttributedString.init(string: spaceString))
         indentedString.append(NSAttributedString.init(string: trimmedString))
-        indentedString.setAttributes(isKey ? self.keyAtts : self.valAtts,
+        indentedString.setAttributes(attributes,
                                      range: NSMakeRange(0, indentedString.length))
+        
         return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
     }
     
@@ -213,6 +233,58 @@ final class Common: NSObject {
     
     
     /**
+    Iterate through a JSON element to caclulate the current max. key length
+
+     - Parameters:
+        - json:     The JSON element.
+        - level:    The current level.
+     */
+    func assembleColumns(_ json: Any, _ level: Int = 0) {
+        
+        if json is Dictionary<String, Any> {
+            // For a dictionary, enumerate the key and value
+            let anyObject: [String: Any] = json as! [String: Any]
+            
+            // Get the max key length for the current level
+            anyObject.forEach { key, value in
+                if key.count > self.maxKeyLengths[level] {
+                    self.maxKeyLengths[level] = key.count
+                }
+            }
+            
+            // Iterate through the keys to run this code for higher levels
+            anyObject.forEach { key, value in
+                // Check for non-scalar elements
+                let valueIsObject: Bool = (value is Dictionary<String, Any>)
+                let valueIsArray: Bool = (value is Array<Any>)
+                
+                if valueIsObject || valueIsArray {
+                    // Prepare the next level
+                    if self.maxKeyLengths.count == level + 1 {
+                        self.maxKeyLengths.append(0)
+                    }
+                    
+                    // Process the next level
+                    assembleColumns(value, level + 1)
+                }
+            }
+        } else if json is Array<Any> {
+            // For an array, enumerate the elements
+            let anyArray: [Any] = json as! [Any]
+            
+            anyArray.forEach { value in
+                let valueIsObject: Bool = value is Dictionary<String, Any>
+                let valueIsArray: Bool = value is Array<Any>
+                
+                if valueIsObject || valueIsArray {
+                    // Process the array contents on the current level
+                    assembleColumns(value, level)
+                }
+            }
+        }
+    }
+    
+    /**
      Render a unit of JSON as a NSAttributedString.
 
      - Parameters:
@@ -221,9 +293,9 @@ final class Common: NSObject {
 
      - Returns: The indented string as an NSAttributedString.
      */
-    func prettify(_ json: Any, _ level: Int = 0, _ indent: Int = 0, _ doIndentScalar: Bool = false) -> NSMutableAttributedString {
+    func prettify(_ json: Any, _ level: Int = 0, _ indent: Int = 0) -> NSMutableAttributedString {
         
-        // Prep an NSMutableAttributedString
+        // Prep an NSMutableAttributedString for this JSON segment
         let renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "",
                                                                                         attributes: self.keyAtts)
         
@@ -235,68 +307,68 @@ final class Common: NSObject {
             if let addString: NSAttributedString = getImageString(indent, json as! Bool ? "true" : "false") {
                 renderedString.append(addString)
             } else {
-                renderedString.append(getIndentedString(json as! Bool ? "TRUE" : "FALSE", doIndentScalar ? indent : 1))
+                renderedString.append(getIndentedString(json as! Bool ? "TRUE" : "FALSE", indent))
             }
         } else if json is NSNull {
             // Attempt to load the null symbol, but use a text version as a fallback on error
             if let addString: NSAttributedString = getImageString(indent, "null") {
                 renderedString.append(addString)
             } else {
-                renderedString.append(getIndentedString("NULL", doIndentScalar ? indent : 1))
+                renderedString.append(getIndentedString("NULL", indent))
             }
         } else if json is Int || json is Float || json is Double {
             // Display the number as is
-            renderedString.append(getIndentedString("\(json)", doIndentScalar ? indent : 1))
+            renderedString.append(getIndentedString("\(json)", indent))
         } else if json is String {
             // Display the string in curly quotes
             // Need to do extra inset work here
-            renderedString.append(getIndentedString("“\(json)”", doIndentScalar ? indent : 1))
+            renderedString.append(getIndentedString("“\(json)”", indent))
         } else if json is Dictionary<String, Any> {
             // For a dictionary, enumerate the key and value
             // NOTE Should be only one of each, but value may
             //      be an object or array
             let anyObject: [String: Any] = json as! [String: Any]
             
-            // Get max key length
-            anyObject.forEach { key, value in
-                if key.count > self.maxKeyLengths[level] {
-                    self.maxKeyLengths[level] = key.count
-                }
-            }
-            
             anyObject.forEach { key, value in
                 let valueIsObject: Bool = (value is Dictionary<String, Any>)
                 let valueIsArray: Bool = (value is Array<Any>)
                 
-                //renderedString.append(getIndentedString("⎬", indent, true))
-                renderedString.append(getIndentedString(key, indent, true))
+                renderedString.append(getIndentedString(key, indent, BUFFOON_CONSTANTS.ITEM_TYPE.KEY))
 
-                // Speical case if the value is a Dictionary
+                // Is the value non-scalar?
                 if valueIsObject || valueIsArray {
+                    // Insert a new line
                     renderedString.append(self.newLine)
-                    self.maxKeyLengths.append(0)
-                    renderedString.append(prettify(value, level + 1, indent + self.maxKeyLengths[level] + 1))
+                    renderedString.append(getIndentedString(valueIsObject ? "{" : "[",
+                                                            indent + self.jsonIndent + self.maxKeyLengths[level],
+                                                            BUFFOON_CONSTANTS.ITEM_TYPE.MARKS))
+                    
+                    // Render the element on the next level
+                    renderedString.append(self.newLine)
+                    renderedString.append(prettify(value,
+                                                   level + 1,
+                                                   indent + self.jsonIndent + self.maxKeyLengths[level]))
+                    
+                    // Bookend with furniture
+                    
+                    renderedString.append(getIndentedString(valueIsObject ? "}" : "]",
+                                                            indent + self.jsonIndent + self.maxKeyLengths[level],
+                                                            BUFFOON_CONSTANTS.ITEM_TYPE.MARKS))
+                    renderedString.append(self.newLine)
                 } else {
-                    // Render the scalar value at the same depth
-                    renderedString.append(prettify(value, level, self.maxKeyLengths[level] - key.count + 1, true))
+                    // Render the scalar value right after the key
+                    renderedString.append(prettify(value,
+                                                   level,
+                                                   self.maxKeyLengths[level] - key.count + self.jsonIndent))
                 }
             }
             
             return renderedString
         } else if json is Array<Any> {
             let anyArray: [Any] = json as! [Any]
-            var count: Int = 0
             
             anyArray.forEach { value in
-                let valueIsObject: Bool = (value is Dictionary<String, Any> || value is Array<Any>)
-                if valueIsObject {
-                    self.maxKeyLengths.append(0)
-                    renderedString.append(prettify(value, level + 1, indent))
-                } else {
-                    renderedString.append(prettify(value, level + 1, indent, true))
-                }
-                
-                count += 1
+                renderedString.append(prettify(value, level, indent))
             }
             
             return renderedString
