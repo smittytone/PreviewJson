@@ -29,14 +29,16 @@ final class Common: NSObject {
     private var fontSize: CGFloat     = 0
     
     // JSON string attributes...
-    private var keyAtts: [NSAttributedString.Key: Any] = [:]
-    private var valAtts: [NSAttributedString.Key: Any] = [:]
+    private var keyAtts:  [NSAttributedString.Key: Any] = [:]
+    private var valAtts:  [NSAttributedString.Key: Any] = [:]
     private var markAtts: [NSAttributedString.Key: Any] = [:]
+    private var padAtts:  [NSAttributedString.Key: Any] = [:]
     
     // String artifacts...
     private var hr: NSAttributedString      = NSAttributedString.init(string: "")
+    private var hr_dark: NSAttributedString = NSAttributedString.init(string: "")
     private var newLine: NSAttributedString = NSAttributedString.init(string: "")
-
+    private var padLine: NSAttributedString = NSAttributedString.init(string: "")
 
     // MARK:- Lifecycle Functions
     
@@ -97,12 +99,24 @@ final class Common: NSObject {
             .font: font
         ]
         
+        self.padAtts = [
+            .foregroundColor: NSColor.hexToColour(codeColour),
+            .font: NSFont.systemFont(ofSize: fontBaseSize * 2.0)
+        ]
+        
         self.hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
                                      attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
                                                   .strikethroughColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.white)])
         
+        self.hr_dark = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
+                                     attributes: [.strikethroughStyle: NSUnderlineStyle.single.rawValue,
+                                                  .strikethroughColor: NSColor.hexToColour("666666FF")])
+        
         self.newLine = NSAttributedString.init(string: "\n",
                                                attributes: valAtts)
+        
+        self.padLine = NSAttributedString.init(string: "\n",
+                                               attributes: padAtts)
     }
     
     
@@ -330,49 +344,74 @@ final class Common: NSObject {
             // For a dictionary, enumerate the key and value
             // NOTE Should be only one of each, but value may
             //      be an object or array
+            
+            // Insert a new line and add furniture
+            // renderedString.append(self.newLine)
+            renderedString.append(getIndentedString("{\n",
+                                                    indent,
+                                                    BUFFOON_CONSTANTS.ITEM_TYPE.MARKS))
+            
             let anyObject: [String: Any] = json as! [String: Any]
             
             anyObject.forEach { key, value in
                 let valueIsObject: Bool = (value is Dictionary<String, Any>)
                 let valueIsArray: Bool = (value is Array<Any>)
                 
-                renderedString.append(getIndentedString(key, indent, BUFFOON_CONSTANTS.ITEM_TYPE.KEY))
+                let keyIndent: Int = level > 0 ? indent : 0
+                renderedString.append(getIndentedString(key, keyIndent, BUFFOON_CONSTANTS.ITEM_TYPE.KEY))
 
                 // Is the value non-scalar?
                 if valueIsObject || valueIsArray {
-                    // Insert a new line and add furniture
-                    renderedString.append(self.newLine)
-                    renderedString.append(getIndentedString(valueIsObject ? "{" : "[",
-                                                            isThumbnail ? 2 : indent + self.jsonIndent + self.maxKeyLengths[level],
-                                                            BUFFOON_CONSTANTS.ITEM_TYPE.MARKS))
-                    
                     // Render the element on the next level
+                    let valueIndent: Int = indent + self.jsonIndent
                     renderedString.append(self.newLine)
-                    renderedString.append(prettify(value,
-                                                   level + 1,
-                                                   indent + self.jsonIndent + self.maxKeyLengths[level]))
-                    
-                    // Bookend with furniture
-                    renderedString.append(getIndentedString(valueIsObject ? "}" : "]",
-                                                            isThumbnail ? 2 : indent + self.jsonIndent + self.maxKeyLengths[level],
-                                                            BUFFOON_CONSTANTS.ITEM_TYPE.MARKS))
-                    renderedString.append(self.newLine)
+                    renderedString.append(prettify(value, level + 1, valueIndent))
                 } else {
                     // Render the scalar value right after the key
+                    let valueIndent: Int = 2
                     renderedString.append(prettify(value,
                                                    level,
-                                                   self.maxKeyLengths[level] - key.count + self.jsonIndent))
+                                                   valueIndent))
                 }
+            }
+            
+            // Bookend with furniture
+            renderedString.append(getIndentedString("}\n",
+                                                    indent,
+                                                    BUFFOON_CONSTANTS.ITEM_TYPE.MARKS))
+            if level == 0 {
+                renderedString.append(self.hr_dark)
             }
             
             return renderedString
         } else if json is Array<Any> {
+            // Insert a new line and add furniture
+            renderedString.append(getIndentedString("[",
+                                                    indent,
+                                                    BUFFOON_CONSTANTS.ITEM_TYPE.MARKS))
+            renderedString.append(self.newLine)
+            
             let anyArray: [Any] = json as! [Any]
             
             anyArray.forEach { value in
-                renderedString.append(prettify(value, level, indent))
+                let valueIsObject: Bool = (value is Dictionary<String, Any>)
+                let valueIsArray: Bool = (value is Array<Any>)
+                
+                // Is the value non-scalar?
+                if valueIsObject || valueIsArray {
+                    // Render the element on the next level
+                    renderedString.append(prettify(value, level + 1, indent + self.jsonIndent))
+                    renderedString.append(self.newLine)
+                } else {
+                    // Render the scalar value right after the key
+                    renderedString.append(prettify(value, level, indent))
+                }
             }
             
+            // Bookend with furniture
+            renderedString.append(getIndentedString("]\n",
+                                                    indent,
+                                                    BUFFOON_CONSTANTS.ITEM_TYPE.MARKS))
             return renderedString
         }
         
