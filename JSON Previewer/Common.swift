@@ -337,14 +337,14 @@ final class Common: NSObject {
         //      check first
         if json is Bool {
             // Attempt to load the true/false symbol, but use a text version as a fallback on error
-            if let addString: NSAttributedString = getImageString(indent, json as! Bool ? "true" : "false") {
+            if !self.isThumbnail, let addString: NSAttributedString = getImageString(indent, json as! Bool ? "true" : "false") {
                 renderedString.append(addString)
             } else {
                 renderedString.append(getIndentedString(json as! Bool ? "TRUE\n" : "FALSE\n", indent))
             }
         } else if json is NSNull {
             // Attempt to load the null symbol, but use a text version as a fallback on error
-            if let addString: NSAttributedString = getImageString(indent, "null") {
+            if !self.isThumbnail, let addString: NSAttributedString = getImageString(indent, "null") {
                 renderedString.append(addString)
             } else {
                 renderedString.append(getIndentedString("NULL\n", indent))
