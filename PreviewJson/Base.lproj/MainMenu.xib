@@ -20,6 +20,7 @@
                 <outlet property="codeIndentPopup" destination="fen-aP-loU" id="QQE-cg-uX4"/>
                 <outlet property="codeStylePopup" destination="2qh-h7-OMO" id="u4j-br-Bdg"/>
                 <outlet property="connectionProgress" destination="tAy-4n-Mlm" id="JrN-W5-JML"/>
+                <outlet property="doShowJsonFurnitureCheckbox" destination="1WJ-Ce-dro" id="Mc9-aS-p2M"/>
                 <outlet property="doShowRawJsonCheckbox" destination="Z9F-Y6-BVI" id="yEk-KN-E8a"/>
                 <outlet property="feedbackText" destination="rME-5J-5yH" id="yEn-3B-e4A"/>
                 <outlet property="fontSizeLabel" destination="2HA-Yj-cyf" id="psJ-3Z-WQI"/>
@@ -580,7 +581,15 @@ DQ
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Z9F-Y6-BVI">
                         <rect key="frame" x="18" y="127" width="522" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Display raw JSON if it cannot be rendered" bezelStyle="regularSquare" imagePosition="left" inset="2" id="ZVp-1a-gQH">
+                        <buttonCell key="cell" type="check" title="Display raw JSON if it cannot be rendered" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="ZVp-1a-gQH">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1WJ-Ce-dro">
+                        <rect key="frame" x="18" y="105" width="522" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Show JSON object and array marks" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="nR1-bs-Ne9">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>

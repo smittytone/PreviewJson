@@ -45,6 +45,7 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var fontSizeLabel: NSTextField!
     @IBOutlet weak var useLightCheckbox: NSButton!
     @IBOutlet weak var doShowRawJsonCheckbox: NSButton!
+    @IBOutlet weak var doShowJsonFurnitureCheckbox: NSButton!
     @IBOutlet weak var codeFontPopup: NSPopUpButton!
     @IBOutlet weak var codeIndentPopup: NSPopUpButton!
     @IBOutlet weak var codeColorWell: NSColorWell!
@@ -56,8 +57,6 @@ final class AppDelegate: NSObject,
     
 
     // MARK:- Private Properies
-    // private var previewCodeColour: Int = BUFFOON_CONSTANTS.CODE_COLOUR_INDEX
-    // private var previewCodeFont: Int = BUFFOON_CONSTANTS.CODE_FONT_INDEX
     internal var whatsNewNav: WKNavigation? = nil
     private  var feedbackTask: URLSessionTask? = nil
     private  var indentDepth: Int = BUFFOON_CONSTANTS.JSON_INDENT
@@ -65,7 +64,7 @@ final class AppDelegate: NSObject,
     private  var doShowLightBackground: Bool = false
     private  var doShowTag: Bool = false
     private  var doShowRawJson: Bool = false
-    private  var doIndentScalars: Bool = false
+    private  var doShowFurniture: Bool = true
     private  var feedbackPath: String = MNU_SECRETS.ADDRESS.A
     internal var codeFonts: [PMFont] = []
     private  var codeFontName: String = BUFFOON_CONSTANTS.CODE_FONT_NAME
@@ -268,6 +267,7 @@ final class AppDelegate: NSObject,
             self.doShowRawJson = defaults.bool(forKey: "com-bps-previewjson-show-bad-json")
             self.codeFontName = defaults.string(forKey: "com-bps-previewjson-base-font-name") ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
             self.codeColourHex = defaults.string(forKey: "com-bps-previewjson-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+            self.doShowFurniture = defaults.bool(forKey: "com-bps-previewjson-do-indent-scalars")
         }
 
         // Get the menu item index from the stored value
@@ -280,6 +280,7 @@ final class AppDelegate: NSObject,
         
         self.useLightCheckbox.state = self.doShowLightBackground ? .on : .off
         self.doShowRawJsonCheckbox.state = self.doShowRawJson ? .on : .off
+        self.doShowJsonFurnitureCheckbox.state = self.doShowFurniture ? .on : .off
         
         let indents: [Int] = [1, 2, 4, 8]
         self.codeIndentPopup.selectItem(at: indents.firstIndex(of: self.indentDepth)!)
@@ -392,6 +393,12 @@ final class AppDelegate: NSObject,
             if self.doShowRawJson != state {
                 defaults.setValue(state,
                                   forKey: "com-bps-previewjson-show-bad-json")
+            }
+            
+            state = self.doShowJsonFurnitureCheckbox.state == .on
+            if self.doShowFurniture != state {
+                defaults.setValue(state,
+                                  forKey: "com-bps-previewjson-do-indent-scalars")
             }
             
             let indents: [Int] = [1, 2, 4, 8]
@@ -574,11 +581,11 @@ final class AppDelegate: NSObject,
                                   forKey: "com-bps-previewjson-json-indent")
             }
             
-            // Indent scalar values?
-            // Default: false
+            // Despite var names, should we show JSON furniture?
+            // Default: true
             let indentScalarsDefault: Any? = defaults.object(forKey: "com-bps-previewjson-do-indent-scalars")
             if indentScalarsDefault == nil {
-                defaults.setValue(false,
+                defaults.setValue(true,
                                   forKey: "com-bps-previewjson-do-indent-scalars")
             }
             

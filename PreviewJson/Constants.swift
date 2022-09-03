@@ -47,26 +47,22 @@ struct BUFFOON_CONSTANTS {
         
         static let KEY                          = 0
         static let VALUE                        = 1
-        static let MARKS                        = 2
+        static let MARK_START                   = 2
+        static let MARK_END                     = 3
     }
 
     static let BASE_PREVIEW_FONT_SIZE: Float    = 16.0
     static let BASE_THUMB_FONT_SIZE: Float      = 22.0
 
-    static let CODE_COLOUR_INDEX                = 0
-    static let CODE_FONT_INDEX                  = 2     // Helvetica
-
     static let FONT_SIZE_OPTIONS: [CGFloat]     = [10.0, 12.0, 14.0, 16.0, 18.0, 24.0, 28.0]
 
-    static let JSON_INDENT                      = 2
+    static let JSON_INDENT                      = 2     // Can change
+    static let BASE_INDENT                      = 2     // Fixed
 
     static let URL_MAIN                         = "https://smittytone.net/previewjson/index.html"
-    static let APP_STORE                        = "https://apps.apple.com/us/app/previewjson/id1564574724"
+    static let APP_STORE                        = "https://apps.apple.com/us/app/previewjson/idXXXXXXXX"
     static let SUITE_NAME                       = ".suite.preview-previewjson"
 
-    static let TAG_TEXT_SIZE                    = 180
-    static let TAG_TEXT_MIN_SIZE                = 118
-    
     static let CODE_FONT_NAME                   = "Menlo-Regular"
     static let CODE_COLOUR_HEX                  = "460510FF"
     static let THUMBNAIL_LINE_COUNT             = 38
