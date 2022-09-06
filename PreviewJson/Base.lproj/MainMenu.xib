@@ -185,7 +185,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="335" y="390" width="610" height="432"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="610" height="432"/>
             <value key="maxSize" type="size" width="610" height="432"/>
             <value key="minFullScreenContentSize" type="size" width="610" height="432"/>
@@ -356,7 +356,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="560" height="388"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="560" height="388"/>
             <value key="maxSize" type="size" width="560" height="388"/>
             <value key="minFullScreenContentSize" type="size" width="560" height="388"/>
@@ -592,20 +592,6 @@ DQ
                             <font key="font" metaFont="system"/>
                         </buttonCell>
                     </button>
-                    <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FEb-Oc-ldy">
-                        <rect key="frame" x="279" y="151" width="262" height="20"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fillEqually" style="roundRect" trackingMode="selectOne" id="Yjl-4C-iBk">
-                            <font key="font" metaFont="cellTitle"/>
-                            <segments>
-                                <segment image="style_1" imageScaling="proportionallyUpOrDown" width="84" selected="YES"/>
-                                <segment image="style_2" imageScaling="proportionallyUpOrDown" width="84" tag="1"/>
-                                <segment width="84">
-                                    <nil key="label"/>
-                                </segment>
-                            </segments>
-                        </segmentedCell>
-                    </segmentedControl>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L5P-Av-1Ii">
                         <rect key="frame" x="18" y="156" width="256" height="16"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -620,6 +606,20 @@ DQ
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </colorWell>
+                    <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FEb-Oc-ldy">
+                        <rect key="frame" x="277" y="154" width="266" height="24"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fillEqually" style="separated" trackingMode="selectOne" id="Yjl-4C-iBk">
+                            <font key="font" metaFont="system"/>
+                            <segments>
+                                <segment image="style_1" imageScaling="proportionallyUpOrDown" width="86" selected="YES"/>
+                                <segment image="style_2" imageScaling="proportionallyUpOrDown" width="86" tag="1"/>
+                                <segment image="style_3" imageScaling="proportionallyUpOrDown" width="86">
+                                    <nil key="label"/>
+                                </segment>
+                            </segments>
+                        </segmentedCell>
+                    </segmentedControl>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="L3S-3t-ZLg" secondAttribute="bottom" constant="20" symbolic="YES" id="2mX-5U-b59"/>
@@ -650,7 +650,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="560" height="410"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="560" height="410"/>
             <value key="maxSize" type="size" width="560" height="410"/>
             <value key="minFullScreenContentSize" type="size" width="560" height="410"/>
@@ -703,7 +703,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="560" height="356"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="560" height="356"/>
             <value key="maxSize" type="size" width="560" height="356"/>
             <value key="minFullScreenContentSize" type="size" width="560" height="356"/>
@@ -810,7 +810,8 @@ Gw
     </objects>
     <resources>
         <image name="app_logo" width="64" height="64"/>
-        <image name="style_1" width="200" height="64"/>
-        <image name="style_2" width="200" height="64"/>
+        <image name="style_1" width="84" height="20"/>
+        <image name="style_2" width="84" height="20"/>
+        <image name="style_3" width="84" height="20"/>
     </resources>
 </document>
