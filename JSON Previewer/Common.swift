@@ -151,10 +151,7 @@ final class Common: NSObject {
             // Attempt to parse the JSON data. First, get the data...
             let json: Any = try JSONSerialization.jsonObject(with: jsonFileData, options: [])
             
-            // ...then renderr it
-            //self.maxKeyLengths.removeAll()
-            //self.maxKeyLengths = [0]
-            //assembleColumns(json)
+            // ...then render it
             renderedString = prettify(json)
             
             // Just in case...
@@ -345,7 +342,7 @@ final class Common: NSObject {
         //      check first
         if json is Bool {
             // Attempt to load the true/false symbol, but use a text version as a fallback on error
-            if self.boolStyle > 0 {
+            if self.boolStyle > 0 && !self.isThumbnail {
                 let name: String = json as! Bool ? "true_\(self.boolStyle)" : "false_\(self.boolStyle)"
                 if !self.isThumbnail, let addString: NSAttributedString = getImageString(valueIndent, name) {
                     renderedString.append(addString)
@@ -353,10 +350,11 @@ final class Common: NSObject {
                 }
             }
             
+            // Can't or won't show an image? Show text
             renderedString.append(getIndentedString(json as! Bool ? "\(currentLevel)-TRUE\n" : "\(currentLevel)-FALSE\n", valueIndent))
         } else if json is NSNull {
             // Attempt to load the null symbol, but use a text version as a fallback on error
-            if self.boolStyle > 0 {
+            if self.boolStyle > 0 && !self.isThumbnail {
                 let name: String = "null_\(self.boolStyle)"
                 if !self.isThumbnail, let addString: NSAttributedString = getImageString(valueIndent, name) {
                     renderedString.append(addString)
@@ -364,6 +362,7 @@ final class Common: NSObject {
                 }
             }
             
+            // Can't or won't show an image? Show text
             renderedString.append(getIndentedString("\(currentLevel)-NULL\n", valueIndent))
         } else if json is Int || json is Float || json is Double {
             // Display the number as is
@@ -418,11 +417,6 @@ final class Common: NSObject {
                 renderedString.append(getIndentedString("}\n",
                                                         currentIndent,
                                                         BUFFOON_CONSTANTS.ITEM_TYPE.MARK_END))
-            }
-            
-            // Add a pale line after base-level items
-            if currentLevel == 0 {
-                // renderedString.append(self.hr_dark)
             }
         } else if json is Array<Any> {
             if self.doShowFurniture {

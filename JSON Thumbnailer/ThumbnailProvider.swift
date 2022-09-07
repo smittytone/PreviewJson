@@ -71,7 +71,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                         }
 
                         // Get the Attributed String
-                        guard let shortData: Data = shortString.data(using: encoding) else {
+                        guard let shortData: Data = codeFileString.data(using: encoding) else {
                             return .failure(ThumbnailerError.badFileUnsupportedEncoding("\(encoding)"))
                         }
                         
