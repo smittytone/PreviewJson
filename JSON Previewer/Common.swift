@@ -27,7 +27,7 @@ final class Common: NSObject {
     private var jsonIndent: Int       = BUFFOON_CONSTANTS.JSON_INDENT
     private var maxKeyLengths: [Int]  = []
     private var fontSize: CGFloat     = 0
-    private var boolStyle: Int        = 1
+    private var boolStyle: Int        = BUFFOON_CONSTANTS.BOOL_STYLE.FULL
     
     // JSON string attributes...
     private var keyAtts:     [NSAttributedString.Key: Any] = [:]
@@ -60,6 +60,7 @@ final class Common: NSObject {
             self.doShowRawJson          = prefs.bool(forKey: "com-bps-previewjson-show-bad-json")
             self.doShowLightBackground  = prefs.bool(forKey: "com-bps-previewjson-do-use-light")
             self.jsonIndent             = isThumbnail ? 2 : prefs.integer(forKey: "com-bps-previewjson-json-indent")
+            self.boolStyle              = isThumbnail ? BUFFOON_CONSTANTS.BOOL_STYLE.TEXT : prefs.integer(forKey: "com-bps-previewjson-bool-style")
             
             fontBaseSize = CGFloat(isThumbnail
                                    ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE
@@ -342,7 +343,7 @@ final class Common: NSObject {
         //      check first
         if json is Bool {
             // Attempt to load the true/false symbol, but use a text version as a fallback on error
-            if self.boolStyle > 0 && !self.isThumbnail {
+            if self.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
                 let name: String = json as! Bool ? "true_\(self.boolStyle)" : "false_\(self.boolStyle)"
                 if !self.isThumbnail, let addString: NSAttributedString = getImageString(valueIndent, name) {
                     renderedString.append(addString)
@@ -354,7 +355,7 @@ final class Common: NSObject {
             renderedString.append(getIndentedString(json as! Bool ? "\(currentLevel)-TRUE\n" : "\(currentLevel)-FALSE\n", valueIndent))
         } else if json is NSNull {
             // Attempt to load the null symbol, but use a text version as a fallback on error
-            if self.boolStyle > 0 && !self.isThumbnail {
+            if self.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
                 let name: String = "null_\(self.boolStyle)"
                 if !self.isThumbnail, let addString: NSAttributedString = getImageString(valueIndent, name) {
                     renderedString.append(addString)

@@ -50,6 +50,7 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var codeIndentPopup: NSPopUpButton!
     @IBOutlet weak var codeColorWell: NSColorWell!
     @IBOutlet weak var codeStylePopup: NSPopUpButton!
+    @IBOutlet weak var boolStyleSegment: NSSegmentedControl!
 
     // What's New Sheet
     @IBOutlet weak var whatsNewWindow: NSWindow!
@@ -70,6 +71,7 @@ final class AppDelegate: NSObject,
     private  var codeFontName: String = BUFFOON_CONSTANTS.CODE_FONT_NAME
     private  var codeColourHex: String = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
     private  var codeFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+    private  var boolStyle: Int = BUFFOON_CONSTANTS.BOOL_STYLE.FULL
     private  var isMontereyPlus: Bool = false
     
 
@@ -268,6 +270,7 @@ final class AppDelegate: NSObject,
             self.codeFontName = defaults.string(forKey: "com-bps-previewjson-base-font-name") ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
             self.codeColourHex = defaults.string(forKey: "com-bps-previewjson-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
             self.doShowFurniture = defaults.bool(forKey: "com-bps-previewjson-do-indent-scalars")
+            self.boolStyle = defaults.integer(forKey: "com-bps-previewjson-bool-style")
         }
 
         // Get the menu item index from the stored value
@@ -297,9 +300,13 @@ final class AppDelegate: NSObject,
             let font: PMFont = self.codeFonts[i]
             self.codeFontPopup.addItem(withTitle: font.displayName)
         }
-
+        
+        // Select font style
         self.codeStylePopup.isEnabled = false
         selectFontByPostScriptName(self.codeFontName)
+        
+        // Check for bool style
+        self.boolStyleSegment.selectedSegment = self.boolStyle
         
         // Check for mode
         let appearance: NSAppearance = NSApp.effectiveAppearance
@@ -415,6 +422,13 @@ final class AppDelegate: NSObject,
                     defaults.setValue(fontName,
                                       forKey: "com-bps-previewjson-base-font-name")
                 }
+            }
+            
+            let selectedStyle = self.boolStyleSegment.selectedSegment
+            if self.boolStyle != selectedStyle {
+                self.boolStyle = selectedStyle
+                defaults.setValue(selectedStyle,
+                                  forKey: "com-bps-previewjson-bool-style")
             }
 
             // Sync any changes
@@ -595,6 +609,14 @@ final class AppDelegate: NSObject,
             if presentBadJsonDefault == nil {
                 defaults.setValue(false,
                                   forKey: "com-bps-previewjson-show-bad-json")
+            }
+            
+            // Present malformed JSON on error?
+            // Default: false
+            let boolStyle: Any? = defaults.object(forKey: "com-bps-previewjson-bool-style")
+            if boolStyle == nil {
+                defaults.setValue(BUFFOON_CONSTANTS.BOOL_STYLE.FULL,
+                                  forKey: "com-bps-previewjson-bool-style")
             }
 
             // Sync any additions

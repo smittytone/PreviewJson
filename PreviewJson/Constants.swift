@@ -50,6 +50,13 @@ struct BUFFOON_CONSTANTS {
         static let MARK_START                   = 2
         static let MARK_END                     = 3
     }
+    
+    struct BOOL_STYLE {
+        
+        static let FULL                         = 0
+        static let OUTLINE                      = 1
+        static let TEXT                         = 2
+    }
 
     static let BASE_PREVIEW_FONT_SIZE: Float    = 16.0
     static let BASE_THUMB_FONT_SIZE: Float      = 22.0
