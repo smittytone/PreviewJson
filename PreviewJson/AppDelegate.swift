@@ -47,9 +47,10 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var doShowRawJsonCheckbox: NSButton!
     @IBOutlet weak var doShowJsonFurnitureCheckbox: NSButton!
     @IBOutlet weak var codeFontPopup: NSPopUpButton!
+    @IBOutlet weak var codeStylePopup: NSPopUpButton!
     @IBOutlet weak var codeIndentPopup: NSPopUpButton!
     @IBOutlet weak var codeColorWell: NSColorWell!
-    @IBOutlet weak var codeStylePopup: NSPopUpButton!
+    @IBOutlet weak var markColorWell: NSColorWell!
     @IBOutlet weak var boolStyleSegment: NSSegmentedControl!
 
     // What's New Sheet
@@ -70,6 +71,7 @@ final class AppDelegate: NSObject,
     internal var codeFonts: [PMFont] = []
     private  var codeFontName: String = BUFFOON_CONSTANTS.CODE_FONT_NAME
     private  var codeColourHex: String = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+    private  var markColourHex: String = BUFFOON_CONSTANTS.MARK_COLOUR_HEX
     private  var codeFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
     private  var boolStyle: Int = BUFFOON_CONSTANTS.BOOL_STYLE.FULL
     private  var isMontereyPlus: Bool = false
@@ -269,6 +271,7 @@ final class AppDelegate: NSObject,
             self.doShowRawJson = defaults.bool(forKey: "com-bps-previewjson-show-bad-json")
             self.codeFontName = defaults.string(forKey: "com-bps-previewjson-base-font-name") ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
             self.codeColourHex = defaults.string(forKey: "com-bps-previewjson-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+            self.markColourHex = defaults.string(forKey: "com-bps-previewjson-mark-colour-hex") ?? BUFFOON_CONSTANTS.MARK_COLOUR_HEX
             self.doShowFurniture = defaults.bool(forKey: "com-bps-previewjson-do-indent-scalars")
             self.boolStyle = defaults.integer(forKey: "com-bps-previewjson-bool-style")
         }
@@ -289,9 +292,9 @@ final class AppDelegate: NSObject,
         self.codeIndentPopup.selectItem(at: indents.firstIndex(of: self.indentDepth)!)
         
         // Set the colour panel's initial view
-        // self.codeColourPopup.selectItem(at: self.previewCodeColour)
         NSColorPanel.setPickerMode(.RGB)
         self.codeColorWell.color = NSColor.hexToColour(self.codeColourHex)
+        self.markColorWell.color = NSColor.hexToColour(self.markColourHex)
         
         // Set the font name popup
         // List the current system's monospace fonts
@@ -377,11 +380,18 @@ final class AppDelegate: NSObject,
     @IBAction private func doSavePreferences(sender: Any) {
 
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            let newColour: String = self.codeColorWell.color.hexString
+            var newColour: String = self.codeColorWell.color.hexString
             if newColour != self.codeColourHex {
                 self.codeColourHex = newColour
                 defaults.setValue(newColour,
                                   forKey: "com-bps-previewjson-code-colour-hex")
+            }
+            
+            newColour = self.markColorWell.color.hexString
+            if newColour != self.markColourHex {
+                self.markColourHex = newColour
+                defaults.setValue(newColour,
+                                  forKey: "com-bps-previewjson-mark-colour-hex")
             }
             
             let newValue: CGFloat = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[Int(self.fontSizeSlider.floatValue)]
@@ -551,12 +561,20 @@ final class AppDelegate: NSObject,
                                   forKey: "com-bps-previewjson-thumb-font-size")
             }
             
-            // Colour of code blocks in the preview, stored as in integer array index
-            // Default: #007D78FF
+            // Colour of JSON keys in the preview, stored as in integer array index
+            // Default: #CA0D0E
             let codeColourDefault: Any? = defaults.object(forKey: "com-bps-previewjson-code-colour-hex")
             if codeColourDefault == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR_HEX,
                                   forKey: "com-bps-previewjson-code-colour-hex")
+            }
+            
+            // Colour of JSON markers in the preview, stored as in integer array index
+            // Default: #0096FF
+            let markColourDefault: Any? = defaults.object(forKey: "com-bps-previewjson-mark-colour-hex")
+            if markColourDefault == nil {
+                defaults.setValue(BUFFOON_CONSTANTS.MARK_COLOUR_HEX,
+                                  forKey: "com-bps-previewjson-mark-colour-hex")
             }
             
             // Font for previews and thumbnails

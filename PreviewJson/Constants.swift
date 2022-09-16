@@ -71,7 +71,10 @@ struct BUFFOON_CONSTANTS {
     static let SUITE_NAME                       = ".suite.preview-previewjson"
 
     static let CODE_FONT_NAME                   = "Menlo-Regular"
-    static let CODE_COLOUR_HEX                  = "460510FF"
+    static let CODE_COLOUR_HEX                  = "CA0D0EFF"
+    static let MARK_COLOUR_HEX                  = "0096FFFF"
     static let THUMBNAIL_LINE_COUNT             = 38
     static let APP_CODE_PREVIEWER               = "com.bps.previewjson.JSON-Previewer"
+    
+    static let RENDER_DEBUG                     = false
 }

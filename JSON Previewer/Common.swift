@@ -25,22 +25,22 @@ final class Common: NSObject {
     private var doShowFurniture: Bool = true
     private var isThumbnail:Bool      = false
     private var jsonIndent: Int       = BUFFOON_CONSTANTS.JSON_INDENT
+    private var boolStyle: Int        = BUFFOON_CONSTANTS.BOOL_STYLE.FULL
     private var maxKeyLengths: [Int]  = []
     private var fontSize: CGFloat     = 0
-    private var boolStyle: Int        = BUFFOON_CONSTANTS.BOOL_STYLE.FULL
     
     // JSON string attributes...
     private var keyAtts:     [NSAttributedString.Key: Any] = [:]
     private var valAtts:     [NSAttributedString.Key: Any] = [:]
     private var markAtts:    [NSAttributedString.Key: Any] = [:]
     private var markEndAtts: [NSAttributedString.Key: Any] = [:]
-    private var padAtts:     [NSAttributedString.Key: Any] = [:]
+    //private var padAtts:     [NSAttributedString.Key: Any] = [:]
     
     // String artifacts...
     private var hr: NSAttributedString      = NSAttributedString.init(string: "")
-    private var hr_dark: NSAttributedString = NSAttributedString.init(string: "")
     private var newLine: NSAttributedString = NSAttributedString.init(string: "")
-    private var padLine: NSAttributedString = NSAttributedString.init(string: "")
+    //private var hr_dark: NSAttributedString = NSAttributedString.init(string: "")
+    //private var padLine: NSAttributedString = NSAttributedString.init(string: "")
 
     // MARK:- Lifecycle Functions
     
@@ -51,6 +51,7 @@ final class Common: NSObject {
         var fontBaseSize: CGFloat       = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
         var fontBaseName: String        = BUFFOON_CONSTANTS.CODE_FONT_NAME
         var codeColour: String          = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+        var markColour: String          = BUFFOON_CONSTANTS.MARK_COLOUR_HEX
         
         self.isThumbnail = isThumbnail
         
@@ -67,6 +68,7 @@ final class Common: NSObject {
                                    : prefs.float(forKey: "com-bps-previewjson-base-font-size"))
             fontBaseName                = prefs.string(forKey: "com-bps-previewjson-base-font-name") ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
             codeColour                  = prefs.string(forKey: "com-bps-previewjson-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+            markColour                  = prefs.string(forKey: "com-bps-previewjson-mark-colour-hex") ?? BUFFOON_CONSTANTS.MARK_COLOUR_HEX
         }
         
         // Just in case the above block reads in zero values
@@ -97,38 +99,39 @@ final class Common: NSObject {
             .font: font
         ]
         
-        let markParaStyle: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
-        markParaStyle.paragraphSpacing = fontBaseSize * 0.85
-        
         self.markAtts = [
-            .foregroundColor: NSColor.hexToColour("00FFFFFF"),
+            .foregroundColor: NSColor.hexToColour(markColour),
             .font: font
         ]
         
+        let markParaStyle: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
+        markParaStyle.paragraphSpacing = fontBaseSize * 0.85
+        
         self.markEndAtts = [
-            .foregroundColor: NSColor.hexToColour("00FFFFFF"),
+            .foregroundColor: NSColor.hexToColour(markColour),
             .font: font,
             .paragraphStyle: markParaStyle
-        ]
-        
-        self.padAtts = [
-            .foregroundColor: NSColor.hexToColour(codeColour),
-            .font: NSFont.systemFont(ofSize: fontBaseSize * 2.0)
         ]
         
         self.hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
                                      attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
                                                   .strikethroughColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.white)])
         
-        self.hr_dark = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
-                                     attributes: [.strikethroughStyle: NSUnderlineStyle.single.rawValue,
-                                                  .strikethroughColor: NSColor.hexToColour("666666FF")])
-        
         self.newLine = NSAttributedString.init(string: "\n",
                                                attributes: valAtts)
         
-        self.padLine = NSAttributedString.init(string: "\n",
-                                               attributes: padAtts)
+        /*
+         self.hr_dark = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
+                                      attributes: [.strikethroughStyle: NSUnderlineStyle.single.rawValue,
+                                                   .strikethroughColor: NSColor.hexToColour("666666FF")])
+         
+         self.padAtts = [
+            .foregroundColor: NSColor.hexToColour(codeColour),
+            .font: NSFont.systemFont(ofSize: fontBaseSize * 2.0)
+        ]
+        
+        self.padLine = NSAttributedString.init(string: "\n",attributes: padAtts)
+        */
     }
     
     
@@ -262,58 +265,6 @@ final class Common: NSObject {
     
     
     /**
-    Iterate through a JSON element to caclulate the current max. key length
-
-     - Parameters:
-        - json:     The JSON element.
-        - level:    The current level.
-     */
-    func assembleColumns(_ json: Any, _ level: Int = 0) {
-        
-        if json is Dictionary<String, Any> {
-            // For a dictionary, enumerate the key and value
-            let anyObject: [String: Any] = json as! [String: Any]
-            
-            // Get the max key length for the current level
-            anyObject.forEach { key, value in
-                if key.count > self.maxKeyLengths[level] {
-                    self.maxKeyLengths[level] = key.count
-                }
-            }
-            
-            // Iterate through the keys to run this code for higher levels
-            anyObject.forEach { key, value in
-                // Check for non-scalar elements
-                let valueIsObject: Bool = (value is Dictionary<String, Any>)
-                let valueIsArray: Bool = (value is Array<Any>)
-                
-                if valueIsObject || valueIsArray {
-                    // Prepare the next level
-                    if self.maxKeyLengths.count == level + 1 {
-                        self.maxKeyLengths.append(0)
-                    }
-                    
-                    // Process the next level
-                    assembleColumns(value, level + 1)
-                }
-            }
-        } else if json is Array<Any> {
-            // For an array, enumerate the elements
-            let anyArray: [Any] = json as! [Any]
-            
-            anyArray.forEach { value in
-                let valueIsObject: Bool = value is Dictionary<String, Any>
-                let valueIsArray: Bool = value is Array<Any>
-                
-                if valueIsObject || valueIsArray {
-                    // Process the array contents on the current level
-                    assembleColumns(value, level)
-                }
-            }
-        }
-    }
-    
-    /**
      Render a unit of JSON as a NSAttributedString.
 
      - Parameters:
@@ -352,7 +303,7 @@ final class Common: NSObject {
             }
             
             // Can't or won't show an image? Show text
-            renderedString.append(getIndentedString(json as! Bool ? "\(currentLevel)-TRUE\n" : "\(currentLevel)-FALSE\n", valueIndent))
+            renderedString.append(getIndentedString(json as! Bool ? getStringOutput(currentLevel, "TRUE") + "\n" : getStringOutput(currentLevel, "FALSE") + "\n", valueIndent))
         } else if json is NSNull {
             // Attempt to load the null symbol, but use a text version as a fallback on error
             if self.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
@@ -364,14 +315,14 @@ final class Common: NSObject {
             }
             
             // Can't or won't show an image? Show text
-            renderedString.append(getIndentedString("\(currentLevel)-NULL\n", valueIndent))
+            renderedString.append(getIndentedString(getStringOutput(currentLevel, "NULL") + "\n", valueIndent))
         } else if json is Int || json is Float || json is Double {
             // Display the number as is
-            renderedString.append(getIndentedString("\(currentLevel)-\(json)\n", valueIndent))
+            renderedString.append(getIndentedString(getStringOutput(currentLevel, json) + "\n", valueIndent))
         } else if json is String {
             // Display the string in curly quotes
             // Need to do extra inset work here
-            renderedString.append(getIndentedString("\(currentLevel)-“\(json)”\n", valueIndent))
+            renderedString.append(getIndentedString("“" + getStringOutput(currentLevel, json) + "”\n", valueIndent))
         } else if json is Dictionary<String, Any> {
             // For a dictionary, enumerate the key and value
             // NOTE Should be only one of each, but value may
@@ -393,7 +344,7 @@ final class Common: NSObject {
                 let valueIsArray: Bool = (value is Array<Any>)
                 
                 // Print the key
-                renderedString.append(getIndentedString("\(currentLevel)-" + key,
+                renderedString.append(getIndentedString(getStringOutput(currentLevel, key),
                                                         self.doShowFurniture ? currentIndent + self.jsonIndent : currentIndent,
                                                         BUFFOON_CONSTANTS.ITEM_TYPE.KEY))
 
@@ -461,6 +412,78 @@ final class Common: NSObject {
         
         return renderedString
     }
+    
+    
+    /**
+    Present a string with or without the level displayed for debugging.
+
+     - Parameters:
+        - level:    The current level.
+        - json:     The JSON element.
+     */
+    func getStringOutput(_ level: Int, _ source: Any) -> String {
+        
+        if BUFFOON_CONSTANTS.RENDER_DEBUG {
+            return "\(level)-\(source)"
+        }
+        
+        return "\(source)"
+    }
+    
+    
+    /**
+    Iterate through a JSON element to caclulate the current max. key length.
+
+     - Parameters:
+        - json:     The JSON element.
+        - level:    The current level.
+     */
+    func assembleColumns(_ json: Any, _ level: Int = 0) {
+        
+        if json is Dictionary<String, Any> {
+            // For a dictionary, enumerate the key and value
+            let anyObject: [String: Any] = json as! [String: Any]
+            
+            // Get the max key length for the current level
+            anyObject.forEach { key, value in
+                if key.count > self.maxKeyLengths[level] {
+                    self.maxKeyLengths[level] = key.count
+                }
+            }
+            
+            // Iterate through the keys to run this code for higher levels
+            anyObject.forEach { key, value in
+                // Check for non-scalar elements
+                let valueIsObject: Bool = (value is Dictionary<String, Any>)
+                let valueIsArray: Bool = (value is Array<Any>)
+                
+                if valueIsObject || valueIsArray {
+                    // Prepare the next level
+                    if self.maxKeyLengths.count == level + 1 {
+                        self.maxKeyLengths.append(0)
+                    }
+                    
+                    // Process the next level
+                    assembleColumns(value, level + 1)
+                }
+            }
+        } else if json is Array<Any> {
+            // For an array, enumerate the elements
+            let anyArray: [Any] = json as! [Any]
+            
+            anyArray.forEach { value in
+                let valueIsObject: Bool = value is Dictionary<String, Any>
+                let valueIsArray: Bool = value is Array<Any>
+                
+                if valueIsObject || valueIsArray {
+                    // Process the array contents on the current level
+                    assembleColumns(value, level)
+                }
+            }
+        }
+    }
+    
+    
 
 }
 
