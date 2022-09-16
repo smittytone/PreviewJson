@@ -43,15 +43,15 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var preferencesWindow: NSWindow!
     @IBOutlet weak var fontSizeSlider: NSSlider!
     @IBOutlet weak var fontSizeLabel: NSTextField!
-    @IBOutlet weak var useLightCheckbox: NSButton!
-    @IBOutlet weak var doShowRawJsonCheckbox: NSButton!
-    @IBOutlet weak var doShowJsonFurnitureCheckbox: NSButton!
     @IBOutlet weak var codeFontPopup: NSPopUpButton!
     @IBOutlet weak var codeStylePopup: NSPopUpButton!
     @IBOutlet weak var codeIndentPopup: NSPopUpButton!
     @IBOutlet weak var codeColorWell: NSColorWell!
     @IBOutlet weak var markColorWell: NSColorWell!
     @IBOutlet weak var boolStyleSegment: NSSegmentedControl!
+    @IBOutlet weak var useLightCheckbox: NSButton!
+    @IBOutlet weak var doShowRawJsonCheckbox: NSButton!
+    @IBOutlet weak var doShowJsonFurnitureCheckbox: NSButton!
 
     // What's New Sheet
     @IBOutlet weak var whatsNewWindow: NSWindow!
@@ -59,22 +59,22 @@ final class AppDelegate: NSObject,
     
 
     // MARK:- Private Properies
-    internal var whatsNewNav: WKNavigation? = nil
-    private  var feedbackTask: URLSessionTask? = nil
-    private  var indentDepth: Int = BUFFOON_CONSTANTS.JSON_INDENT
-    private  var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
-    private  var doShowLightBackground: Bool = false
-    private  var doShowTag: Bool = false
-    private  var doShowRawJson: Bool = false
-    private  var doShowFurniture: Bool = true
-    private  var feedbackPath: String = MNU_SECRETS.ADDRESS.A
-    internal var codeFonts: [PMFont] = []
-    private  var codeFontName: String = BUFFOON_CONSTANTS.CODE_FONT_NAME
-    private  var codeColourHex: String = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
-    private  var markColourHex: String = BUFFOON_CONSTANTS.MARK_COLOUR_HEX
-    private  var codeFontSize: CGFloat = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
-    private  var boolStyle: Int = BUFFOON_CONSTANTS.BOOL_STYLE.FULL
-    private  var isMontereyPlus: Bool = false
+    internal var whatsNewNav: WKNavigation?     = nil
+    private  var feedbackTask: URLSessionTask?  = nil
+    private  var indentDepth: Int               = BUFFOON_CONSTANTS.JSON_INDENT
+    private  var boolStyle: Int                 = BUFFOON_CONSTANTS.BOOL_STYLE.FULL
+    private  var codeFontSize: CGFloat          = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+    private  var codeFontName: String           = BUFFOON_CONSTANTS.CODE_FONT_NAME
+    private  var codeColourHex: String          = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+    private  var markColourHex: String          = BUFFOON_CONSTANTS.MARK_COLOUR_HEX
+    private  var appSuiteName: String           = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
+    private  var feedbackPath: String           = MNU_SECRETS.ADDRESS.A
+    private  var doShowLightBackground: Bool    = false
+    private  var doShowTag: Bool                = false
+    private  var doShowRawJson: Bool            = false
+    private  var doShowFurniture: Bool          = true
+    private  var isMontereyPlus: Bool           = false
+    internal var codeFonts: [PMFont]            = []
     
 
     // MARK:- Class Lifecycle Functions
@@ -99,6 +99,12 @@ final class AppDelegate: NSObject,
         let dummyHelpMenu: NSMenu = NSMenu.init(title: "Dummy")
         let theApp = NSApplication.shared
         theApp.helpMenu = dummyHelpMenu
+        
+        // Watch for macOS UI mode changes
+        DistributedNotificationCenter.default.addObserver(self,
+                                                          selector: #selector(interfaceModeChanged),
+                                                          name: NSNotification.Name(rawValue: "AppleInterfaceThemeChangedNotification"),
+                                                          object: nil)
         
         // Centre the main window and display
         self.window.center()
@@ -164,6 +170,7 @@ final class AppDelegate: NSObject,
         NSWorkspace.shared.open(URL.init(string:path)!)
     }
 
+    
     /**
      Open the System Preferences app at the Extensions pane.
 
@@ -192,7 +199,8 @@ final class AppDelegate: NSObject,
         self.feedbackText.stringValue = ""
 
         // Present the window
-        self.window.beginSheet(self.reportWindow, completionHandler: nil)
+        self.window.beginSheet(self.reportWindow,
+                               completionHandler: nil)
     }
 
 
@@ -211,6 +219,7 @@ final class AppDelegate: NSObject,
         self.window.endSheet(self.reportWindow)
     }
 
+    
     /**
      User has clicked the Report window's **Send** button.
 
@@ -284,10 +293,12 @@ final class AppDelegate: NSObject,
         self.fontSizeSlider.floatValue = Float(index)
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
         
+        // Set the checkboxes
         self.useLightCheckbox.state = self.doShowLightBackground ? .on : .off
         self.doShowRawJsonCheckbox.state = self.doShowRawJson ? .on : .off
         self.doShowJsonFurnitureCheckbox.state = self.doShowFurniture ? .on : .off
         
+        // Set the indents popup
         let indents: [Int] = [1, 2, 4, 8]
         self.codeIndentPopup.selectItem(at: indents.firstIndex(of: self.indentDepth)!)
         
@@ -304,20 +315,17 @@ final class AppDelegate: NSObject,
             self.codeFontPopup.addItem(withTitle: font.displayName)
         }
         
-        // Select font style
+        // Set the font style
         self.codeStylePopup.isEnabled = false
         selectFontByPostScriptName(self.codeFontName)
         
-        // Check for bool style
+        // Set the style for JSON bools and null
         self.boolStyleSegment.selectedSegment = self.boolStyle
         
-        // Check for mode
+        // Check for the OS mode
         let appearance: NSAppearance = NSApp.effectiveAppearance
-        if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua]) {
-            if appearName == .aqua {
-                // We're in white mode
-                self.useLightCheckbox.isHidden = true
-            }
+        if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
+            self.useLightCheckbox.isEnabled = (appearName != .aqua)
         }
         
         // Display the sheet
@@ -380,6 +388,7 @@ final class AppDelegate: NSObject,
     @IBAction private func doSavePreferences(sender: Any) {
 
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
+            // Check for and record a JSON key colour change
             var newColour: String = self.codeColorWell.color.hexString
             if newColour != self.codeColourHex {
                 self.codeColourHex = newColour
@@ -387,6 +396,7 @@ final class AppDelegate: NSObject,
                                   forKey: "com-bps-previewjson-code-colour-hex")
             }
             
+            // Check for and record a JSON marker colour change
             newColour = self.markColorWell.color.hexString
             if newColour != self.markColourHex {
                 self.markColourHex = newColour
@@ -394,30 +404,28 @@ final class AppDelegate: NSObject,
                                   forKey: "com-bps-previewjson-mark-colour-hex")
             }
             
-            let newValue: CGFloat = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[Int(self.fontSizeSlider.floatValue)]
-            if newValue != self.codeFontSize {
-                defaults.setValue(newValue,
-                                  forKey: "com-bps-previewjson-base-font-size")
-            }
-            
+            // Check for and record a use light background change
             var state: Bool = self.useLightCheckbox.state == .on
             if self.doShowLightBackground != state {
                 defaults.setValue(state,
                                   forKey: "com-bps-previewjson-do-use-light")
             }
-
+            
+            // Check for and record a raw JSON presentation change
             state = self.doShowRawJsonCheckbox.state == .on
             if self.doShowRawJson != state {
                 defaults.setValue(state,
                                   forKey: "com-bps-previewjson-show-bad-json")
             }
             
+            // Check for and record a JSON marker presentation change
             state = self.doShowJsonFurnitureCheckbox.state == .on
             if self.doShowFurniture != state {
                 defaults.setValue(state,
                                   forKey: "com-bps-previewjson-do-indent-scalars")
             }
             
+            // Check for and record an indent change
             let indents: [Int] = [1, 2, 4, 8]
             let indent: Int = indents[self.codeIndentPopup.indexOfSelectedItem]
             if self.indentDepth != indent {
@@ -425,7 +433,7 @@ final class AppDelegate: NSObject,
                                   forKey: "com-bps-previewjson-json-indent")
             }
             
-            // Set the chosen font if it has changed
+            // Check for and record a font and style change
             if let fontName: String = getPostScriptName() {
                 if fontName != self.codeFontName {
                     self.codeFontName = fontName
@@ -434,6 +442,14 @@ final class AppDelegate: NSObject,
                 }
             }
             
+            // Check for and record a font size change
+            let newValue: CGFloat = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[Int(self.fontSizeSlider.floatValue)]
+            if newValue != self.codeFontSize {
+                defaults.setValue(newValue,
+                                  forKey: "com-bps-previewjson-base-font-size")
+            }
+            
+            // Check for and record a JSON bool style change
             let selectedStyle = self.boolStyleSegment.selectedSegment
             if self.boolStyle != selectedStyle {
                 self.boolStyle = selectedStyle
@@ -712,6 +728,26 @@ final class AppDelegate: NSObject,
         // First ensure we are running on Mojave or above - Dark Mode is not supported by earlier versons
         let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
         self.isMontereyPlus = (sysVer.majorVersion >= 12)
+    }
+    
+    
+    /**
+     Handler for macOS UI mode change notifications
+     */
+    @objc private func interfaceModeChanged() {
+        
+        if self.preferencesWindow.isVisible {
+            // Prefs window is up, so switch the use light background checkbox
+            // on or off according to whether the current mode is light
+            // NOTE For light mode, this checkbox is irrelevant, so the
+            //      checkbox should be disabled
+            let appearance: NSAppearance = NSApp.effectiveAppearance
+            if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
+                // NOTE Appearance it this point seems to reflect the mode
+                //      we're coming FROM, not what it has changed to
+                self.useLightCheckbox.isEnabled = (appearName == .aqua)
+            }
+        }
     }
 
 }

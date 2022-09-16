@@ -14,7 +14,7 @@
 		3B1FA42B28C124A1001DA63C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9428BCB0A20048F8AE /* Constants.swift */; };
 		3B1FA42C28C124F4001DA63C /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBB828BCB5D70048F8AE /* Common.swift */; };
 		3B1FA42D28C12D99001DA63C /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE355BC28BCD0F600523296 /* Secrets.swift */; };
-		3B1FA42E28C12DB2001DA63C /* NSColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* NSColorExtension.swift */; };
+		3B1FA42E28C12DB2001DA63C /* GenricColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* GenricColorExtensions.swift */; };
 		3B5E292B28BE60C10018808A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B5E292A28BE60C10018808A /* Assets.xcassets */; };
 		3B67EB6528BCAEEA0048F8AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB6428BCAEEA0048F8AE /* AppDelegate.swift */; };
 		3B67EB6728BCAEEB0048F8AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B67EB6628BCAEEB0048F8AE /* Assets.xcassets */; };
@@ -28,15 +28,16 @@
 		3B67EB9628BCB0A20048F8AE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9428BCB0A20048F8AE /* Constants.swift */; };
 		3B67EB9828BCB1DF0048F8AE /* PMFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9728BCB1DF0048F8AE /* PMFont.swift */; };
 		3B67EB9928BCB1DF0048F8AE /* PMFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9728BCB1DF0048F8AE /* PMFont.swift */; };
-		3B67EB9B28BCB3070048F8AE /* NSColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* NSColorExtension.swift */; };
-		3B67EB9C28BCB3070048F8AE /* NSColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* NSColorExtension.swift */; };
+		3B67EB9B28BCB3070048F8AE /* GenricColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* GenricColorExtensions.swift */; };
+		3B67EB9C28BCB3070048F8AE /* GenricColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* GenricColorExtensions.swift */; };
 		3B67EBA428BCB3610048F8AE /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B67EBA328BCB3610048F8AE /* Quartz.framework */; };
 		3B67EBA728BCB3610048F8AE /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBA628BCB3610048F8AE /* PreviewViewController.swift */; };
 		3B67EBAC28BCB3610048F8AE /* PreviewViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B67EBAA28BCB3610048F8AE /* PreviewViewController.xib */; };
 		3B67EBB128BCB3610048F8AE /* JSON Previewer.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3B67EBA128BCB3610048F8AE /* JSON Previewer.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3B67EBB928BCB5D70048F8AE /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBB828BCB5D70048F8AE /* Common.swift */; };
 		3B67EBBA28BCB61B0048F8AE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9428BCB0A20048F8AE /* Constants.swift */; };
-		3B67EBBC28BCB68B0048F8AE /* NSColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* NSColorExtension.swift */; };
+		3B67EBBC28BCB68B0048F8AE /* GenricColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* GenricColorExtensions.swift */; };
+		3BAE671928D4D161001532BD /* GenericFontExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAE671828D4D161001532BD /* GenericFontExtensions.swift */; };
 		3BC3F76928BD439200AA754A /* new in Resources */ = {isa = PBXBuildFile; fileRef = 3BC3F76828BD439200AA754A /* new */; };
 		3BE355BA28BCD07300523296 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3BE355B928BCD07300523296 /* Info.plist */; };
 		3BE355BD28BCD0F600523296 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE355BC28BCD0F600523296 /* Secrets.swift */; };
@@ -109,7 +110,7 @@
 		3B67EB9128BCB0810048F8AE /* GenericExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericExtensions.swift; sourceTree = "<group>"; };
 		3B67EB9428BCB0A20048F8AE /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3B67EB9728BCB1DF0048F8AE /* PMFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PMFont.swift; sourceTree = "<group>"; };
-		3B67EB9A28BCB3070048F8AE /* NSColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSColorExtension.swift; sourceTree = "<group>"; };
+		3B67EB9A28BCB3070048F8AE /* GenricColorExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenricColorExtensions.swift; sourceTree = "<group>"; };
 		3B67EBA128BCB3610048F8AE /* JSON Previewer.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "JSON Previewer.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B67EBA328BCB3610048F8AE /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		3B67EBA628BCB3610048F8AE /* PreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewViewController.swift; sourceTree = "<group>"; };
@@ -117,6 +118,7 @@
 		3B67EBAD28BCB3610048F8AE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3B67EBAE28BCB3610048F8AE /* JSON_Previewer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = JSON_Previewer.entitlements; sourceTree = "<group>"; };
 		3B67EBB828BCB5D70048F8AE /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		3BAE671828D4D161001532BD /* GenericFontExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericFontExtensions.swift; sourceTree = "<group>"; };
 		3BC3F76828BD439200AA754A /* new */ = {isa = PBXFileReference; lastKnownFileType = folder; name = new; path = "../../../Library/CloudStorage/OneDrive-Personal/Programming/PreviewJson/new"; sourceTree = "<group>"; };
 		3BE355B928BCD07300523296 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3BE355BC28BCD0F600523296 /* Secrets.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Secrets.swift; path = "../../../Library/CloudStorage/OneDrive-Personal/Programming/mnu/Secrets.swift"; sourceTree = "<group>"; };
@@ -206,7 +208,8 @@
 				3B67EB9428BCB0A20048F8AE /* Constants.swift */,
 				3B67EB6428BCAEEA0048F8AE /* AppDelegate.swift */,
 				3B67EB9128BCB0810048F8AE /* GenericExtensions.swift */,
-				3B67EB9A28BCB3070048F8AE /* NSColorExtension.swift */,
+				3BAE671828D4D161001532BD /* GenericFontExtensions.swift */,
+				3B67EB9A28BCB3070048F8AE /* GenricColorExtensions.swift */,
 				3B67EB9728BCB1DF0048F8AE /* PMFont.swift */,
 				3B67EB6628BCAEEB0048F8AE /* Assets.xcassets */,
 				3B67EB6828BCAEEB0048F8AE /* MainMenu.xib */,
@@ -449,7 +452,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B1FA42E28C12DB2001DA63C /* NSColorExtension.swift in Sources */,
+				3B1FA42E28C12DB2001DA63C /* GenricColorExtensions.swift in Sources */,
 				3B1FA42D28C12D99001DA63C /* Secrets.swift in Sources */,
 				3B1FA42C28C124F4001DA63C /* Common.swift in Sources */,
 				3B1FA42B28C124A1001DA63C /* Constants.swift in Sources */,
@@ -464,8 +467,9 @@
 				3B67EB9828BCB1DF0048F8AE /* PMFont.swift in Sources */,
 				3BE355BD28BCD0F600523296 /* Secrets.swift in Sources */,
 				3B67EB6528BCAEEA0048F8AE /* AppDelegate.swift in Sources */,
-				3B67EB9B28BCB3070048F8AE /* NSColorExtension.swift in Sources */,
+				3B67EB9B28BCB3070048F8AE /* GenricColorExtensions.swift in Sources */,
 				3B67EB9228BCB0810048F8AE /* GenericExtensions.swift in Sources */,
+				3BAE671928D4D161001532BD /* GenericFontExtensions.swift in Sources */,
 				3B67EB9528BCB0A20048F8AE /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -476,7 +480,7 @@
 			files = (
 				3B67EB7528BCAEEB0048F8AE /* PreviewJsonTests.swift in Sources */,
 				3B67EB9328BCB0810048F8AE /* GenericExtensions.swift in Sources */,
-				3B67EB9C28BCB3070048F8AE /* NSColorExtension.swift in Sources */,
+				3B67EB9C28BCB3070048F8AE /* GenricColorExtensions.swift in Sources */,
 				3B67EB9628BCB0A20048F8AE /* Constants.swift in Sources */,
 				3B67EB9928BCB1DF0048F8AE /* PMFont.swift in Sources */,
 			);
@@ -496,7 +500,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BE355BE28BCD15100523296 /* Secrets.swift in Sources */,
-				3B67EBBC28BCB68B0048F8AE /* NSColorExtension.swift in Sources */,
+				3B67EBBC28BCB68B0048F8AE /* GenricColorExtensions.swift in Sources */,
 				3B67EBBA28BCB61B0048F8AE /* Constants.swift in Sources */,
 				3B67EBA728BCB3610048F8AE /* PreviewViewController.swift in Sources */,
 				3B67EBB928BCB5D70048F8AE /* Common.swift in Sources */,
@@ -553,7 +557,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "JSON Thumbnailer/JSON_Thumbnailer.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -580,7 +584,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "JSON Thumbnailer/JSON_Thumbnailer.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -724,7 +728,7 @@
 				CODE_SIGN_ENTITLEMENTS = PreviewJson/PreviewJson.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -753,7 +757,7 @@
 				CODE_SIGN_ENTITLEMENTS = PreviewJson/PreviewJson.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -850,7 +854,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "JSON Previewer/JSON_Previewer.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -877,7 +881,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "JSON Previewer/JSON_Previewer.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
