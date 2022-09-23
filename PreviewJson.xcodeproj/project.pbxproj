@@ -15,7 +15,7 @@
 		3B1FA42C28C124F4001DA63C /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBB828BCB5D70048F8AE /* Common.swift */; };
 		3B1FA42D28C12D99001DA63C /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE355BC28BCD0F600523296 /* Secrets.swift */; };
 		3B1FA42E28C12DB2001DA63C /* GenericColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* GenericColorExtensions.swift */; };
-		3B5E292B28BE60C10018808A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B5E292A28BE60C10018808A /* Assets.xcassets */; };
+		3B5E292B28BE60C10018808A /* ThumbAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B5E292A28BE60C10018808A /* ThumbAssets.xcassets */; };
 		3B67EB6528BCAEEA0048F8AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB6428BCAEEA0048F8AE /* AppDelegate.swift */; };
 		3B67EB6728BCAEEB0048F8AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B67EB6628BCAEEB0048F8AE /* Assets.xcassets */; };
 		3B67EB6A28BCAEEB0048F8AE /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B67EB6828BCAEEB0048F8AE /* MainMenu.xib */; };
@@ -96,7 +96,7 @@
 		3B1FA42128C1242E001DA63C /* ThumbnailProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailProvider.swift; sourceTree = "<group>"; };
 		3B1FA42328C1242E001DA63C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3B1FA42428C1242E001DA63C /* JSON_Thumbnailer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = JSON_Thumbnailer.entitlements; sourceTree = "<group>"; };
-		3B5E292A28BE60C10018808A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3B5E292A28BE60C10018808A /* ThumbAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = ThumbAssets.xcassets; path = "../../../Library/CloudStorage/OneDrive-Personal/Programming/PreviewJson/ThumbAssets.xcassets"; sourceTree = "<group>"; };
 		3B67EB6128BCAEEA0048F8AE /* PreviewJson.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PreviewJson.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B67EB6428BCAEEA0048F8AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3B67EB6628BCAEEB0048F8AE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "../../Library/CloudStorage/OneDrive-Personal/Programming/PreviewJson/Assets.xcassets"; sourceTree = SOURCE_ROOT; };
@@ -254,7 +254,7 @@
 				3B67EBAA28BCB3610048F8AE /* PreviewViewController.xib */,
 				3B67EBAE28BCB3610048F8AE /* JSON_Previewer.entitlements */,
 				3B67EBAD28BCB3610048F8AE /* Info.plist */,
-				3B5E292A28BE60C10018808A /* Assets.xcassets */,
+				3B5E292A28BE60C10018808A /* ThumbAssets.xcassets */,
 			);
 			path = "JSON Previewer";
 			sourceTree = "<group>";
@@ -440,7 +440,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B5E292B28BE60C10018808A /* Assets.xcassets in Resources */,
+				3B5E292B28BE60C10018808A /* ThumbAssets.xcassets in Resources */,
 				3B67EBAC28BCB3610048F8AE /* PreviewViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -557,7 +557,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "JSON Thumbnailer/JSON_Thumbnailer.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -584,7 +584,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "JSON Thumbnailer/JSON_Thumbnailer.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -728,7 +728,7 @@
 				CODE_SIGN_ENTITLEMENTS = PreviewJson/PreviewJson.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -757,7 +757,7 @@
 				CODE_SIGN_ENTITLEMENTS = PreviewJson/PreviewJson.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -854,7 +854,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "JSON Previewer/JSON_Previewer.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -881,7 +881,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "JSON Previewer/JSON_Previewer.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;

@@ -34,13 +34,10 @@ final class Common: NSObject {
     private var valAtts:     [NSAttributedString.Key: Any] = [:]
     private var markAtts:    [NSAttributedString.Key: Any] = [:]
     private var markEndAtts: [NSAttributedString.Key: Any] = [:]
-    //private var padAtts:     [NSAttributedString.Key: Any] = [:]
     
     // String artifacts...
     private var hr: NSAttributedString      = NSAttributedString.init(string: "")
     private var newLine: NSAttributedString = NSAttributedString.init(string: "")
-    //private var hr_dark: NSAttributedString = NSAttributedString.init(string: "")
-    //private var padLine: NSAttributedString = NSAttributedString.init(string: "")
 
     // MARK:- Lifecycle Functions
     
@@ -119,19 +116,6 @@ final class Common: NSObject {
         
         self.newLine = NSAttributedString.init(string: "\n",
                                                attributes: valAtts)
-        
-        /*
-         self.hr_dark = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
-                                      attributes: [.strikethroughStyle: NSUnderlineStyle.single.rawValue,
-                                                   .strikethroughColor: NSColor.hexToColour("666666FF")])
-         
-         self.padAtts = [
-            .foregroundColor: NSColor.hexToColour(codeColour),
-            .font: NSFont.systemFont(ofSize: fontBaseSize * 2.0)
-        ]
-        
-        self.padLine = NSAttributedString.init(string: "\n",attributes: padAtts)
-        */
     }
     
     
@@ -153,7 +137,7 @@ final class Common: NSObject {
         
         do {
             // Attempt to parse the JSON data. First, get the data...
-            let json: Any = try JSONSerialization.jsonObject(with: jsonFileData, options: [])
+            let json: Any = try JSONSerialization.jsonObject(with: jsonFileData, options: [ .fragmentsAllowed ])
             
             // ...then render it
             renderedString = prettify(json)

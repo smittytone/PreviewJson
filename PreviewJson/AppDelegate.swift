@@ -369,12 +369,18 @@ final class AppDelegate: NSObject,
      */
     @IBAction private func doClosePreferences(sender: Any) {
 
-        // Close the colour selection panel if it's open
+        // Close the colour selection panel(s) if they're open
         if self.codeColorWell.isActive {
             NSColorPanel.shared.close()
             self.codeColorWell.deactivate()
         }
         
+        if self.markColorWell.isActive {
+            NSColorPanel.shared.close()
+            self.markColorWell.deactivate()
+        }
+        
+        // Shut the window
         self.window.endSheet(self.preferencesWindow)
     }
 
@@ -387,6 +393,18 @@ final class AppDelegate: NSObject,
      */
     @IBAction private func doSavePreferences(sender: Any) {
 
+        // Close the colour selection panel(s) if they're open
+        if self.codeColorWell.isActive {
+            NSColorPanel.shared.close()
+            self.codeColorWell.deactivate()
+        }
+
+        if self.markColorWell.isActive {
+            NSColorPanel.shared.close()
+            self.markColorWell.deactivate()
+        }
+        
+        // Save any changed preferences
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
             // Check for and record a JSON key colour change
             var newColour: String = self.codeColorWell.color.hexString
@@ -461,12 +479,6 @@ final class AppDelegate: NSObject,
             defaults.synchronize()
         }
         
-        // Close the colour selection panel if it's open
-        if self.codeColorWell.isActive {
-            NSColorPanel.shared.close()
-            self.codeColorWell.deactivate()
-        }
-
         // Remove the sheet now we have the data
         self.window.endSheet(self.preferencesWindow)
     }
