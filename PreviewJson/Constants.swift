@@ -64,7 +64,7 @@ struct BUFFOON_CONSTANTS {
     
     static let FONT_SIZE_OPTIONS: [CGFloat]     = [10.0, 12.0, 14.0, 16.0, 18.0, 24.0, 28.0]
 
-    static let JSON_INDENT                      = 2     // Can change
+    static let JSON_INDENT                      = 8     // Can change
     static let BASE_INDENT                      = 2     // Fixed
 
     static let URL_MAIN                         = "https://smittytone.net/previewjson/index.html"

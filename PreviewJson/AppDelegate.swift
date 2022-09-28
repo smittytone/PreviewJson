@@ -634,7 +634,7 @@ final class AppDelegate: NSObject,
             }
             
             // Record the preferred indent depth in spaces
-            // Default: 2
+            // Default: 8
             let indentDefault: Any? = defaults.object(forKey: "com-bps-previewjson-json-indent")
             if indentDefault == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.JSON_INDENT,
@@ -657,7 +657,7 @@ final class AppDelegate: NSObject,
                                   forKey: "com-bps-previewjson-show-bad-json")
             }
             
-            // Present malformed JSON on error?
+            // Set the boolean presentation style
             // Default: false
             let boolStyle: Any? = defaults.object(forKey: "com-bps-previewjson-bool-style")
             if boolStyle == nil {
