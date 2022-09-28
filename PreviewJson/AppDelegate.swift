@@ -68,7 +68,7 @@ final class AppDelegate: NSObject,
     private  var codeColourHex: String          = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
     private  var markColourHex: String          = BUFFOON_CONSTANTS.MARK_COLOUR_HEX
     private  var appSuiteName: String           = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
-    private  var feedbackPath: String           = MNU_SECRETS.ADDRESS.A
+    private  var feedbackPath: String           = MNU_SECRETS.ADDRESS.B
     private  var doShowLightBackground: Bool    = false
     private  var doShowTag: Bool                = false
     private  var doShowRawJson: Bool            = false
@@ -686,7 +686,7 @@ final class AppDelegate: NSObject,
 
         // First get the data we need to build the user agent string
         let userAgent: String = getUserAgentForFeedback()
-        let endPoint: String = MNU_SECRETS.ADDRESS.B
+        let endPoint: String = MNU_SECRETS.ADDRESS.A
 
         // Get the date as a string
         let dateString: String = getDateForFeedback()
