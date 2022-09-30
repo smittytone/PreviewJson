@@ -39,7 +39,6 @@
 		3B67EBBC28BCB68B0048F8AE /* GenericColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* GenericColorExtensions.swift */; };
 		3BAE671928D4D161001532BD /* GenericFontExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAE671828D4D161001532BD /* GenericFontExtensions.swift */; };
 		3BC3F76928BD439200AA754A /* new in Resources */ = {isa = PBXBuildFile; fileRef = 3BC3F76828BD439200AA754A /* new */; };
-		3BE355BA28BCD07300523296 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3BE355B928BCD07300523296 /* Info.plist */; };
 		3BE355BD28BCD0F600523296 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE355BC28BCD0F600523296 /* Secrets.swift */; };
 		3BE355BE28BCD15100523296 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE355BC28BCD0F600523296 /* Secrets.swift */; };
 /* End PBXBuildFile section */
@@ -418,7 +417,6 @@
 				3B67EB6728BCAEEB0048F8AE /* Assets.xcassets in Resources */,
 				3BC3F76928BD439200AA754A /* new in Resources */,
 				3B67EB6A28BCAEEB0048F8AE /* MainMenu.xib in Resources */,
-				3BE355BA28BCD07300523296 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -570,7 +568,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewJson.JSONThumbnailer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -598,7 +596,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewJson.JSONThumbnailer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -658,7 +656,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -714,7 +712,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewJson;
@@ -738,6 +736,8 @@
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PreviewJson/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022, Tony Smith (@smittytone)";
 				INFOPLIST_KEY_NSMainNibFile = MainMenu;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -745,11 +745,12 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewJson;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -767,6 +768,8 @@
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PreviewJson/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022, Tony Smith (@smittytone)";
 				INFOPLIST_KEY_NSMainNibFile = MainMenu;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -774,11 +777,12 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewJson;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -873,7 +877,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewJson.JSONPreviewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -901,7 +905,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewJson.JSONPreviewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
