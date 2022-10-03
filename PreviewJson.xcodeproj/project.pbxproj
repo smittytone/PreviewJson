@@ -10,7 +10,7 @@
 		3B1FA41E28C1242E001DA63C /* QuickLookThumbnailing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B1FA41D28C1242E001DA63C /* QuickLookThumbnailing.framework */; };
 		3B1FA41F28C1242E001DA63C /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B67EBA328BCB3610048F8AE /* Quartz.framework */; };
 		3B1FA42228C1242E001DA63C /* ThumbnailProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1FA42128C1242E001DA63C /* ThumbnailProvider.swift */; };
-		3B1FA42728C1242E001DA63C /* JSON Thumbnailer.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3B1FA41C28C1242E001DA63C /* JSON Thumbnailer.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3B1FA42728C1242E001DA63C /* JSON Thumbnailer.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3B1FA41C28C1242E001DA63C /* JSON Thumbnailer.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3B1FA42B28C124A1001DA63C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9428BCB0A20048F8AE /* Constants.swift */; };
 		3B1FA42C28C124F4001DA63C /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBB828BCB5D70048F8AE /* Common.swift */; };
 		3B1FA42D28C12D99001DA63C /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE355BC28BCD0F600523296 /* Secrets.swift */; };
@@ -20,8 +20,6 @@
 		3B67EB6728BCAEEB0048F8AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B67EB6628BCAEEB0048F8AE /* Assets.xcassets */; };
 		3B67EB6A28BCAEEB0048F8AE /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B67EB6828BCAEEB0048F8AE /* MainMenu.xib */; };
 		3B67EB7528BCAEEB0048F8AE /* PreviewJsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB7428BCAEEB0048F8AE /* PreviewJsonTests.swift */; };
-		3B67EB7F28BCAEEB0048F8AE /* PreviewJsonUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB7E28BCAEEB0048F8AE /* PreviewJsonUITests.swift */; };
-		3B67EB8128BCAEEB0048F8AE /* PreviewJsonUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB8028BCAEEB0048F8AE /* PreviewJsonUITestsLaunchTests.swift */; };
 		3B67EB9228BCB0810048F8AE /* GenericExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9128BCB0810048F8AE /* GenericExtensions.swift */; };
 		3B67EB9328BCB0810048F8AE /* GenericExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9128BCB0810048F8AE /* GenericExtensions.swift */; };
 		3B67EB9528BCB0A20048F8AE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9428BCB0A20048F8AE /* Constants.swift */; };
@@ -33,7 +31,7 @@
 		3B67EBA428BCB3610048F8AE /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B67EBA328BCB3610048F8AE /* Quartz.framework */; };
 		3B67EBA728BCB3610048F8AE /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBA628BCB3610048F8AE /* PreviewViewController.swift */; };
 		3B67EBAC28BCB3610048F8AE /* PreviewViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B67EBAA28BCB3610048F8AE /* PreviewViewController.xib */; };
-		3B67EBB128BCB3610048F8AE /* JSON Previewer.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3B67EBA128BCB3610048F8AE /* JSON Previewer.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3B67EBB128BCB3610048F8AE /* JSON Previewer.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3B67EBA128BCB3610048F8AE /* JSON Previewer.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3B67EBB928BCB5D70048F8AE /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBB828BCB5D70048F8AE /* Common.swift */; };
 		3B67EBBA28BCB61B0048F8AE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9428BCB0A20048F8AE /* Constants.swift */; };
 		3B67EBBC28BCB68B0048F8AE /* GenericColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* GenericColorExtensions.swift */; };
@@ -75,16 +73,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		3B67EBB528BCB3610048F8AE /* Embed App Extensions */ = {
+		3B67EBB528BCB3610048F8AE /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				3B67EBB128BCB3610048F8AE /* JSON Previewer.appex in Embed App Extensions */,
-				3B1FA42728C1242E001DA63C /* JSON Thumbnailer.appex in Embed App Extensions */,
+				3B67EBB128BCB3610048F8AE /* JSON Previewer.appex in Embed Foundation Extensions */,
+				3B1FA42728C1242E001DA63C /* JSON Thumbnailer.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -104,8 +102,6 @@
 		3B67EB7028BCAEEB0048F8AE /* PreviewJsonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PreviewJsonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B67EB7428BCAEEB0048F8AE /* PreviewJsonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewJsonTests.swift; sourceTree = "<group>"; };
 		3B67EB7A28BCAEEB0048F8AE /* PreviewJsonUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PreviewJsonUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3B67EB7E28BCAEEB0048F8AE /* PreviewJsonUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewJsonUITests.swift; sourceTree = "<group>"; };
-		3B67EB8028BCAEEB0048F8AE /* PreviewJsonUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewJsonUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		3B67EB9128BCB0810048F8AE /* GenericExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericExtensions.swift; sourceTree = "<group>"; };
 		3B67EB9428BCB0A20048F8AE /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3B67EB9728BCB1DF0048F8AE /* PMFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PMFont.swift; sourceTree = "<group>"; };
@@ -182,7 +178,6 @@
 				3B67EBA528BCB3610048F8AE /* JSON Previewer */,
 				3B1FA42028C1242E001DA63C /* JSON Thumbnailer */,
 				3B67EB7328BCAEEB0048F8AE /* PreviewJsonTests */,
-				3B67EB7D28BCAEEB0048F8AE /* PreviewJsonUITests */,
 				3B67EBA228BCB3610048F8AE /* Frameworks */,
 				3B67EB6228BCAEEA0048F8AE /* Products */,
 			);
@@ -225,15 +220,6 @@
 				3B67EB7428BCAEEB0048F8AE /* PreviewJsonTests.swift */,
 			);
 			path = PreviewJsonTests;
-			sourceTree = "<group>";
-		};
-		3B67EB7D28BCAEEB0048F8AE /* PreviewJsonUITests */ = {
-			isa = PBXGroup;
-			children = (
-				3B67EB7E28BCAEEB0048F8AE /* PreviewJsonUITests.swift */,
-				3B67EB8028BCAEEB0048F8AE /* PreviewJsonUITestsLaunchTests.swift */,
-			);
-			path = PreviewJsonUITests;
 			sourceTree = "<group>";
 		};
 		3B67EBA228BCB3610048F8AE /* Frameworks */ = {
@@ -285,7 +271,7 @@
 				3B67EB5D28BCAEEA0048F8AE /* Sources */,
 				3B67EB5E28BCAEEA0048F8AE /* Frameworks */,
 				3B67EB5F28BCAEEA0048F8AE /* Resources */,
-				3B67EBB528BCB3610048F8AE /* Embed App Extensions */,
+				3B67EBB528BCB3610048F8AE /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -359,7 +345,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1340;
-				LastUpgradeCheck = 1340;
+				LastUpgradeCheck = 1400;
 				TargetAttributes = {
 					3B1FA41B28C1242E001DA63C = {
 						CreatedOnToolsVersion = 13.4.1;
@@ -488,8 +474,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B67EB7F28BCAEEB0048F8AE /* PreviewJsonUITests.swift in Sources */,
-				3B67EB8128BCAEEB0048F8AE /* PreviewJsonUITestsLaunchTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -554,8 +538,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "JSON Thumbnailer/JSON_Thumbnailer.entitlements";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -582,8 +568,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "JSON Thumbnailer/JSON_Thumbnailer.entitlements";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -639,6 +627,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -701,6 +690,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -730,9 +720,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PreviewJson/PreviewJson.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 6;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -762,9 +754,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PreviewJson/PreviewJson.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 6;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -794,6 +788,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
@@ -813,6 +808,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
@@ -831,6 +827,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -848,6 +845,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -863,8 +861,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "JSON Previewer/JSON_Previewer.entitlements";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -891,8 +891,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "JSON Previewer/JSON_Previewer.entitlements";
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
