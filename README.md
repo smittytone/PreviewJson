@@ -1,4 +1,4 @@
-# PreviewJson 1.0.1
+# PreviewJson 1.0.2
 
 QuickLook JSON preview and icon thumbnailing app extensions for macOS Catalina and beyond
 
@@ -30,6 +30,8 @@ Changing these settings will affect previews immediately, but may not affect thu
 
 ## Release Notes ##
 
+* 1.0.2 *Unreleased*
+    * Add App Store link.
 * 1.0.1 *4 October 2022*
     * Correct some text style discrepancies.
 * 1.0.0 *2 October 2022*
