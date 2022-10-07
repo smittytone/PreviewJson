@@ -54,46 +54,40 @@ class ThumbnailProvider: QLThumbnailProvider {
                         // Get the string's encoding, or fail back to .utf8
                         let encoding: String.Encoding = data.stringEncoding ?? .utf8
                         
-                        guard let codeFileString: String = String.init(data: data, encoding: encoding) else {
+                        // Check the string's encoding generates a valid string
+                        // NOTE This may not be necessary and so may be removed
+                        guard let _: String = String.init(data: data, encoding: encoding) else {
                             return .failure(ThumbnailerError.badFileLoad(request.fileURL.path))
                         }
 
                         // Instantiate the common code within the closure
                         let common: Common = Common.init(true)
                         
-                        // Only render the lines likely to appear in the thumbnail
-                        let lines: [String] = (codeFileString as NSString).components(separatedBy: "\n")
-                        var shortString: String = ""
-                        for i in 0..<lines.count {
-                            // Break at line THUMBNAIL_LINE_COUNT
-                            if i >= BUFFOON_CONSTANTS.THUMBNAIL_LINE_COUNT { break }
-                            shortString += (lines[i] + "\n")
-                        }
-
-                        // Get the Attributed String
+                        /* Get the Attributed String
                         guard let shortData: Data = codeFileString.data(using: encoding) else {
                             return .failure(ThumbnailerError.badFileUnsupportedEncoding("\(encoding)"))
                         }
+                        */
                         
-                        let codeAtts: NSAttributedString = common.getAttributedString(shortData)
+                        let jsonAtts: NSAttributedString = common.getAttributedString(data)
 
                         // Set the primary drawing frame and a base font size
-                        let codeFrame: CGRect = NSMakeRect(CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X),
+                        let jsonFrame: CGRect = NSMakeRect(CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X),
                                                            CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_Y),
                                                            CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH),
                                                            CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.HEIGHT))
 
                         // Instantiate an NSTextField to display the NSAttributedString render of the code
-                        let codeTextField: NSTextField = NSTextField.init(labelWithAttributedString: codeAtts)
-                        codeTextField.frame = codeFrame
+                        let jsonTextField: NSTextField = NSTextField.init(labelWithAttributedString: jsonAtts)
+                        jsonTextField.frame = jsonFrame
 
                         // Generate the bitmap from the rendered code text view
-                        guard let bodyImageRep: NSBitmapImageRep = codeTextField.bitmapImageRepForCachingDisplay(in: codeFrame) else {
+                        guard let bodyImageRep: NSBitmapImageRep = jsonTextField.bitmapImageRepForCachingDisplay(in: jsonFrame) else {
                             return .failure(ThumbnailerError.badGfxBitmap)
                         }
 
                         // Draw the code view into the bitmap
-                        codeTextField.cacheDisplay(in: codeFrame, to: bodyImageRep)
+                        jsonTextField.cacheDisplay(in: jsonFrame, to: bodyImageRep)
                         
                         // Alternative drawing code to make use of a supplied context
                         // NOTE 'context' passed in by the caller, ie. macOS QL server

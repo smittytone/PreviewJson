@@ -17,17 +17,16 @@ final class Common: NSObject {
     // MARK: - Public Properties
     
     var doShowLightBackground: Bool   = false
-    var doShowTag: Bool               = true
     
     // MARK: - Private Properties
     
-    private var doShowRawJson: Bool   = false
-    private var doShowFurniture: Bool = true
-    private var isThumbnail:Bool      = false
-    private var jsonIndent: Int       = BUFFOON_CONSTANTS.JSON_INDENT
-    private var boolStyle: Int        = BUFFOON_CONSTANTS.BOOL_STYLE.FULL
-    private var maxKeyLengths: [Int]  = []
-    private var fontSize: CGFloat     = 0
+    private var doShowRawJson: Bool         = false
+    private var doShowFurniture: Bool       = true
+    private var isThumbnail:Bool            = false
+    private var jsonIndent: Int             = BUFFOON_CONSTANTS.JSON_INDENT
+    private var boolStyle: Int              = BUFFOON_CONSTANTS.BOOL_STYLE.FULL
+    private var maxKeyLengths: [Int]        = []
+    private var fontSize: CGFloat           = 0
     
     // JSON string attributes...
     private var keyAtts:     [NSAttributedString.Key: Any] = [:]
@@ -38,6 +37,9 @@ final class Common: NSObject {
     // String artifacts...
     private var hr: NSAttributedString      = NSAttributedString.init(string: "")
     private var newLine: NSAttributedString = NSAttributedString.init(string: "")
+    
+    // FROM 1.0.2
+    private var lineCount: Int              = 0
 
     // MARK:- Lifecycle Functions
     
@@ -263,7 +265,16 @@ final class Common: NSObject {
         
         // Prep an NSMutableAttributedString for this JSON segment
         let renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "",
-                                                                                        attributes: self.keyAtts)
+                                                                                       attributes: self.keyAtts)
+        
+        // FROM 1.0.2
+        // Break early at a sensible location, ie. one that
+        // leaves us with a valid subset of the source JSON
+        // NOTE This can be done better with checks on the returned string
+        self.lineCount += 1;
+        if self.isThumbnail && self.lineCount > BUFFOON_CONSTANTS.THUMBNAIL_LINE_COUNT {
+            return renderedString
+        }
         
         // Set the indent based on the current level
         // This will be used for rendering keys and calculating
