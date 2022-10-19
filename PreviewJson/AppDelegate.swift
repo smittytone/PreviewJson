@@ -325,7 +325,7 @@ final class AppDelegate: NSObject,
         // Check for the OS mode
         let appearance: NSAppearance = NSApp.effectiveAppearance
         if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
-            self.useLightCheckbox.isEnabled = (appearName != .aqua)
+            self.useLightCheckbox.isHidden = (appearName == .aqua)
         }
         
         // Display the sheet
@@ -757,7 +757,7 @@ final class AppDelegate: NSObject,
             if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
                 // NOTE Appearance it this point seems to reflect the mode
                 //      we're coming FROM, not what it has changed to
-                self.useLightCheckbox.isEnabled = (appearName == .aqua)
+                self.useLightCheckbox.isHidden = (appearName != .aqua)
             }
         }
     }
