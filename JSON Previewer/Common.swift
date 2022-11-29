@@ -132,10 +132,8 @@ final class Common: NSObject {
      - Returns: The rendered source as an NSAttributedString.
      */
     func getAttributedString(_ jsonFileData: Data) -> NSAttributedString {
-
-        // Set up the base string
-        var renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "",
-                                                                                       attributes: self.valAtts)
+        
+        var renderedString: NSMutableAttributedString
         
         do {
             // Attempt to parse the JSON data. First, get the data...
@@ -251,7 +249,7 @@ final class Common: NSObject {
     
     
     /**
-     Render a unit of JSON as a NSAttributedString.
+     Render a unit of JSON as an NSAttributedString.
 
      - Parameters:
         - json:           A unit of JSON, type Any.
@@ -272,7 +270,7 @@ final class Common: NSObject {
         // leaves us with a valid subset of the source JSON
         // NOTE This can be done better with checks on the returned string
         self.lineCount += 1;
-        if self.isThumbnail && self.lineCount > BUFFOON_CONSTANTS.THUMBNAIL_LINE_COUNT {
+        if self.isThumbnail && (self.lineCount > BUFFOON_CONSTANTS.THUMBNAIL_LINE_COUNT) {
             return renderedString
         }
         
