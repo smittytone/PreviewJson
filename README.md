@@ -30,7 +30,7 @@ Changing these settings will affect previews immediately, but may not affect thu
 
 ## Release Notes
 
-* 1.0.2 *Unreleased*
+* 1.0.2 *14 December 2022*
     * Reduce thumbnail rendering load.
     * Handle dark-to-light UI mode switches.
     * Add App Store link.
