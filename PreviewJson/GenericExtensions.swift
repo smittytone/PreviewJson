@@ -85,9 +85,10 @@ extension AppDelegate {
 
         let alert: NSAlert = showAlert("Feedback Could Not Be Sent",
                                        "Unfortunately, your comments could not be send at this time. Please try again later.")
-        alert.beginSheetModal(for: self.reportWindow,
-                              completionHandler: nil)
-
+        alert.beginSheetModal(for: self.reportWindow) { (resp) in
+            // Handle menus
+            self.showPanelGenerators()
+        }
     }
 
 
@@ -197,6 +198,27 @@ extension AppDelegate {
         return localUTI
     }
     
+    /**
+     Disable all panel-opening menu items.
+     */
+    func hidePanelGenerators() {
+        
+        self.helpMenuReportBug.isEnabled = false
+        self.helpMenuWhatsNew.isEnabled = false
+        self.mainMenuSettings.isEnabled = false
+    }
+    
+    
+    /**
+     Enable all panel-opening menu items.
+     */
+    func showPanelGenerators() {
+        
+        self.helpMenuReportBug.isEnabled = true
+        self.helpMenuWhatsNew.isEnabled = true
+        self.mainMenuSettings.isEnabled = true
+    }
+    
     
     // MARK: - URLSession Delegate Functions
 
@@ -223,6 +245,7 @@ extension AppDelegate {
                 // Close the feedback window when the modal alert returns
                 let _: Timer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false) { timer in
                     self.window.endSheet(self.reportWindow)
+                    self.showPanelGenerators()
                 }
             }
         }

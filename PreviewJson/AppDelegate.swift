@@ -200,7 +200,11 @@ final class AppDelegate: NSObject,
         - sender: The source of the action.
      */
     @IBAction @objc private func doShowReportWindow(sender: Any?) {
-
+        
+        // FROM 1.0.3
+        // Handle Menus
+        hidePanelGenerators()
+        
         // Reset the UI
         self.connectionProgress.stopAnimation(self)
         self.feedbackText.stringValue = ""
@@ -224,6 +228,10 @@ final class AppDelegate: NSObject,
 
         self.connectionProgress.stopAnimation(self)
         self.window.endSheet(self.reportWindow)
+        
+        // FROM 1.0.3
+        // Handle Menus
+        showPanelGenerators()
     }
 
     
@@ -261,6 +269,10 @@ final class AppDelegate: NSObject,
         // No feedback, so close the sheet
         self.window.endSheet(self.reportWindow)
         
+        // FROM 1.0.3
+        // Handle Menus
+        showPanelGenerators()
+        
         // NOTE sheet closes asynchronously unless there was no feedback to send,
         //      or an error occured with setting up the feedback session
     }
@@ -276,7 +288,9 @@ final class AppDelegate: NSObject,
      */
     @IBAction private func doShowPreferences(sender: Any) {
 
-        // Display the 'Preferences' sheet
+        // FROM 1.0.3
+        // Handle Menus
+        hidePanelGenerators()
 
         // The suite name is the app group name, set in each the entitlements file of
         // the host app and of each extension
@@ -389,6 +403,10 @@ final class AppDelegate: NSObject,
         
         // Shut the window
         self.window.endSheet(self.preferencesWindow)
+        
+        // FROM 1.0.3
+        // Handle Menus
+        showPanelGenerators()
     }
 
 
@@ -488,6 +506,10 @@ final class AppDelegate: NSObject,
         
         // Remove the sheet now we have the data
         self.window.endSheet(self.preferencesWindow)
+        
+        // FROM 1.0.3
+        // Handle Menus
+        showPanelGenerators()
     }
 
 
@@ -506,6 +528,10 @@ final class AppDelegate: NSObject,
      */
     @IBAction private func doShowWhatsNew(_ sender: Any) {
 
+        // FROM 1.0.3
+        // Handle Menus
+        hidePanelGenerators()
+        
         // See if we're coming from a menu click (sender != self) or
         // directly in code from 'appDidFinishLoading()' (sender == self)
         var doShowSheet: Bool = type(of: self) != type(of: sender)
@@ -568,6 +594,10 @@ final class AppDelegate: NSObject,
 
             defaults.synchronize()
         }
+        
+        // FROM 1.0.3
+        // Handle Menus
+        showPanelGenerators()
     }
 
 
