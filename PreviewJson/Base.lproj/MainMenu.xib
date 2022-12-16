@@ -27,12 +27,16 @@
                 <outlet property="feedbackText" destination="rME-5J-5yH" id="yEn-3B-e4A"/>
                 <outlet property="fontSizeLabel" destination="2HA-Yj-cyf" id="psJ-3Z-WQI"/>
                 <outlet property="fontSizeSlider" destination="OfZ-N6-qKG" id="oDv-Or-Fni"/>
-                <outlet property="helpAppStoreRating" destination="jLd-Pw-5jM" id="P5Q-5y-ShE"/>
-                <outlet property="helpMenuJson" destination="wpr-3q-Mcd" id="u61-rD-rsY"/>
+                <outlet property="helpMenu" destination="wpr-3q-Mcd" id="sBo-bb-PD9"/>
+                <outlet property="helpMenuAppStoreRating" destination="jLd-Pw-5jM" id="ZYS-nT-Zdb"/>
+                <outlet property="helpMenuOnlineHelp" destination="Tys-ee-tfE" id="jS7-J4-0L2"/>
                 <outlet property="helpMenuOthersPreviewCode" destination="wRu-mF-ECh" id="FUk-g8-FN8"/>
                 <outlet property="helpMenuOthersPreviewMarkdown" destination="a5a-JN-xae" id="efo-wb-Yel"/>
+                <outlet property="helpMenuOthersPreviewText" destination="Yc4-yV-XWG" id="eDa-xm-mp6"/>
                 <outlet property="helpMenuOtherspreviewYaml" destination="QaP-Sh-GBM" id="dG4-9f-SZ8"/>
-                <outlet property="helpMenuPreviewJson" destination="Tys-ee-tfE" id="uca-2Y-cTK"/>
+                <outlet property="helpMenuReportBug" destination="9jb-nj-WtE" id="qc8-YK-mmo"/>
+                <outlet property="helpMenuWhatsNew" destination="8ow-rc-CzH" id="PFI-AM-2re"/>
+                <outlet property="mainMenuSettings" destination="BOF-NM-1cW" id="gEX-5P-8bk"/>
                 <outlet property="markColorWell" destination="9J6-So-zYx" id="c6W-qX-nxy"/>
                 <outlet property="preferencesWindow" destination="jjd-uj-Puq" id="1ud-bv-mbH"/>
                 <outlet property="reportWindow" destination="nk4-l2-g5W" id="SNf-z1-JQ2"/>
@@ -48,7 +52,7 @@
             <items>
                 <menuItem title="PreviewJson" id="1Xt-HY-uBw">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="PreviewJson" systemMenu="apple" id="uQy-DD-JDr">
+                    <menu key="submenu" title="PreviewJson" systemMenu="apple" autoenablesItems="NO" id="uQy-DD-JDr">
                         <items>
                             <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW">
                                 <connections>
@@ -162,6 +166,12 @@
                                                 <action selector="doShowSitesWithSender:" target="-1" id="Jn1-JI-R21"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="PreviewText" id="Yc4-yV-XWG">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="doShowSitesWithSender:" target="Voe-Tx-rLC" id="wsS-4d-1np"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -172,7 +182,7 @@
                                     <action selector="doShowReportWindowWithSender:" target="Voe-Tx-rLC" id="Iu8-dF-Oro"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Rate this App..." enabled="NO" id="jLd-Pw-5jM">
+                            <menuItem title="Rate this App..." id="jLd-Pw-5jM">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="doShowSitesWithSender:" target="Voe-Tx-rLC" id="maJ-La-9wU"/>
@@ -188,7 +198,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="335" y="390" width="610" height="432"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
             <value key="minSize" type="size" width="610" height="432"/>
             <value key="maxSize" type="size" width="610" height="432"/>
             <value key="minFullScreenContentSize" type="size" width="610" height="432"/>
@@ -359,7 +369,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="560" height="388"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
             <value key="minSize" type="size" width="560" height="388"/>
             <value key="maxSize" type="size" width="560" height="388"/>
             <value key="minFullScreenContentSize" type="size" width="560" height="388"/>
@@ -667,7 +677,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="560" height="410"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
             <value key="minSize" type="size" width="560" height="410"/>
             <value key="maxSize" type="size" width="560" height="410"/>
             <value key="minFullScreenContentSize" type="size" width="560" height="410"/>
@@ -720,7 +730,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="560" height="356"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="875"/>
             <value key="minSize" type="size" width="560" height="356"/>
             <value key="maxSize" type="size" width="560" height="356"/>
             <value key="minFullScreenContentSize" type="size" width="560" height="356"/>

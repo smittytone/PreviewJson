@@ -21,12 +21,17 @@ final class AppDelegate: NSObject,
 
     // MARK:- Class UI Properies
     // Menu Items
-    @IBOutlet var helpMenuPreviewJson: NSMenuItem!
-    @IBOutlet var helpAppStoreRating: NSMenuItem!
-    @IBOutlet var helpMenuJson: NSMenuItem!
+    @IBOutlet var helpMenu: NSMenuItem!
+    @IBOutlet var helpMenuOnlineHelp: NSMenuItem!
+    @IBOutlet var helpMenuAppStoreRating: NSMenuItem!
     @IBOutlet var helpMenuOthersPreviewMarkdown: NSMenuItem!
     @IBOutlet var helpMenuOthersPreviewCode: NSMenuItem!
     @IBOutlet var helpMenuOtherspreviewYaml: NSMenuItem!
+    // FROM 1.0.3
+    @IBOutlet var helpMenuWhatsNew: NSMenuItem!
+    @IBOutlet var helpMenuReportBug: NSMenuItem!
+    @IBOutlet var helpMenuOthersPreviewText: NSMenuItem!
+    @IBOutlet var mainMenuSettings: NSMenuItem!
     
     // Panel Items
     @IBOutlet var versionLabel: NSTextField!
@@ -154,16 +159,18 @@ final class AppDelegate: NSObject,
         var path: String = BUFFOON_CONSTANTS.URL_MAIN
         
         // Depending on the menu selected, set the load path
-        if item == self.helpAppStoreRating {
+        if item == self.helpMenuAppStoreRating {
             path = BUFFOON_CONSTANTS.APP_STORE + "?action=write-review"
-        } else if item == self.helpMenuPreviewJson {
+        } else if item == self.helpMenuOnlineHelp {
             path += "#how-to-use-previewjson"
         } else if item == self.helpMenuOthersPreviewMarkdown {
-            path = "https://apps.apple.com/us/app/previewmarkdown/id1492280469?ls=1"
+            path = BUFFOON_CONSTANTS.APP_URLS.PM
         } else if item == self.helpMenuOthersPreviewCode {
-            path = "https://apps.apple.com/us/app/previewcode/id1571797683?ls=1"
+            path = BUFFOON_CONSTANTS.APP_URLS.PC
         } else if item == self.helpMenuOtherspreviewYaml {
-            path = "https://apps.apple.com/us/app/previewyaml/id1564574724?ls=1"
+            path = BUFFOON_CONSTANTS.APP_URLS.PY
+        } else if item == self.helpMenuOthersPreviewText {
+            path = BUFFOON_CONSTANTS.APP_URLS.PT
         }
         
         // Open the selected website
