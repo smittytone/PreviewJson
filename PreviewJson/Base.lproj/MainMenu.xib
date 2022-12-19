@@ -85,7 +85,7 @@
                             <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
                             <menuItem title="Quit PreviewJson" keyEquivalent="q" id="4sb-4s-VLi">
                                 <connections>
-                                    <action selector="doClose:" target="Voe-Tx-rLC" id="tR1-sA-giq"/>
+                                    <action selector="doClose:" target="Voe-Tx-rLC" id="8z5-cA-yOD"/>
                                 </connections>
                             </menuItem>
                         </items>
