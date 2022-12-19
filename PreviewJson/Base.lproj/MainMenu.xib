@@ -85,7 +85,7 @@
                             <menuItem isSeparatorItem="YES" id="kCx-OE-vgT"/>
                             <menuItem title="Quit PreviewJson" keyEquivalent="q" id="4sb-4s-VLi">
                                 <connections>
-                                    <action selector="terminate:" target="-1" id="Te7-pn-YzF"/>
+                                    <action selector="doClose:" target="Voe-Tx-rLC" id="tR1-sA-giq"/>
                                 </connections>
                             </menuItem>
                         </items>
@@ -490,17 +490,18 @@ DQ
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2qh-h7-OMO">
                         <rect key="frame" x="277" y="237" width="158" height="25"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="rvb-SO-ZKa" id="ytz-TM-OQU">
+                        <popUpButtonCell key="cell" type="push" title="Regular" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="rvb-SO-ZKa" id="ytz-TM-OQU">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="cellTitle"/>
                             <menu key="menu" id="zM5-Pb-2Oi">
                                 <items>
-                                    <menuItem title="Item 1" state="on" id="rvb-SO-ZKa"/>
-                                    <menuItem title="Item 2" id="6mH-hB-ewm"/>
-                                    <menuItem title="Item 3" id="jav-Y2-QYC"/>
+                                    <menuItem title="Regular" state="on" id="rvb-SO-ZKa"/>
                                 </items>
                             </menu>
                         </popUpButtonCell>
+                        <connections>
+                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="EF1-wM-5TS"/>
+                        </connections>
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GS0-Os-jnX">
                         <rect key="frame" x="277" y="267" width="206" height="25"/>
@@ -581,11 +582,26 @@ DQ
                             <font key="font" metaFont="menu"/>
                             <menu key="menu" id="ZhC-aw-UN5">
                                 <items>
-                                    <menuItem title="1" id="kfH-8G-ucs"/>
-                                    <menuItem title="2" state="on" id="PsK-b9-0n0"/>
-                                    <menuItem title="4" id="2dg-18-Mzc"/>
+                                    <menuItem title="1" id="kfH-8G-ucs">
+                                        <connections>
+                                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="r8D-Jw-kvu"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="2" state="on" id="PsK-b9-0n0">
+                                        <connections>
+                                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="9NN-cL-bNM"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="4" id="2dg-18-Mzc">
+                                        <connections>
+                                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="JYN-Rr-acv"/>
+                                        </connections>
+                                    </menuItem>
                                     <menuItem title="8" id="uWN-Hv-JEZ">
                                         <modifierMask key="keyEquivalentModifierMask"/>
+                                        <connections>
+                                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="Upl-T4-MoD"/>
+                                        </connections>
                                     </menuItem>
                                 </items>
                             </menu>
@@ -607,6 +623,9 @@ DQ
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="hOH-Qy-K0P"/>
+                        </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L5P-Av-1Ii">
                         <rect key="frame" x="18" y="129" width="256" height="16"/>
@@ -630,6 +649,9 @@ DQ
                                 </segment>
                             </segments>
                         </segmentedCell>
+                        <connections>
+                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="0IE-6a-s1I"/>
+                        </connections>
                     </segmentedControl>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BoQ-JX-H8c">
                         <rect key="frame" x="18" y="60" width="522" height="18"/>
@@ -638,6 +660,9 @@ DQ
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="mfV-PY-5jf"/>
+                        </connections>
                     </button>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Z9F-Y6-BVI">
                         <rect key="frame" x="18" y="82" width="522" height="18"/>
@@ -646,6 +671,9 @@ DQ
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
+                        <connections>
+                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="BLp-Xl-skr"/>
+                        </connections>
                     </button>
                 </subviews>
                 <constraints>

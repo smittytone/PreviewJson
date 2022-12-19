@@ -80,6 +80,8 @@ final class AppDelegate: NSObject,
     private  var doShowFurniture: Bool          = true
     private  var isMontereyPlus: Bool           = false
     internal var codeFonts: [PMFont]            = []
+    // FROM 1.1.4
+    private var havePrefsChanged: Bool = false
     
 
     // MARK:- Class Lifecycle Functions
@@ -140,6 +142,54 @@ final class AppDelegate: NSObject,
         
         // Reset the QL thumbnail cache... just in case it helps
         _ = runProcess(app: "/usr/bin/qlmanage", with: ["-r", "cache"])
+        
+        // FROM 1.0.3
+        // Check for open panels
+        if self.preferencesWindow.isVisible {
+            if self.havePrefsChanged {
+                let alert: NSAlert = showAlert("You have unsaved changes",
+                                               "Do you wish to cancel and save this, or quit the app anyway?",
+                                               false)
+                alert.addButton(withTitle: "Quit")
+                alert.addButton(withTitle: "Cancel")
+                alert.beginSheetModal(for: self.preferencesWindow) { (response: NSApplication.ModalResponse) in
+                    if response == NSApplication.ModalResponse.alertFirstButtonReturn {
+                        // The user clicked 'Quit'
+                        self.preferencesWindow.close()
+                        self.window.close()
+                    }
+                }
+                
+                return
+            }
+            
+            self.preferencesWindow.close()
+        }
+        
+        if self.whatsNewWindow.isVisible {
+            self.whatsNewWindow.close()
+        }
+        
+        if self.reportWindow.isVisible {
+            if self.feedbackText.stringValue.count > 0 {
+                let alert: NSAlert = showAlert("You have unsent feedback",
+                                               "Do you wish to cancel and send this, or quit the app anyway?",
+                                               false)
+                alert.addButton(withTitle: "Quit")
+                alert.addButton(withTitle: "Cancel")
+                alert.beginSheetModal(for: self.reportWindow) { (response: NSApplication.ModalResponse) in
+                    if response == NSApplication.ModalResponse.alertFirstButtonReturn {
+                        // The user clicked 'Quit'
+                        self.reportWindow.close()
+                        self.window.close()
+                    }
+                }
+                
+                return
+            }
+            
+            self.reportWindow.close()
+        }
         
         // Close the window... which will trigger an app closure
         self.window.close()
@@ -364,6 +414,7 @@ final class AppDelegate: NSObject,
         
         let index: Int = Int(self.fontSizeSlider.floatValue)
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
+        self.havePrefsChanged = false
     }
 
 
@@ -379,6 +430,7 @@ final class AppDelegate: NSObject,
         
         // Update the menu of available styles
         setStylePopup()
+        self.havePrefsChanged = false
     }
 
     
@@ -407,6 +459,7 @@ final class AppDelegate: NSObject,
         // FROM 1.0.3
         // Handle Menus
         showPanelGenerators()
+        self.havePrefsChanged = false
     }
 
 
@@ -510,6 +563,13 @@ final class AppDelegate: NSObject,
         // FROM 1.0.3
         // Handle Menus
         showPanelGenerators()
+        self.havePrefsChanged = false
+    }
+    
+    
+    @IBAction private func checkboxClicked(sender: Any) {
+        
+        self.havePrefsChanged = true
     }
 
 
