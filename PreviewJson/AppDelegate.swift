@@ -80,7 +80,7 @@ final class AppDelegate: NSObject,
     private  var doShowFurniture: Bool          = true
     private  var isMontereyPlus: Bool           = false
     internal var codeFonts: [PMFont]            = []
-    // FROM 1.1.4
+    // FROM 1.0.3
     private var havePrefsChanged: Bool = false
     
 
@@ -147,8 +147,8 @@ final class AppDelegate: NSObject,
         // Check for open panels
         if self.preferencesWindow.isVisible {
             if self.havePrefsChanged {
-                let alert: NSAlert = showAlert("You have unsaved changes",
-                                               "Do you wish to cancel and save this, or quit the app anyway?",
+                let alert: NSAlert = showAlert("You have unsaved settings",
+                                               "Do you wish to cancel and save these, or quit the app anyway?",
                                                false)
                 alert.addButton(withTitle: "Quit")
                 alert.addButton(withTitle: "Cancel")
@@ -173,7 +173,7 @@ final class AppDelegate: NSObject,
         if self.reportWindow.isVisible {
             if self.feedbackText.stringValue.count > 0 {
                 let alert: NSAlert = showAlert("You have unsent feedback",
-                                               "Do you wish to cancel and send this, or quit the app anyway?",
+                                               "Do you wish to cancel and send it, or quit the app anyway?",
                                                false)
                 alert.addButton(withTitle: "Quit")
                 alert.addButton(withTitle: "Cancel")
@@ -252,7 +252,7 @@ final class AppDelegate: NSObject,
     @IBAction @objc private func doShowReportWindow(sender: Any?) {
         
         // FROM 1.0.3
-        // Handle Menus
+        // Hide menus we don't want used while panel is open
         hidePanelGenerators()
         
         // Reset the UI
@@ -280,7 +280,7 @@ final class AppDelegate: NSObject,
         self.window.endSheet(self.reportWindow)
         
         // FROM 1.0.3
-        // Handle Menus
+        // Restore menus
         showPanelGenerators()
     }
 
@@ -320,7 +320,7 @@ final class AppDelegate: NSObject,
         self.window.endSheet(self.reportWindow)
         
         // FROM 1.0.3
-        // Handle Menus
+        // Restore menus
         showPanelGenerators()
         
         // NOTE sheet closes asynchronously unless there was no feedback to send,
@@ -339,8 +339,12 @@ final class AppDelegate: NSObject,
     @IBAction private func doShowPreferences(sender: Any) {
 
         // FROM 1.0.3
-        // Handle Menus
+        // Hide menus we don't want used while panel is open
         hidePanelGenerators()
+        
+        // FROM 1.0.3
+        // Reset changes prefs flag
+        self.havePrefsChanged = false
 
         // The suite name is the app group name, set in each the entitlements file of
         // the host app and of each extension
@@ -428,9 +432,9 @@ final class AppDelegate: NSObject,
      */
     @IBAction private func doUpdateFonts(sender: Any) {
         
-        // Update the menu of available styles
-        setStylePopup()
         self.havePrefsChanged = false
+        
+        setStylePopup()
     }
 
     
@@ -457,9 +461,8 @@ final class AppDelegate: NSObject,
         self.window.endSheet(self.preferencesWindow)
         
         // FROM 1.0.3
-        // Handle Menus
+        // Restore menus
         showPanelGenerators()
-        self.havePrefsChanged = false
     }
 
 
@@ -561,12 +564,17 @@ final class AppDelegate: NSObject,
         self.window.endSheet(self.preferencesWindow)
         
         // FROM 1.0.3
-        // Handle Menus
+        // Restore menus
         showPanelGenerators()
-        self.havePrefsChanged = false
     }
     
     
+    /**
+        Generic IBAction for any Prefs control to register it has been used.
+     
+        - Parameters:
+            - sender: The source of the action.
+     */
     @IBAction private func checkboxClicked(sender: Any) {
         
         self.havePrefsChanged = true
@@ -589,7 +597,7 @@ final class AppDelegate: NSObject,
     @IBAction private func doShowWhatsNew(_ sender: Any) {
 
         // FROM 1.0.3
-        // Handle Menus
+        // Hide menus we don't want used while panel is open
         hidePanelGenerators()
         
         // See if we're coming from a menu click (sender != self) or
@@ -656,7 +664,7 @@ final class AppDelegate: NSObject,
         }
         
         // FROM 1.0.3
-        // Handle Menus
+        // Restore menus
         showPanelGenerators()
     }
 
