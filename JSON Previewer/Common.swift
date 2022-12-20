@@ -3,8 +3,8 @@
  *  PreviewJson
  *  Code common to Json Previewer and Json Thumbnailer
  *
- *  Created by Tony Smith on 29/08/2022.
- *  Copyright © 2022 Tony Smith. All rights reserved.
+ *  Created by Tony Smith on 29/08/2023.
+ *  Copyright © 2023 Tony Smith. All rights reserved.
  */
 
 
