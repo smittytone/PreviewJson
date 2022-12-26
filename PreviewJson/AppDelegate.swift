@@ -78,13 +78,13 @@ final class AppDelegate: NSObject,
     private  var doShowTag: Bool                = false
     private  var doShowRawJson: Bool            = false
     private  var doShowFurniture: Bool          = true
-    private  var isMontereyPlus: Bool           = false
+    internal var isMontereyPlus: Bool           = false
     internal var codeFonts: [PMFont]            = []
     // FROM 1.0.3
     private var havePrefsChanged: Bool = false
     
 
-    // MARK:- Class Lifecycle Functions
+    // MARK: - Class Lifecycle Functions
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         
@@ -241,7 +241,7 @@ final class AppDelegate: NSObject,
     }
 
 
-    // MARK: Report Functions
+    // MARK: - Report Functions
 
     /**
      Display a window in which the user can submit feedback, or report a bug.
@@ -328,7 +328,7 @@ final class AppDelegate: NSObject,
     }
     
 
-    // MARK: Preferences Functions
+    // MARK: - Preferences Functions
 
     /**
      Initialise and display the **Preferences** sheet.
@@ -433,7 +433,6 @@ final class AppDelegate: NSObject,
     @IBAction private func doUpdateFonts(sender: Any) {
         
         self.havePrefsChanged = false
-        
         setStylePopup()
     }
 
@@ -581,7 +580,7 @@ final class AppDelegate: NSObject,
     }
 
 
-    // MARK: What's New Sheet Functions
+    // MARK: - What's New Sheet Functions
 
     /**
         Show the **What's New** sheet.
@@ -596,10 +595,6 @@ final class AppDelegate: NSObject,
      */
     @IBAction private func doShowWhatsNew(_ sender: Any) {
 
-        // FROM 1.0.3
-        // Hide menus we don't want used while panel is open
-        hidePanelGenerators()
-        
         // See if we're coming from a menu click (sender != self) or
         // directly in code from 'appDidFinishLoading()' (sender == self)
         var doShowSheet: Bool = type(of: self) != type(of: sender)
@@ -609,13 +604,18 @@ final class AppDelegate: NSObject,
             // if we need to show the sheet by the checking the prefs
             if let defaults = UserDefaults(suiteName: self.appSuiteName) {
                 // Get the version-specific preference key
-                let key: String = "com-bps-previewjson-do-show-whats-new-" + getVersion()
+                let key: String = BUFFOON_CONSTANTS.WHATS_NEW_PREF + getVersion()
                 doShowSheet = defaults.bool(forKey: key)
             }
         }
       
-        // Configure and show the sheet: first, get the folder path
+        // Configure and show the sheet
         if doShowSheet {
+            // FROM 1.0.3
+            // Hide menus we don't want used while panel is open
+            hidePanelGenerators()
+            
+            // First, get the folder path
             let htmlFolderPath = Bundle.main.resourcePath! + "/new"
             
             // Set up the WKWebBiew: no elasticity, horizontal scroller
@@ -834,17 +834,6 @@ final class AppDelegate: NSObject,
         }
 
         return nil
-    }
-    
-    
-    /**
-     Get system and state information and record it for use during run.
-     */
-    private func recordSystemState() {
-        
-        // First ensure we are running on Mojave or above - Dark Mode is not supported by earlier versons
-        let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
-        self.isMontereyPlus = (sysVer.majorVersion >= 12)
     }
     
     
