@@ -31,7 +31,7 @@ Changing these settings will affect previews immediately, but may not affect thu
 ## Release Notes
 
 * 1.0.3 *Unreleased*
-    - Add link to [PreviewText](https://smittytone.net/previewtext/index.html).
+    * Add link to [PreviewText](https://smittytone.net/previewtext/index.html).
     * Better menu handling when panels are visible.
     * Better app exit management.
 * 1.0.2 *14 December 2022*
