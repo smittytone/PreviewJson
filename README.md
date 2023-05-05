@@ -31,7 +31,7 @@ Changing these settings will affect previews immediately, but may not affect thu
 ## Release Notes
 
 - 1.0.4 *Unreleased*
-    - Fix incorrect presentation of integers `1` and `0` as booleans (thanks, anaonymous).
+    - Fix incorrect presentation of integers `1` and `0` as booleans (thanks, anonymous).
 - 1.0.3 *21 January 2023*
     - Add link to [PreviewText](https://smittytone.net/previewtext/index.html).
     - Better menu handling when panels are visible.
