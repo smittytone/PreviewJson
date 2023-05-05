@@ -1,4 +1,4 @@
-# PreviewJson 1.0.3
+# PreviewJson 1.0.4
 
 QuickLook JSON preview and icon thumbnailing app extensions for macOS Catalina and beyond
 
@@ -30,6 +30,8 @@ Changing these settings will affect previews immediately, but may not affect thu
 
 ## Release Notes
 
+- 1.0.4 *Unreleased*
+    - Fix incorrect presentation of integers `1` and `0` as booleans (thanks, anaonymous).
 - 1.0.3 *21 January 2023*
     - Add link to [PreviewText](https://smittytone.net/previewtext/index.html).
     - Better menu handling when panels are visible.

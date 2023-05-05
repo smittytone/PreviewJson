@@ -283,21 +283,9 @@ final class Common: NSObject {
         }
         
         // Generate a string according to the JSON element's underlying type
-        // NOTE Booleans are 'Bool' and 'Int', so make sure we do the Bool
-        //      check first
-        if json is Bool {
-            // Attempt to load the true/false symbol, but use a text version as a fallback on error
-            if self.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
-                let name: String = json as! Bool ? "true_\(self.boolStyle)" : "false_\(self.boolStyle)"
-                if !self.isThumbnail, let addString: NSAttributedString = getImageString(valueIndent, name) {
-                    renderedString.append(addString)
-                    return renderedString
-                }
-            }
-            
-            // Can't or won't show an image? Show text
-            renderedString.append(getIndentedString(json as! Bool ? getStringOutput(currentLevel, "TRUE") + "\n" : getStringOutput(currentLevel, "FALSE") + "\n", valueIndent))
-        } else if json is NSNull {
+        // FROM 1.0.4 Booleans are 'Bool' and 'Int', so remove the old bool check
+        //            and rely on the earlier string encoding in PreviewViewController
+        if json is NSNull {
             // Attempt to load the null symbol, but use a text version as a fallback on error
             if self.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
                 let name: String = "null_\(self.boolStyle)"
@@ -315,7 +303,26 @@ final class Common: NSObject {
         } else if json is String {
             // Display the string in curly quotes
             // Need to do extra inset work here
-            renderedString.append(getIndentedString("“" + getStringOutput(currentLevel, json) + "”\n", valueIndent))
+            let value: String = json as! String
+            if value == "JSON-TRUE" || value == "JSON-FALSE" {
+                // We have a string-encoded boolean
+                if self.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
+                    let name: String = value == "JSON-TRUE"
+                    ? "true_\(self.boolStyle)"
+                    : "false_\(self.boolStyle)"
+                    
+                    if !self.isThumbnail, let addString: NSAttributedString = getImageString(valueIndent, name) {
+                        renderedString.append(addString)
+                        return renderedString
+                    }
+                }
+                
+                renderedString.append(getIndentedString(value == "JSON-TRUE"
+                                                        ? getStringOutput(currentLevel, "TRUE") + "\n"
+                                                        : getStringOutput(currentLevel, "FALSE") + "\n", valueIndent))
+            } else {
+                renderedString.append(getIndentedString("“" + getStringOutput(currentLevel, json) + "”\n", valueIndent))
+            }
         } else if json is Dictionary<String, Any> {
             // For a dictionary, enumerate the key and value
             // NOTE Should be only one of each, but value may

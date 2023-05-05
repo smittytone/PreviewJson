@@ -65,9 +65,27 @@ class PreviewViewController: NSViewController,
                 let data: Data = try Data.init(contentsOf: url, options: [.uncached])
                 let encoding: String.Encoding = data.stringEncoding ?? .utf8
                 
-                if let _ = String.init(data: data, encoding: encoding) {
+                if let jsonString: String = String.init(data: data, encoding: encoding) {
+                    // FROM 1.0.4
+                    // Scan for JSON booleans and replace with a marker string.
+                    // This is to deal with the issue with NSJsonSerialization which causes
+                    // booleans to be replaced with 1 or 0 and therefore indistinguishable
+                    // from integer 1 or 0. Maybe there is a better option?
+                    let regexTrue = try! NSRegularExpression(pattern: ":[\\s]+true")
+                    let jsonStringTrue: String = regexTrue.stringByReplacingMatches(in: jsonString,
+                                                                                    options: [],
+                                                                                    range: NSMakeRange(0, jsonString.count),
+                                                                                    withTemplate: ": \"JSON-TRUE\"")
+
+                    let regexFalse = try! NSRegularExpression(pattern: ":[\\s]+false")
+                    let jsonStringFalse: String = regexFalse.stringByReplacingMatches(in: jsonStringTrue,
+                                                                                      options: [],
+                                                                                      range: NSMakeRange(0, jsonStringTrue.count),
+                                                                                      withTemplate: ": \"JSON-FALSE\"")
+                    
                     // Get the key string first
-                    let jsonAttString: NSAttributedString = common.getAttributedString(data)
+                    let jsonDataCoded: Data = jsonStringFalse.data(using: encoding) ?? data
+                    let jsonAttString: NSAttributedString = common.getAttributedString(jsonDataCoded)
                     
                     // Knock back the light background to make the scroll bars visible in dark mode
                     // NOTE If !doShowLightBackground,
