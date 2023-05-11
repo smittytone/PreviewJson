@@ -71,13 +71,13 @@ class PreviewViewController: NSViewController,
                     // This is to deal with the issue with NSJsonSerialization which causes
                     // booleans to be replaced with 1 or 0 and therefore indistinguishable
                     // from integer 1 or 0. Maybe there is a better option?
-                    let regexTrue = try! NSRegularExpression(pattern: ":[\\s]+true")
+                    let regexTrue = try! NSRegularExpression(pattern: ":[\\s]*true")
                     let jsonStringTrue: String = regexTrue.stringByReplacingMatches(in: jsonString,
                                                                                     options: [],
                                                                                     range: NSMakeRange(0, jsonString.count),
                                                                                     withTemplate: ": \"JSON-TRUE\"")
 
-                    let regexFalse = try! NSRegularExpression(pattern: ":[\\s]+false")
+                    let regexFalse = try! NSRegularExpression(pattern: ":[\\s]*false")
                     let jsonStringFalse: String = regexFalse.stringByReplacingMatches(in: jsonStringTrue,
                                                                                       options: [],
                                                                                       range: NSMakeRange(0, jsonStringTrue.count),
