@@ -23,7 +23,6 @@
 		3B67EB9228BCB0810048F8AE /* GenericExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9128BCB0810048F8AE /* GenericExtensions.swift */; };
 		3B67EB9328BCB0810048F8AE /* GenericExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9128BCB0810048F8AE /* GenericExtensions.swift */; };
 		3B67EB9528BCB0A20048F8AE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9428BCB0A20048F8AE /* Constants.swift */; };
-		3B67EB9628BCB0A20048F8AE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9428BCB0A20048F8AE /* Constants.swift */; };
 		3B67EB9828BCB1DF0048F8AE /* PMFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9728BCB1DF0048F8AE /* PMFont.swift */; };
 		3B67EB9928BCB1DF0048F8AE /* PMFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9728BCB1DF0048F8AE /* PMFont.swift */; };
 		3B67EB9B28BCB3070048F8AE /* GenericColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* GenericColorExtensions.swift */; };
@@ -35,6 +34,13 @@
 		3B67EBB928BCB5D70048F8AE /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBB828BCB5D70048F8AE /* Common.swift */; };
 		3B67EBBA28BCB61B0048F8AE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9428BCB0A20048F8AE /* Constants.swift */; };
 		3B67EBBC28BCB68B0048F8AE /* GenericColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* GenericColorExtensions.swift */; };
+		3BA7AC162A6ABF8700457247 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA7AC152A6ABF8700457247 /* AppDelegate.swift */; };
+		3BA7AC182A6ABF8800457247 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BA7AC172A6ABF8800457247 /* Assets.xcassets */; };
+		3BA7AC1B2A6ABF8800457247 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3BA7AC192A6ABF8800457247 /* MainMenu.xib */; };
+		3BA7AC202A6ABFE300457247 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBB828BCB5D70048F8AE /* Common.swift */; };
+		3BA7AC212A6AC00B00457247 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9428BCB0A20048F8AE /* Constants.swift */; };
+		3BA7AC222A6AC02800457247 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE355BC28BCD0F600523296 /* Secrets.swift */; };
+		3BA7AC232A6AC03000457247 /* GenericColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9A28BCB3070048F8AE /* GenericColorExtensions.swift */; };
 		3BAE671928D4D161001532BD /* GenericFontExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAE671828D4D161001532BD /* GenericFontExtensions.swift */; };
 		3BC3F76928BD439200AA754A /* new in Resources */ = {isa = PBXBuildFile; fileRef = 3BC3F76828BD439200AA754A /* new */; };
 		3BE355BD28BCD0F600523296 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE355BC28BCD0F600523296 /* Secrets.swift */; };
@@ -114,6 +120,11 @@
 		3B67EBAE28BCB3610048F8AE /* JSON_Previewer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = JSON_Previewer.entitlements; sourceTree = "<group>"; };
 		3B67EBB828BCB5D70048F8AE /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		3B6F5688293625E900FE5189 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		3BA7AC132A6ABF8700457247 /* RenderDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RenderDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3BA7AC152A6ABF8700457247 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		3BA7AC172A6ABF8800457247 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3BA7AC1A2A6ABF8800457247 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		3BA7AC1C2A6ABF8800457247 /* RenderDemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RenderDemo.entitlements; sourceTree = "<group>"; };
 		3BAE671828D4D161001532BD /* GenericFontExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericFontExtensions.swift; sourceTree = "<group>"; };
 		3BC3F76828BD439200AA754A /* new */ = {isa = PBXFileReference; lastKnownFileType = folder; name = new; path = "../../../Library/CloudStorage/OneDrive-Personal/Programming/PreviewJson/new"; sourceTree = "<group>"; };
 		3BE355B928BCD07300523296 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -159,6 +170,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3BA7AC102A6ABF8700457247 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -180,6 +198,7 @@
 				3B1FA42028C1242E001DA63C /* JSON Thumbnailer */,
 				3B67EB7328BCAEEB0048F8AE /* PreviewJsonTests */,
 				3B67EBA228BCB3610048F8AE /* Frameworks */,
+				3BA7AC142A6ABF8700457247 /* RenderDemo */,
 				3B6F5687293625D300FE5189 /* Misc */,
 				3B67EB6228BCAEEA0048F8AE /* Products */,
 			);
@@ -193,6 +212,7 @@
 				3B67EB7A28BCAEEB0048F8AE /* PreviewJsonUITests.xctest */,
 				3B67EBA128BCB3610048F8AE /* JSON Previewer.appex */,
 				3B1FA41C28C1242E001DA63C /* JSON Thumbnailer.appex */,
+				3BA7AC132A6ABF8700457247 /* RenderDemo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -252,6 +272,17 @@
 				3B6F5688293625E900FE5189 /* README.md */,
 			);
 			name = Misc;
+			sourceTree = "<group>";
+		};
+		3BA7AC142A6ABF8700457247 /* RenderDemo */ = {
+			isa = PBXGroup;
+			children = (
+				3BA7AC152A6ABF8700457247 /* AppDelegate.swift */,
+				3BA7AC172A6ABF8800457247 /* Assets.xcassets */,
+				3BA7AC192A6ABF8800457247 /* MainMenu.xib */,
+				3BA7AC1C2A6ABF8800457247 /* RenderDemo.entitlements */,
+			);
+			path = RenderDemo;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -347,6 +378,23 @@
 			productReference = 3B67EBA128BCB3610048F8AE /* JSON Previewer.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		3BA7AC122A6ABF8700457247 /* RenderDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3BA7AC1D2A6ABF8800457247 /* Build configuration list for PBXNativeTarget "RenderDemo" */;
+			buildPhases = (
+				3BA7AC0F2A6ABF8700457247 /* Sources */,
+				3BA7AC102A6ABF8700457247 /* Frameworks */,
+				3BA7AC112A6ABF8700457247 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RenderDemo;
+			productName = RenderDemo;
+			productReference = 3BA7AC132A6ABF8700457247 /* RenderDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -354,7 +402,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1340;
+				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1400;
 				TargetAttributes = {
 					3B1FA41B28C1242E001DA63C = {
@@ -373,6 +421,9 @@
 					};
 					3B67EBA028BCB3610048F8AE = {
 						CreatedOnToolsVersion = 13.4.1;
+					};
+					3BA7AC122A6ABF8700457247 = {
+						CreatedOnToolsVersion = 14.3.1;
 					};
 				};
 			};
@@ -394,6 +445,7 @@
 				3B1FA41B28C1242E001DA63C /* JSON Thumbnailer */,
 				3B67EB6F28BCAEEB0048F8AE /* PreviewJsonTests */,
 				3B67EB7928BCAEEB0048F8AE /* PreviewJsonUITests */,
+				3BA7AC122A6ABF8700457247 /* RenderDemo */,
 			);
 		};
 /* End PBXProject section */
@@ -439,6 +491,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3BA7AC112A6ABF8700457247 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3BA7AC182A6ABF8800457247 /* Assets.xcassets in Resources */,
+				3BA7AC1B2A6ABF8800457247 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -475,7 +536,6 @@
 				3B67EB7528BCAEEB0048F8AE /* PreviewJsonTests.swift in Sources */,
 				3B67EB9328BCB0810048F8AE /* GenericExtensions.swift in Sources */,
 				3B67EB9C28BCB3070048F8AE /* GenericColorExtensions.swift in Sources */,
-				3B67EB9628BCB0A20048F8AE /* Constants.swift in Sources */,
 				3B67EB9928BCB1DF0048F8AE /* PMFont.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -496,6 +556,18 @@
 				3B67EBBA28BCB61B0048F8AE /* Constants.swift in Sources */,
 				3B67EBA728BCB3610048F8AE /* PreviewViewController.swift in Sources */,
 				3B67EBB928BCB5D70048F8AE /* Common.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3BA7AC0F2A6ABF8700457247 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3BA7AC202A6ABFE300457247 /* Common.swift in Sources */,
+				3BA7AC232A6AC03000457247 /* GenericColorExtensions.swift in Sources */,
+				3BA7AC222A6AC02800457247 /* Secrets.swift in Sources */,
+				3BA7AC162A6ABF8700457247 /* AppDelegate.swift in Sources */,
+				3BA7AC212A6AC00B00457247 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -541,6 +613,14 @@
 			name = PreviewViewController.xib;
 			sourceTree = "<group>";
 		};
+		3BA7AC192A6ABF8800457247 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3BA7AC1A2A6ABF8800457247 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -550,7 +630,7 @@
 				CODE_SIGN_ENTITLEMENTS = "JSON Thumbnailer/JSON_Thumbnailer.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -565,7 +645,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewJson.JSONThumbnailer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -580,7 +660,7 @@
 				CODE_SIGN_ENTITLEMENTS = "JSON Thumbnailer/JSON_Thumbnailer.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -595,7 +675,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewJson.JSONThumbnailer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -733,7 +813,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -749,7 +829,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewJson;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -768,7 +848,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -784,7 +864,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewJson;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -875,7 +955,7 @@
 				CODE_SIGN_ENTITLEMENTS = "JSON Previewer/JSON_Previewer.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -890,7 +970,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewJson.JSONPreviewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -905,7 +985,7 @@
 				CODE_SIGN_ENTITLEMENTS = "JSON Previewer/JSON_Previewer.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -920,10 +1000,68 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 1.0.4;
+				MARKETING_VERSION = 1.0.5;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewJson.JSONPreviewer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		3BA7AC1E2A6ABF8800457247 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = RenderDemo/RenderDemo.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Y5J3K52DNA;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainNibFile = MainMenu;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewJson.RenderDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		3BA7AC1F2A6ABF8800457247 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_ENTITLEMENTS = RenderDemo/RenderDemo.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Y5J3K52DNA;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainNibFile = MainMenu;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bps.PreviewJson.RenderDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -982,6 +1120,15 @@
 			buildConfigurations = (
 				3B67EBB328BCB3610048F8AE /* Debug */,
 				3B67EBB428BCB3610048F8AE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3BA7AC1D2A6ABF8800457247 /* Build configuration list for PBXNativeTarget "RenderDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3BA7AC1E2A6ABF8800457247 /* Debug */,
+				3BA7AC1F2A6ABF8800457247 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
