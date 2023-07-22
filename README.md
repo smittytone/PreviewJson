@@ -1,4 +1,4 @@
-# PreviewJson 1.0.4
+# PreviewJson 1.1.0
 
 QuickLook JSON preview and icon thumbnailing app extensions for macOS Catalina and beyond
 
@@ -30,6 +30,8 @@ Changing these settings will affect previews immediately, but may not affect thu
 
 ## Release Notes
 
+- 1.1.0 *Unreleased*
+    - New columnar layout.
 - 1.0.4 *12 May 2023*
     - Fix incorrect presentation of integers `1` and `0` as booleans (thanks, anonymous).
 - 1.0.3 *21 January 2023*
