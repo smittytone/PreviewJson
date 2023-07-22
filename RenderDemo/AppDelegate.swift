@@ -19,6 +19,7 @@ class AppDelegate:  NSObject,
     @IBOutlet var previewTextView: NSTextView!
     @IBOutlet var previewScrollView: NSScrollView!
     @IBOutlet var modeButton: NSButton!
+    @IBOutlet var indentButton: NSButton!
 
 
     // MARK: - Private Properies
@@ -26,6 +27,7 @@ class AppDelegate:  NSObject,
     private var openDialog: NSOpenPanel? = nil
     private var currentURL: URL? = nil
     private var renderAsDark: Bool = true
+    private var renderIndents: Bool = false
     private var common: Common = Common.init(false)
 
     
@@ -34,7 +36,8 @@ class AppDelegate:  NSObject,
     func applicationDidFinishLaunching(_ notification: Notification) {
         
         // Set the mode button
-        self.modeButton.title = self.renderAsDark ? "Light" : "Dark"
+        self.modeButton.state = self.renderAsDark ? .on : .off
+        self.indentButton.state = self.renderIndents ? .on : .off
         
         // Centre the main window and display
         self.window.center()
@@ -74,9 +77,8 @@ class AppDelegate:  NSObject,
     
     
     @IBAction private func doSwitchMode(_ sender: Any) {
-        
-        self.renderAsDark = !self.renderAsDark
-        self.modeButton.title = self.renderAsDark ? "Light" : "Dark"
+
+        self.renderAsDark = self.modeButton.state == .on
         doReRenderFile(self)
     }
 
@@ -90,6 +92,16 @@ class AppDelegate:  NSObject,
             errorAlert.beginSheetModal(for: self.window)
         }
     }
+
+
+    @IBAction private func doSetIndentCharacter(_ sender: Any) {
+
+        self.renderIndents = self.indentButton.state == .on
+        doReRenderFile(self)
+    }
+
+
+
 
     
     // MARK: - Rendering Functions
@@ -110,7 +122,8 @@ class AppDelegate:  NSObject,
 
                 if let jsonString: String = String.init(data: data, encoding: encoding) {
                     common.doShowLightBackground = !self.renderAsDark
-                    //common.resetStylesOnModeChange()
+                    common.doUseSpecialIndentChar = self.renderIndents
+                    common.resetStylesOnModeChange()
 
                     let regexTrue = try! NSRegularExpression(pattern: ":[\\s]*true")
                     let jsonStringTrue: String = regexTrue.stringByReplacingMatches(in: jsonString,
