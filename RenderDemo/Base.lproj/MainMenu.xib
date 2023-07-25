@@ -158,7 +158,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="335" y="390" width="660" height="478"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="3840" height="2135"/>
             <value key="minSize" type="size" width="660" height="478"/>
             <value key="minFullScreenContentSize" type="size" width="660" height="478"/>
             <view key="contentView" id="EiT-Mj-1SZ">
@@ -166,16 +166,16 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9tz-gF-DdE">
-                        <rect key="frame" x="0.0" y="86" width="660" height="392"/>
+                        <rect key="frame" x="0.0" y="78" width="660" height="400"/>
                         <clipView key="contentView" drawsBackground="NO" id="BJy-MZ-98D">
-                            <rect key="frame" x="0.0" y="0.0" width="660" height="392"/>
+                            <rect key="frame" x="0.0" y="0.0" width="660" height="400"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView wantsLayer="YES" importsGraphics="NO" richText="NO" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="NAJ-g1-D1W">
-                                    <rect key="frame" x="0.0" y="0.0" width="660" height="392"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="660" height="400"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="minSize" width="660" height="392"/>
+                                    <size key="minSize" width="660" height="400"/>
                                     <size key="maxSize" width="660" height="10000000"/>
                                     <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                 </textView>
@@ -186,29 +186,14 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="skS-h9-m4V">
-                            <rect key="frame" x="644" y="0.0" width="16" height="392"/>
+                            <rect key="frame" x="644" y="0.0" width="16" height="400"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
-                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="f2a-59-pv7">
-                        <rect key="frame" x="13" y="13" width="112" height="32"/>
-                        <constraints>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="98" id="Wze-qh-Wjf"/>
-                            <constraint firstAttribute="height" constant="20" id="lpF-U4-xc0"/>
-                        </constraints>
-                        <buttonCell key="cell" type="push" title="Load..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="629-9R-UdX">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="doLoadYamlFile:" target="Voe-Tx-rLC" id="lGi-ZL-Dbk"/>
-                        </connections>
-                    </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="PY0-yp-q30">
-                        <rect key="frame" x="417" y="22" width="223" height="18"/>
+                        <rect key="frame" x="18" y="19" width="516" height="18"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="16" id="d1c-uF-2jO"/>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="221" id="meg-W3-bpj"/>
+                            <constraint firstAttribute="height" constant="16" id="0yt-6L-z4q"/>
                         </constraints>
                         <buttonCell key="cell" type="check" title="Expose indentation" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Kua-pY-mCh">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -219,10 +204,10 @@
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cUv-yG-ROn">
-                        <rect key="frame" x="417" y="44" width="223" height="18"/>
+                        <rect key="frame" x="18" y="41" width="516" height="18"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="16" id="6FM-ZY-70I"/>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="221" id="SDL-z2-Wt3"/>
+                            <constraint firstAttribute="height" constant="16" id="2kT-Dq-oG1"/>
+                            <constraint firstAttribute="width" constant="514" id="E8q-QZ-8mr"/>
                         </constraints>
                         <buttonCell key="cell" type="check" title="Dark Mode" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="0P9-pv-cCh">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -232,20 +217,33 @@
                             <action selector="doSwitchMode:" target="Voe-Tx-rLC" id="uCD-0Y-TM4"/>
                         </connections>
                     </button>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="f2a-59-pv7">
+                        <rect key="frame" x="535" y="13" width="112" height="32"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="2hx-Lc-ReQ"/>
+                            <constraint firstAttribute="width" constant="98" id="IZ1-Yx-gOS"/>
+                        </constraints>
+                        <buttonCell key="cell" type="push" title="Load..." bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="629-9R-UdX">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="doLoadFile:" target="Voe-Tx-rLC" id="cl2-82-I8J"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="PY0-yp-q30" firstAttribute="top" secondItem="cUv-yG-ROn" secondAttribute="bottom" constant="6" symbolic="YES" id="1UB-UF-MLo"/>
-                    <constraint firstItem="cUv-yG-ROn" firstAttribute="top" secondItem="9tz-gF-DdE" secondAttribute="bottom" constant="25" id="28v-Ys-lGv"/>
-                    <constraint firstItem="PY0-yp-q30" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="f2a-59-pv7" secondAttribute="trailing" constant="8" symbolic="YES" id="FUj-eT-iFt"/>
-                    <constraint firstItem="cUv-yG-ROn" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="L7b-d9-wjV"/>
-                    <constraint firstItem="9tz-gF-DdE" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="MDE-OL-08y"/>
-                    <constraint firstAttribute="trailing" secondItem="PY0-yp-q30" secondAttribute="trailing" constant="20" symbolic="YES" id="NP6-qx-PTJ"/>
-                    <constraint firstAttribute="bottom" secondItem="PY0-yp-q30" secondAttribute="bottom" constant="23" id="WAO-KG-WpA"/>
-                    <constraint firstItem="9tz-gF-DdE" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="ZGr-DT-xGr"/>
-                    <constraint firstItem="f2a-59-pv7" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="cKm-JL-c8G"/>
-                    <constraint firstAttribute="bottom" secondItem="f2a-59-pv7" secondAttribute="bottom" constant="20" symbolic="YES" id="pOY-ZE-SLx"/>
-                    <constraint firstAttribute="trailing" secondItem="cUv-yG-ROn" secondAttribute="trailing" constant="20" symbolic="YES" id="zCU-D7-db9"/>
-                    <constraint firstAttribute="trailing" secondItem="9tz-gF-DdE" secondAttribute="trailing" id="zKT-Kz-vKi"/>
+                    <constraint firstItem="f2a-59-pv7" firstAttribute="leading" secondItem="PY0-yp-q30" secondAttribute="trailing" constant="8" symbolic="YES" id="1ON-fk-JRq"/>
+                    <constraint firstAttribute="bottom" secondItem="f2a-59-pv7" secondAttribute="bottom" constant="20" symbolic="YES" id="3cM-yK-Yg5"/>
+                    <constraint firstItem="cUv-yG-ROn" firstAttribute="top" secondItem="9tz-gF-DdE" secondAttribute="bottom" constant="20" id="9Y8-v3-VfM"/>
+                    <constraint firstItem="9tz-gF-DdE" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="HqM-Sb-z31"/>
+                    <constraint firstItem="9tz-gF-DdE" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="ICR-BW-byx"/>
+                    <constraint firstItem="PY0-yp-q30" firstAttribute="top" secondItem="cUv-yG-ROn" secondAttribute="bottom" constant="6" symbolic="YES" id="Ju4-iW-DsC"/>
+                    <constraint firstItem="PY0-yp-q30" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="SKt-Yq-a9G"/>
+                    <constraint firstAttribute="trailing" secondItem="9tz-gF-DdE" secondAttribute="trailing" id="dp6-mb-FmP"/>
+                    <constraint firstItem="cUv-yG-ROn" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="p2F-wZ-QCI"/>
+                    <constraint firstAttribute="trailing" secondItem="f2a-59-pv7" secondAttribute="trailing" constant="20" symbolic="YES" id="pTc-kP-iCM"/>
+                    <constraint firstAttribute="bottom" secondItem="PY0-yp-q30" secondAttribute="bottom" constant="20" symbolic="YES" id="ssS-EH-JMo"/>
                 </constraints>
             </view>
             <point key="canvasLocation" x="290" y="458"/>

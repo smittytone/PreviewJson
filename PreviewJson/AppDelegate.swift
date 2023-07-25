@@ -69,8 +69,8 @@ final class AppDelegate: NSObject,
     private  var indentDepth: Int               = BUFFOON_CONSTANTS.JSON_INDENT
     private  var boolStyle: Int                 = BUFFOON_CONSTANTS.BOOL_STYLE.FULL
     private  var codeFontSize: CGFloat          = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
-    private  var codeFontName: String           = BUFFOON_CONSTANTS.CODE_FONT_NAME
-    private  var codeColourHex: String          = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+    private  var codeFontName: String           = BUFFOON_CONSTANTS.BODY_FONT_NAME
+    private  var codeColourHex: String          = BUFFOON_CONSTANTS.KEY_COLOUR_HEX
     private  var markColourHex: String          = BUFFOON_CONSTANTS.MARK_COLOUR_HEX
     private  var appSuiteName: String           = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
     private  var feedbackPath: String           = MNU_SECRETS.ADDRESS.B
@@ -353,8 +353,8 @@ final class AppDelegate: NSObject,
             self.indentDepth = defaults.integer(forKey: "com-bps-previewjson-json-indent")
             self.doShowLightBackground = defaults.bool(forKey: "com-bps-previewjson-do-use-light")
             self.doShowRawJson = defaults.bool(forKey: "com-bps-previewjson-show-bad-json")
-            self.codeFontName = defaults.string(forKey: "com-bps-previewjson-base-font-name") ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
-            self.codeColourHex = defaults.string(forKey: "com-bps-previewjson-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+            self.codeFontName = defaults.string(forKey: "com-bps-previewjson-base-font-name") ?? BUFFOON_CONSTANTS.BODY_FONT_NAME
+            self.codeColourHex = defaults.string(forKey: "com-bps-previewjson-code-colour-hex") ?? BUFFOON_CONSTANTS.KEY_COLOUR_HEX
             self.markColourHex = defaults.string(forKey: "com-bps-previewjson-mark-colour-hex") ?? BUFFOON_CONSTANTS.MARK_COLOUR_HEX
             self.doShowFurniture = defaults.bool(forKey: "com-bps-previewjson-do-indent-scalars")
             self.boolStyle = defaults.integer(forKey: "com-bps-previewjson-bool-style")
@@ -680,50 +680,50 @@ final class AppDelegate: NSObject,
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
             // Preview body font size, stored as a CGFloat
             // Default: 16.0
-            let bodyFontSizeDefault: Any? = defaults.object(forKey: "com-bps-previewjson-base-font-size")
+            let bodyFontSizeDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE)
             if bodyFontSizeDefault == nil {
                 defaults.setValue(CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE),
-                                  forKey: "com-bps-previewjson-base-font-size")
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE)
             }
 
             // Thumbnail view base font size, stored as a CGFloat, not currently used
             // Default: 28.0
-            let thumbFontSizeDefault: Any? = defaults.object(forKey: "com-bps-previewjson-thumb-font-size")
+            let thumbFontSizeDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.THUMB_SIZE)
             if thumbFontSizeDefault == nil {
                 defaults.setValue(CGFloat(BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE),
-                                  forKey: "com-bps-previewjson-thumb-font-size")
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.THUMB_SIZE)
             }
             
-            // Colour of JSON keys in the preview, stored as in integer array index
+            // Colour of JSON keys in the preview, stored as a hex string
             // Default: #CA0D0E
-            let codeColourDefault: Any? = defaults.object(forKey: "com-bps-previewjson-code-colour-hex")
-            if codeColourDefault == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.CODE_COLOUR_HEX,
-                                  forKey: "com-bps-previewjson-code-colour-hex")
+            var colourDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.KEY_COLOUR)
+            if colourDefault == nil {
+                defaults.setValue(BUFFOON_CONSTANTS.KEY_COLOUR_HEX,
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.KEY_COLOUR)
             }
             
-            // Colour of JSON markers in the preview, stored as in integer array index
+            // Colour of JSON markers in the preview, stored as a hex string
             // Default: #0096FF
-            let markColourDefault: Any? = defaults.object(forKey: "com-bps-previewjson-mark-colour-hex")
-            if markColourDefault == nil {
+            colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.MARK_COLOUR)
+            if colourDefault == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.MARK_COLOUR_HEX,
-                                  forKey: "com-bps-previewjson-mark-colour-hex")
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.MARK_COLOUR)
             }
             
             // Font for previews and thumbnails
             // Default: Courier
-            let codeFontName: Any? = defaults.object(forKey: "com-bps-previewjson-base-font-name")
+            let codeFontName: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_FONT)
             if codeFontName == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.CODE_FONT_NAME,
-                                  forKey: "com-bps-previewjson-base-font-name")
+                defaults.setValue(BUFFOON_CONSTANTS.BODY_FONT_NAME,
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_FONT)
             }
             
             // Use light background even in dark mode, stored as a bool
             // Default: false
-            let useLightDefault: Any? = defaults.object(forKey: "com-bps-previewjson-do-use-light")
+            let useLightDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.USE_LIGHT)
             if useLightDefault == nil {
                 defaults.setValue(false,
-                                  forKey: "com-bps-previewjson-do-use-light")
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.USE_LIGHT)
             }
 
             // Show the What's New sheet
@@ -732,7 +732,7 @@ final class AppDelegate: NSObject,
             // this will persist, but with each new major and/or minor version, we make a
             // new preference that will be read by 'doShowWhatsNew()' to see if the sheet
             // should be shown this run
-            let key: String = "com-bps-previewjson-do-show-whats-new-" + getVersion()
+            let key: String = BUFFOON_CONSTANTS.PREFS_KEYS.WHATS_NEW + getVersion()
             let showNewDefault: Any? = defaults.object(forKey: key)
             if showNewDefault == nil {
                 defaults.setValue(true, forKey: key)
@@ -740,34 +740,51 @@ final class AppDelegate: NSObject,
             
             // Record the preferred indent depth in spaces
             // Default: 8
-            let indentDefault: Any? = defaults.object(forKey: "com-bps-previewjson-json-indent")
+            let indentDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.INDENT)
             if indentDefault == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.JSON_INDENT,
-                                  forKey: "com-bps-previewjson-json-indent")
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.INDENT)
             }
             
             // Despite var names, should we show JSON furniture?
             // Default: true
-            let indentScalarsDefault: Any? = defaults.object(forKey: "com-bps-previewjson-do-indent-scalars")
+            let indentScalarsDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SCALARS)
             if indentScalarsDefault == nil {
                 defaults.setValue(true,
-                                  forKey: "com-bps-previewjson-do-indent-scalars")
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SCALARS)
             }
             
             // Present malformed JSON on error?
             // Default: false
-            let presentBadJsonDefault: Any? = defaults.object(forKey: "com-bps-previewjson-show-bad-json")
+            let presentBadJsonDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BAD)
             if presentBadJsonDefault == nil {
                 defaults.setValue(false,
-                                  forKey: "com-bps-previewjson-show-bad-json")
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BAD)
             }
             
             // Set the boolean presentation style
             // Default: false
-            let boolStyle: Any? = defaults.object(forKey: "com-bps-previewjson-bool-style")
+            let boolStyle: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BOOL_STYLE)
             if boolStyle == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.BOOL_STYLE.FULL,
-                                  forKey: "com-bps-previewjson-bool-style")
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BOOL_STYLE)
+            }
+
+            // FROM 1.1.0
+            // Colour of strings in the preview, stored as a hex string
+            // Default: #FC6A5DFF
+            colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR)
+            if colourDefault == nil {
+                defaults.setValue(BUFFOON_CONSTANTS.STRING_COLOUR_HEX,
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR)
+            }
+
+            // Colour of special values (Bools, NULL, etc) in the preview, stored as a hex string
+            // Default: #FC6A5DFF
+            colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR)
+            if colourDefault == nil {
+                defaults.setValue(BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX,
+                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR)
             }
 
             // Sync any additions

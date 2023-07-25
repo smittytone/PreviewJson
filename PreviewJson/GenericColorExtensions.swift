@@ -19,7 +19,7 @@ extension NSColor {
     var hexString: String {
         
         guard let rgbColour = usingColorSpace(.sRGB) else {
-            return BUFFOON_CONSTANTS.CODE_COLOUR_HEX
+            return BUFFOON_CONSTANTS.KEY_COLOUR_HEX
         }
         
         let red: Int = Int(round(rgbColour.redComponent * 0xFF))

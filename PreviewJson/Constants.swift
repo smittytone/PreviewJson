@@ -72,8 +72,8 @@ struct BUFFOON_CONSTANTS {
     static let SUITE_NAME                       = ".suite.preview-previewjson"
     static let APP_CODE_PREVIEWER               = "com.bps.previewjson.JSON-Previewer"
     
-    static let CODE_FONT_NAME                   = "Menlo-Regular"
-    static let CODE_COLOUR_HEX                  = "FF2600FF"
+    static let BODY_FONT_NAME                   = "Menlo-Regular"
+    static let KEY_COLOUR_HEX                  = "FF2600FF"
     static let MARK_COLOUR_HEX                  = "929292FF"
     
     static let RENDER_DEBUG                     = false
@@ -89,4 +89,27 @@ struct BUFFOON_CONSTANTS {
     }
     
     static let WHATS_NEW_PREF                   = "com-bps-previewjson-do-show-whats-new-"
+
+    // FROM 1.1.0
+    static let STRING_COLOUR_HEX                = "FC6A5DFF"
+    static let SPECIAL_COLOUR_HEX               = "D0BF69FF"
+
+    struct PREFS_KEYS {
+
+        static let BODY_FONT                    = "com-bps-previewjson-base-font-name"
+        static let BODY_SIZE                    = "com-bps-previewjson-base-font-size"
+        static let THUMB_SIZE                   = "com-bps-previewjson-thumb-font-size"
+        static let KEY_COLOUR                   = "com-bps-previewjson-code-colour-hex"
+        static let MARK_COLOUR                  = "com-bps-previewjson-mark-colour-hex"
+        static let STRING_COLOUR                = "com-bps-previewyaml-string-colour-hex"
+        static let SPECIAL_COLOUR               = "com-bps-previewyaml-special-colour-hex"
+        static let USE_LIGHT                    = "com-bps-previewjson-do-use-light"
+        static let WHATS_NEW                    = "com-bps-previewyaml-do-show-whats-new-"
+        static let INDENT                       = "com-bps-previewjson-json-indent"
+        static let SCALARS                      = "com-bps-previewjson-do-indent-scalars"
+        static let BAD                          = "com-bps-previewjson-show-bad-json"
+        static let BOOL_STYLE                   = "com-bps-previewjson-bool-style"
+    }
+
+
 }

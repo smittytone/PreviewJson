@@ -13,37 +13,51 @@ import AppKit
 
 
 final class Common: NSObject {
-    
+
+    enum AttributeType {
+        case Key
+        case Scalar
+        case String
+        case Special
+        case MarkStart
+        case MarkEnd
+    }
+
+
     // MARK: - Public Properties
     
     var doShowLightBackground: Bool   = false
-    // FROM 1.0.5
+    // FROM 1.1.0
     var doUseSpecialIndentChar: Bool  = false
 
 
     // MARK: - Private Properties
     
-    private var doShowRawJson: Bool         = false
-    private var doShowFurniture: Bool       = true
-    private var isThumbnail:Bool            = false
-    private var jsonIndent: Int             = BUFFOON_CONSTANTS.JSON_INDENT
-    private var boolStyle: Int              = BUFFOON_CONSTANTS.BOOL_STYLE.FULL
-    private var maxKeyLengths: [Int]        = [0,0,0,0,0,0,0,0,0,0,0,0]
-    private var fontSize: CGFloat           = 0
+    private var doShowRawJson: Bool                 = false
+    private var doShowFurniture: Bool               = true
+    private var isThumbnail:Bool                    = false
+    private var jsonIndent: Int                     = BUFFOON_CONSTANTS.JSON_INDENT
+    private var boolStyle: Int                      = BUFFOON_CONSTANTS.BOOL_STYLE.FULL
+    private var maxKeyLengths: [Int]                = [0,0,0,0,0,0,0,0,0,0,0,0]
+    private var fontSize: CGFloat                   = 0
     // String artifacts...
-    private var hr: NSAttributedString      = NSAttributedString.init(string: "")
-    private var cr: NSAttributedString      = NSAttributedString.init(string: "")
+    private var hr: NSAttributedString              = NSAttributedString.init(string: "")
+    private var cr: NSAttributedString              = NSAttributedString.init(string: "")
     // FROM 1.0.2
-    private var lineCount: Int              = 0
-    // FROM 1.0.5
-    private var sortKeys: Bool              = true
-    private var spacer: String              = " "
+    private var lineCount: Int                      = 0
+    // FROM 1.1.0
+    private var sortKeys: Bool                      = true
+    private var spacer: String                      = " "
+    private var displayColours: [String:String]     = [:]
 
     // JSON string attributes...
-    private var keyAtts:     [NSAttributedString.Key: Any] = [:]
-    private var scalarAtts:  [NSAttributedString.Key: Any] = [:]
-    private var markAtts:    [NSAttributedString.Key: Any] = [:]
-    private var markEndAtts: [NSAttributedString.Key: Any] = [:]
+    private var keyAttributes:     [NSAttributedString.Key: Any] = [:]
+    private var scalarAttributes:  [NSAttributedString.Key: Any] = [:]
+    private var markAttributes:    [NSAttributedString.Key: Any] = [:]
+    private var markEndAttributes: [NSAttributedString.Key: Any] = [:]
+    // FROM 1.1.0
+    private var stringAttributes:  [NSAttributedString.Key: Any] = [:]
+    private var specialAttributes: [NSAttributedString.Key: Any] = [:]
 
 
     // MARK: - Lifecycle Functions
@@ -52,28 +66,33 @@ final class Common: NSObject {
         
         super.init()
         
-        self.fontSize           = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
-        var fontName: String    = BUFFOON_CONSTANTS.CODE_FONT_NAME
-        var codeColour: String  = BUFFOON_CONSTANTS.CODE_COLOUR_HEX
-        var markColour: String  = BUFFOON_CONSTANTS.MARK_COLOUR_HEX
-        
+        self.fontSize               = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+        var fontName: String        = BUFFOON_CONSTANTS.BODY_FONT_NAME
+        var keyColour: String       = BUFFOON_CONSTANTS.KEY_COLOUR_HEX
+        var markColour: String      = BUFFOON_CONSTANTS.MARK_COLOUR_HEX
+        var stringColour: String    = BUFFOON_CONSTANTS.STRING_COLOUR_HEX
+        var specialColour: String   = BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX
+
         self.isThumbnail = isThumbnail
         
         // The suite name is the app group name, set in each extension's entitlements, and the host app's
         if let prefs = UserDefaults(suiteName: MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME) {
-            self.doShowFurniture        = prefs.bool(forKey: "com-bps-previewjson-do-indent-scalars")
-            self.doShowRawJson          = prefs.bool(forKey: "com-bps-previewjson-show-bad-json")
-            self.doShowLightBackground  = prefs.bool(forKey: "com-bps-previewjson-do-use-light")
-            self.jsonIndent             = isThumbnail ? 2 : prefs.integer(forKey: "com-bps-previewjson-json-indent")
-            self.boolStyle              = isThumbnail ? BUFFOON_CONSTANTS.BOOL_STYLE.TEXT : prefs.integer(forKey: "com-bps-previewjson-bool-style")
+            self.doShowFurniture        = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SCALARS)
+            self.doShowRawJson          = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BAD)
+            self.doShowLightBackground  = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.USE_LIGHT)
+            self.jsonIndent             = isThumbnail ? 2 : prefs.integer(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.INDENT)
+            self.boolStyle              = isThumbnail ? BUFFOON_CONSTANTS.BOOL_STYLE.TEXT : prefs.integer(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BOOL_STYLE)
             
-            self.fontSize = CGFloat(isThumbnail
-                                     ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE
-                                   : prefs.float(forKey: "com-bps-previewjson-base-font-size"))
+            self.fontSize               = CGFloat(isThumbnail
+                                                  ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE
+                                                  : prefs.float(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE))
 
-            fontName    = prefs.string(forKey: "com-bps-previewjson-base-font-name") ?? BUFFOON_CONSTANTS.CODE_FONT_NAME
-            codeColour  = prefs.string(forKey: "com-bps-previewjson-code-colour-hex") ?? BUFFOON_CONSTANTS.CODE_COLOUR_HEX
-            markColour  = prefs.string(forKey: "com-bps-previewjson-mark-colour-hex") ?? BUFFOON_CONSTANTS.MARK_COLOUR_HEX
+            fontName        = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_FONT) ?? BUFFOON_CONSTANTS.BODY_FONT_NAME
+            keyColour       = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.KEY_COLOUR) ?? BUFFOON_CONSTANTS.KEY_COLOUR_HEX
+            markColour      = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.MARK_COLOUR) ?? BUFFOON_CONSTANTS.MARK_COLOUR_HEX
+            // FROM 1.1.0
+            stringColour    = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR) ?? BUFFOON_CONSTANTS.STRING_COLOUR_HEX
+            specialColour   = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR) ?? BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX
         }
         
         // Just in case the above block reads in zero values
@@ -90,19 +109,22 @@ final class Common: NSObject {
         } else {
             font = NSFont.systemFont(ofSize: self.fontSize)
         }
-        
+
+        // Use a light theme?
+        let useLightMode: Bool = isThumbnail || self.doShowLightBackground || isMacInLightMode()
+
         // Set up the attributed string components we may use during rendering
-        self.keyAtts = [
-            .foregroundColor: NSColor.hexToColour(codeColour),
+        self.keyAttributes = [
+            .foregroundColor: NSColor.hexToColour(keyColour),
             .font: font
         ]
         
-        self.scalarAtts = [
-            .foregroundColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.labelColor),
+        self.scalarAttributes = [
+            .foregroundColor: (useLightMode ? NSColor.black : NSColor.labelColor),
             .font: font
         ]
         
-        self.markAtts = [
+        self.markAttributes = [
             .foregroundColor: NSColor.hexToColour(markColour),
             .font: font
         ]
@@ -110,7 +132,7 @@ final class Common: NSObject {
         let markParaStyle: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
         markParaStyle.paragraphSpacing = self.fontSize * 0.85
         
-        self.markEndAtts = [
+        self.markEndAttributes = [
             .foregroundColor: NSColor.hexToColour(markColour),
             .font: font,
             .paragraphStyle: markParaStyle
@@ -118,16 +140,27 @@ final class Common: NSObject {
         
         self.hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
                                      attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
-                                                  .strikethroughColor: (isThumbnail || self.doShowLightBackground ? NSColor.black : NSColor.white)])
+                                                  .strikethroughColor: (useLightMode ? NSColor.black : NSColor.white)])
         
         self.cr = NSAttributedString.init(string: "\n",
-                                               attributes: scalarAtts)
+                                          attributes: scalarAttributes)
+
+        // FRON 1.1.0
+        self.stringAttributes = [
+            .foregroundColor: NSColor.hexToColour(stringColour),
+            .font: font
+        ]
+
+        self.specialAttributes = [
+            .foregroundColor: NSColor.hexToColour(specialColour),
+            .font: font
+        ]
     }
 
 
     /**
      Update certain style variables on a UI mode switch.
-     FROM 1.0.5
+     FROM 1.1.0
 
      This is used by render demo app.
      */
@@ -138,7 +171,7 @@ final class Common: NSObject {
                                      attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
                                                   .strikethroughColor: self.doShowLightBackground ? NSColor.black : NSColor.white])
 
-        self.scalarAtts[.foregroundColor]  = self.doShowLightBackground ? NSColor.black : NSColor.labelColor
+        self.scalarAttributes[.foregroundColor]  = self.doShowLightBackground ? NSColor.black : NSColor.labelColor
 
         self.spacer = self.doUseSpecialIndentChar ? "-" : " "
     }
@@ -170,29 +203,29 @@ final class Common: NSObject {
             // Just in case...
             if renderedString.length == 0 {
                 renderedString = NSMutableAttributedString.init(string: "Could not render the JSON.\n\(json)\n",
-                                                                attributes: self.keyAtts)
+                                                                attributes: self.keyAttributes)
             }
         } catch {
             // No JSON to render, or the JSON was mis-formatted
             // Assemble the error string
             let errorString: NSMutableAttributedString = NSMutableAttributedString.init(string: "Could not render the JSON. ",
-                                                                                        attributes: self.keyAtts)
+                                                                                        attributes: self.keyAttributes)
 
             // Should we include the raw Json?
             // At least the user can see the data this way
             if self.doShowRawJson {
                 errorString.append(NSMutableAttributedString.init(string: "Here is its raw form:",
-                                                                  attributes: self.keyAtts))
+                                                                  attributes: self.keyAttributes))
                 errorString.append(self.hr)
                 
                 let encoding: String.Encoding = jsonFileData.stringEncoding ?? .utf8
                 
                 if let jsonFileString: String = String.init(data: jsonFileData, encoding: encoding) {
                     errorString.append(NSMutableAttributedString.init(string: "\(jsonFileString)\n",
-                                                                      attributes: self.scalarAtts))
+                                                                      attributes: self.scalarAttributes))
                 } else {
                     errorString.append(NSMutableAttributedString.init(string: "Sorry, this JSON file uses an unsupported coding: \(encoding)\n",
-                                                                      attributes: self.scalarAtts))
+                                                                      attributes: self.scalarAttributes))
                 }
             }
 
@@ -221,19 +254,70 @@ final class Common: NSObject {
         var attributes: [NSAttributedString.Key: Any]
         switch itemType {
             case BUFFOON_CONSTANTS.ITEM_TYPE.KEY:
-                attributes = self.keyAtts
+                attributes = self.keyAttributes
             case BUFFOON_CONSTANTS.ITEM_TYPE.MARK_START:
-                attributes = self.markAtts
+                attributes = self.markAttributes
             case BUFFOON_CONSTANTS.ITEM_TYPE.MARK_END:
-                attributes = self.markEndAtts
+                attributes = self.markEndAttributes
+
             default:
-                attributes = self.scalarAtts
+                attributes = self.scalarAttributes
         }
         
         let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
-        indentedString.append(NSAttributedString.init(string: spaceString, attributes: self.scalarAtts))
+        indentedString.append(NSAttributedString.init(string: spaceString, attributes: self.scalarAttributes))
         indentedString.append(NSAttributedString.init(string: trimmedString, attributes: attributes))
         return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
+    }
+
+
+    /**
+     Return a space-prefix NSAttributedString.
+     FROM 1.1.0
+
+     - Parameters:
+        - baseString:    The string to be indented.
+        - indent:        The number of indent spaces to add.
+        - attributeType: The attribute to apply.
+
+     - Returns: The indented string as an NSAttributedString.
+     */
+    func getIndentedAttributedString(_ baseString: String, _ indent: Int, _ attributeType: AttributeType) -> NSAttributedString {
+
+        let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
+        let spaceString = String(repeating: self.spacer, count: indent)
+        let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
+        indentedString.append(NSAttributedString.init(string: spaceString, attributes: getAttributes(.Scalar)))
+        indentedString.append(NSAttributedString.init(string: trimmedString, attributes: getAttributes(attributeType)))
+        return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
+    }
+
+
+    /**
+     Return an attribute dictionary from a passed attribute type.
+     FROM 1.1.0
+
+     - Parameters:
+        - attributeType: The requested attribute type.
+
+     - Returns: The attributes as a dictionary.
+     */
+    private func getAttributes(_ attributeType: AttributeType) -> [NSAttributedString.Key: Any] {
+
+        switch attributeType {
+            case .Key:
+                return self.keyAttributes
+            case .MarkStart:
+                return self.markAttributes
+            case .MarkEnd:
+                return self.markEndAttributes
+            case .String:
+                return self.stringAttributes
+            case .Special:
+                return self.specialAttributes
+            default:
+                return self.scalarAttributes
+        }
     }
 
 
@@ -255,7 +339,7 @@ final class Common: NSObject {
             let imageString: NSAttributedString = NSAttributedString(attachment: insetImage)
             let spaceString = String(repeating: self.spacer, count: indent)
             let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
-            indentedString.append(NSAttributedString.init(string: spaceString, attributes: scalarAtts))
+            indentedString.append(NSAttributedString.init(string: spaceString, attributes: scalarAttributes))
             indentedString.append(imageString)
             indentedString.append(self.cr)
             return indentedString
@@ -279,8 +363,7 @@ final class Common: NSObject {
     func prettify(_ json: Any, _ currentLevel: Int = 0, _ currentIndent: Int = 0, _ parentIsObject: Bool = false) -> NSMutableAttributedString {
         
         // Prep an NSMutableAttributedString for this JSON segment
-        let renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "",
-                                                                                       attributes: self.keyAtts)
+        let renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: self.keyAttributes)
         
         // FROM 1.0.2
         // Break early at a sensible location, ie. one that
@@ -313,10 +396,10 @@ final class Common: NSObject {
             }
             
             // Can't or won't show an image? Show text
-            renderedString.append(getIndentedString(getStringOutput(currentLevel, "NULL") + "\n", baseIndent))
+            renderedString.append(getIndentedAttributedString("NULL\n", baseIndent, .Special))
         } else if json is Int || json is Float || json is Double {
             // Display the number as is
-            renderedString.append(getIndentedString(getStringOutput(currentLevel, json) + "\n", baseIndent))
+            renderedString.append(getIndentedAttributedString("\(json)\n", baseIndent, .Scalar))
         } else if json is String {
             // Display the string in curly quotes
             // Need to do extra inset work here
@@ -324,21 +407,19 @@ final class Common: NSObject {
             if value == "JSON-TRUE" || value == "JSON-FALSE" {
                 // We have a string-encoded boolean
                 if self.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
-                    let name: String = value == "JSON-TRUE"
-                    ? "true_\(self.boolStyle)"
-                    : "false_\(self.boolStyle)"
+                    let name: String = value == "JSON-TRUE" ? "true_\(self.boolStyle)" : "false_\(self.boolStyle)"
                     
                     if !self.isThumbnail, let addString: NSAttributedString = getImageString(baseIndent, name) {
                         renderedString.append(addString)
                         return renderedString
                     }
                 }
-                
-                renderedString.append(getIndentedString(value == "JSON-TRUE"
-                                                        ? getStringOutput(currentLevel, "TRUE") + "\n"
-                                                        : getStringOutput(currentLevel, "FALSE") + "\n", baseIndent))
+
+                // Can't or won't show an image? Show text
+                renderedString.append(getIndentedAttributedString(value == "JSON-TRUE" ? "TRUE\n" : "FALSE\n", baseIndent, .Special))
             } else {
-                renderedString.append(getIndentedString("“" + getStringOutput(currentLevel, json) + "”\n", baseIndent))
+                let stringText: String = self.doShowFurniture ? "“" + (json as! String) + "”\n" : (json as! String) + "\n"
+                renderedString.append(getIndentedAttributedString(stringText, baseIndent, .String))
             }
         } else if json is Dictionary<String, Any> {
             // For a dictionary, enumerate the key and value
@@ -349,14 +430,12 @@ final class Common: NSObject {
                 // Add JSON furniture
                 // NOTE Parent is an object, so add furniture after key
                 //*****let initialFurnitureIndent: Int = parentIsObject ? BUFFOON_CONSTANTS.BASE_INDENT : baseIndent
-                renderedString.append(getIndentedString("{\n",
-                                                        baseIndent,
-                                                        BUFFOON_CONSTANTS.ITEM_TYPE.MARK_START))
+                renderedString.append(getIndentedAttributedString("{\n", baseIndent, .MarkStart))
             }
             
             let anyObject: [String: Any] = json as! [String: Any]
 
-            // FROM 1.0.5 -- sort dictionaries alphabetically by key
+            // FROM 1.1.0 -- sort dictionaries alphabetically by key
             var keys: [String] = Array(anyObject.keys)
             if self.sortKeys {
                 keys = keys.sorted(by: { (a, b) -> Bool in
@@ -371,9 +450,7 @@ final class Common: NSObject {
                 let valueIsArray: Bool = (value is Array<Any>)
 
                 // Print the key
-                renderedString.append(getIndentedString(getStringOutput(currentLevel, key),
-                                                        self.doShowFurniture ? baseIndent + self.jsonIndent : baseIndent,
-                                                        BUFFOON_CONSTANTS.ITEM_TYPE.KEY))
+                renderedString.append(getIndentedAttributedString(key, self.doShowFurniture ? baseIndent + self.jsonIndent : baseIndent, .Key))
 
                 // Is the value non-scalar?
                 if valueIsObject || valueIsArray {
@@ -398,18 +475,14 @@ final class Common: NSObject {
             
             if self.doShowFurniture {
                 // Bookend with JSON furniture
-                renderedString.append(getIndentedString("}\n",
-                                                        baseIndent,
-                                                        BUFFOON_CONSTANTS.ITEM_TYPE.MARK_END))
+                renderedString.append(getIndentedAttributedString("}\n", baseIndent, .MarkEnd))
             }
         } else if json is Array<Any> {
             if self.doShowFurniture {
                 // Add JSON furniture
                 // NOTE Parent is an object, so add furniture after key
                 let initialFurnitureIndent: Int = parentIsObject ? BUFFOON_CONSTANTS.BASE_INDENT : baseIndent
-                renderedString.append(getIndentedString("[\n",
-                                                        initialFurnitureIndent,
-                                                        BUFFOON_CONSTANTS.ITEM_TYPE.MARK_START))
+                renderedString.append(getIndentedAttributedString("[\n", initialFurnitureIndent, .MarkStart))
             }
             
             // Iterate over the array's items
@@ -444,30 +517,11 @@ final class Common: NSObject {
             if self.doShowFurniture {
                 // Bookend with JSON furniture
                 let markIndent: Int = baseIndent - (currentLevel > 0 ? self.maxKeyLengths[currentLevel - 1] : 0)
-                renderedString.append(getIndentedString("]\n",
-                                                        markIndent,
-                                                        BUFFOON_CONSTANTS.ITEM_TYPE.MARK_END))
+                renderedString.append(getIndentedAttributedString("]\n", markIndent, .MarkEnd))
             }
         }
         
         return renderedString
-    }
-    
-    
-    /**
-    Present a string with or without the level displayed for debugging.
-
-     - Parameters:
-        - level:    The current level.
-        - json:     The JSON element.
-     */
-    func getStringOutput(_ level: Int, _ source: Any) -> String {
-        
-        if BUFFOON_CONSTANTS.RENDER_DEBUG {
-            return "\(level)-\(source)"
-        }
-        
-        return "\(source)"
     }
     
     
@@ -485,13 +539,6 @@ final class Common: NSObject {
             let anyObject: [String: Any] = json as! [String: Any]
             
             // Get the max key length for the current level
-            /*
-            anyObject.forEach { key, value in
-                if key.count > self.maxKeyLengths[level] {
-                    self.maxKeyLengths[level] = key.count
-                }
-            }
-             */
             let keys: [String] = Array(anyObject.keys)
             for key in keys {
                 if key.count > self.maxKeyLengths[level] {
@@ -527,6 +574,19 @@ final class Common: NSObject {
                 }
             }
         }
+    }
+
+
+    /**
+     Determine whether the host Mac is in light mode.
+     FROM 1.1.0
+
+     - Returns: `true` if the Mac is in light mode, otherwise `false`.
+     */
+    private func isMacInLightMode() -> Bool {
+
+        let appearNameString: String = NSApp.effectiveAppearance.name.rawValue
+        return (appearNameString == "NSAppearanceNameAqua")
     }
 
 }

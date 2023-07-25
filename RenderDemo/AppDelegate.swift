@@ -54,7 +54,7 @@ class AppDelegate:  NSObject,
 
     // MARK: - Action Functions
     
-    @IBAction private func doLoadYamlFile(_ sender: Any) {
+    @IBAction private func doLoadFile(_ sender: Any) {
 
         self.openDialog = NSOpenPanel.init()
         self.openDialog!.canChooseFiles = true
@@ -99,9 +99,6 @@ class AppDelegate:  NSObject,
         self.renderIndents = self.indentButton.state == .on
         doReRenderFile(self)
     }
-
-
-
 
     
     // MARK: - Rendering Functions
