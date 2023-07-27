@@ -19,7 +19,8 @@ final class AppDelegate: NSObject,
                          URLSessionDataDelegate,
                          WKNavigationDelegate {
 
-    // MARK:- Class UI Properies
+    // MARK: - Class UI Properies
+
     // Menu Items
     @IBOutlet var helpMenu: NSMenuItem!
     @IBOutlet var helpMenuOnlineHelp: NSMenuItem!
@@ -52,26 +53,29 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var codeStylePopup: NSPopUpButton!
     @IBOutlet weak var codeIndentPopup: NSPopUpButton!
     @IBOutlet weak var codeColorWell: NSColorWell!
-    @IBOutlet weak var markColorWell: NSColorWell!
+    //@IBOutlet weak var markColorWell: NSColorWell!
     @IBOutlet weak var boolStyleSegment: NSSegmentedControl!
     @IBOutlet weak var useLightCheckbox: NSButton!
     @IBOutlet weak var doShowRawJsonCheckbox: NSButton!
     @IBOutlet weak var doShowJsonFurnitureCheckbox: NSButton!
+    // FROM 1.1.0
+    @IBOutlet var colourSelectionPopup: NSPopUpButton!
 
     // What's New Sheet
     @IBOutlet weak var whatsNewWindow: NSWindow!
     @IBOutlet weak var whatsNewWebView: WKWebView!
     
 
-    // MARK:- Private Properies
+    // MARK: - Private Properies
+
     internal var whatsNewNav: WKNavigation?     = nil
     private  var feedbackTask: URLSessionTask?  = nil
     private  var indentDepth: Int               = BUFFOON_CONSTANTS.JSON_INDENT
     private  var boolStyle: Int                 = BUFFOON_CONSTANTS.BOOL_STYLE.FULL
-    private  var codeFontSize: CGFloat          = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
-    private  var codeFontName: String           = BUFFOON_CONSTANTS.BODY_FONT_NAME
-    private  var codeColourHex: String          = BUFFOON_CONSTANTS.KEY_COLOUR_HEX
-    private  var markColourHex: String          = BUFFOON_CONSTANTS.MARK_COLOUR_HEX
+    private  var fontSize: CGFloat              = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+    private  var fontName: String               = BUFFOON_CONSTANTS.BODY_FONT_NAME
+    //private  var codeColourHex: String        = BUFFOON_CONSTANTS.KEY_COLOUR_HEX
+    //private  var markColourHex: String        = BUFFOON_CONSTANTS.MARK_COLOUR_HEX
     private  var appSuiteName: String           = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
     private  var feedbackPath: String           = MNU_SECRETS.ADDRESS.B
     private  var doShowLightBackground: Bool    = false
@@ -82,6 +86,8 @@ final class AppDelegate: NSObject,
     internal var codeFonts: [PMFont]            = []
     // FROM 1.0.3
     private var havePrefsChanged: Bool = false
+    // FROM 1.1.0
+    private var displayColours: [String:String] = [:]
     
 
     // MARK: - Class Lifecycle Functions
@@ -130,7 +136,7 @@ final class AppDelegate: NSObject,
     }
 
 
-    // MARK:- Action Functions
+    // MARK: - Action Functions
 
     /**
      Called from **File > Close** and the various Quit controls.
@@ -349,22 +355,28 @@ final class AppDelegate: NSObject,
         // The suite name is the app group name, set in each the entitlements file of
         // the host app and of each extension
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            self.codeFontSize = CGFloat(defaults.float(forKey: "com-bps-previewjson-base-font-size"))
-            self.indentDepth = defaults.integer(forKey: "com-bps-previewjson-json-indent")
-            self.doShowLightBackground = defaults.bool(forKey: "com-bps-previewjson-do-use-light")
-            self.doShowRawJson = defaults.bool(forKey: "com-bps-previewjson-show-bad-json")
-            self.codeFontName = defaults.string(forKey: "com-bps-previewjson-base-font-name") ?? BUFFOON_CONSTANTS.BODY_FONT_NAME
-            self.codeColourHex = defaults.string(forKey: "com-bps-previewjson-code-colour-hex") ?? BUFFOON_CONSTANTS.KEY_COLOUR_HEX
-            self.markColourHex = defaults.string(forKey: "com-bps-previewjson-mark-colour-hex") ?? BUFFOON_CONSTANTS.MARK_COLOUR_HEX
-            self.doShowFurniture = defaults.bool(forKey: "com-bps-previewjson-do-indent-scalars")
-            self.boolStyle = defaults.integer(forKey: "com-bps-previewjson-bool-style")
+            self.fontSize                   = CGFloat(defaults.float(forKey: "com-bps-previewjson-base-font-size"))
+            self.fontName                   = defaults.string(forKey: "com-bps-previewjson-base-font-name") ?? BUFFOON_CONSTANTS.BODY_FONT_NAME
+            self.indentDepth                = defaults.integer(forKey: "com-bps-previewjson-json-indent")
+            self.doShowLightBackground      = defaults.bool(forKey: "com-bps-previewjson-do-use-light")
+            self.doShowRawJson              = defaults.bool(forKey: "com-bps-previewjson-show-bad-json")
+            //self.codeColourHex            = defaults.string(forKey: "com-bps-previewjson-code-colour-hex") ?? BUFFOON_CONSTANTS.KEY_COLOUR_HEX
+            //self.markColourHex            = defaults.string(forKey: "com-bps-previewjson-mark-colour-hex") ?? BUFFOON_CONSTANTS.MARK_COLOUR_HEX
+            self.doShowFurniture            = defaults.bool(forKey: "com-bps-previewjson-do-indent-scalars")
+            self.boolStyle                  = defaults.integer(forKey: "com-bps-previewjson-bool-style")
+
+            // FROM 1.1.0
+            self.displayColours["key"]      = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.KEY_COLOUR)
+            self.displayColours["string"]   = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR) ?? BUFFOON_CONSTANTS.STRING_COLOUR_HEX
+            self.displayColours["special"]  = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR) ?? BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX
+            self.displayColours["mark"]     = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.MARK_COLOUR) ?? BUFFOON_CONSTANTS.MARK_COLOUR_HEX
         }
 
         // Get the menu item index from the stored value
         // NOTE The index is that of the list of available fonts (see 'Common.swift') so
         //      we need to convert this to an equivalent menu index because the menu also
         //      contains a separator and two title items
-        let index: Int = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS.lastIndex(of: self.codeFontSize) ?? 3
+        let index: Int = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS.lastIndex(of: self.fontSize) ?? 3
         self.fontSizeSlider.floatValue = Float(index)
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
         
@@ -379,8 +391,8 @@ final class AppDelegate: NSObject,
         
         // Set the colour panel's initial view
         NSColorPanel.setPickerMode(.RGB)
-        self.codeColorWell.color = NSColor.hexToColour(self.codeColourHex)
-        self.markColorWell.color = NSColor.hexToColour(self.markColourHex)
+        self.codeColorWell.color = NSColor.hexToColour(self.displayColours["key"] ?? BUFFOON_CONSTANTS.KEY_COLOUR_HEX)
+        //self.markColorWell.color = NSColor.hexToColour(self.markColourHex)
         
         // Set the font name popup
         // List the current system's monospace fonts
@@ -392,7 +404,7 @@ final class AppDelegate: NSObject,
         
         // Set the font style
         self.codeStylePopup.isEnabled = false
-        selectFontByPostScriptName(self.codeFontName)
+        selectFontByPostScriptName(self.fontName)
         
         // Set the style for JSON bools and null
         self.boolStyleSegment.selectedSegment = self.boolStyle
@@ -402,6 +414,9 @@ final class AppDelegate: NSObject,
         if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
             self.useLightCheckbox.isHidden = (appearName == .aqua)
         }
+
+        // FROM 1.1.0
+        self.colourSelectionPopup.selectItem(at: 0)
         
         // Display the sheet
         self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
@@ -445,23 +460,56 @@ final class AppDelegate: NSObject,
      */
     @IBAction private func doClosePreferences(sender: Any) {
 
+        if self.havePrefsChanged {
+            let alert: NSAlert = showAlert("You have made changes",
+                                           "Do you wish to go back and save them, or ignore them? ",
+                                           false)
+            alert.addButton(withTitle: "Go Back")
+            alert.addButton(withTitle: "Ignore Changes")
+            alert.beginSheetModal(for: self.preferencesWindow) { (response: NSApplication.ModalResponse) in
+                if response != NSApplication.ModalResponse.alertFirstButtonReturn {
+                    // The user clicked 'Cancel'
+                    self.closePrefsWindow()
+                }
+            }
+        } else {
+            closePrefsWindow()
+        }
+    }
+
+
+    /**
+        Follow-on function to close the **Preferences** sheet without saving.
+        FROM 1.1.0
+
+        - Parameters:
+            - sender: The source of the action.
+     */
+    private func closePrefsWindow() {
+
         // Close the colour selection panel(s) if they're open
         if self.codeColorWell.isActive {
             NSColorPanel.shared.close()
             self.codeColorWell.deactivate()
         }
-        
+
+        /*
         if self.markColorWell.isActive {
             NSColorPanel.shared.close()
             self.markColorWell.deactivate()
         }
-        
-        // Shut the window
+        */
+
+       // Shut the window
         self.window.endSheet(self.preferencesWindow)
-        
+
         // FROM 1.0.3
         // Restore menus
-        showPanelGenerators()
+        self.showPanelGenerators()
+
+        // FROM 1.1.0
+        self.clearNewColours()
+        self.havePrefsChanged = false
     }
 
 
@@ -479,13 +527,16 @@ final class AppDelegate: NSObject,
             self.codeColorWell.deactivate()
         }
 
+        /*
         if self.markColorWell.isActive {
             NSColorPanel.shared.close()
             self.markColorWell.deactivate()
         }
-        
+        */
+
         // Save any changed preferences
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
+            /*
             // Check for and record a JSON key colour change
             var newColour: String = self.codeColorWell.color.hexString
             if newColour != self.codeColourHex {
@@ -501,7 +552,8 @@ final class AppDelegate: NSObject,
                 defaults.setValue(newColour,
                                   forKey: "com-bps-previewjson-mark-colour-hex")
             }
-            
+            */
+
             // Check for and record a use light background change
             var state: Bool = self.useLightCheckbox.state == .on
             if self.doShowLightBackground != state {
@@ -533,8 +585,8 @@ final class AppDelegate: NSObject,
             
             // Check for and record a font and style change
             if let fontName: String = getPostScriptName() {
-                if fontName != self.codeFontName {
-                    self.codeFontName = fontName
+                if fontName != self.fontName {
+                    self.fontName = fontName
                     defaults.setValue(fontName,
                                       forKey: "com-bps-previewjson-base-font-name")
                 }
@@ -542,7 +594,7 @@ final class AppDelegate: NSObject,
             
             // Check for and record a font size change
             let newValue: CGFloat = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[Int(self.fontSizeSlider.floatValue)]
-            if newValue != self.codeFontSize {
+            if newValue != self.fontSize {
                 defaults.setValue(newValue,
                                   forKey: "com-bps-previewjson-base-font-size")
             }
@@ -555,6 +607,23 @@ final class AppDelegate: NSObject,
                                   forKey: "com-bps-previewjson-bool-style")
             }
 
+            // FROM 1.1.0
+            if let newColour: String = self.displayColours["new_key"] {
+                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.KEY_COLOUR)
+            }
+
+            if let newColour: String = self.displayColours["new_string"] {
+                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR)
+            }
+
+            if let newColour: String = self.displayColours["new_special"] {
+                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR)
+            }
+
+            if let newColour: String = self.displayColours["new_mark"] {
+                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.MARK_COLOUR)
+            }
+
             // Sync any changes
             defaults.synchronize()
         }
@@ -565,8 +634,26 @@ final class AppDelegate: NSObject,
         // FROM 1.0.3
         // Restore menus
         showPanelGenerators()
+
+        // FROM 1.1.0
+        clearNewColours()
     }
-    
+
+
+    /**
+        Zap any temporary colour values.
+        FROM 1.1.0
+     
+     */
+    private func clearNewColours() {
+
+        let keys: [String] = ["key", "string", "special", "mark"]
+        for key in keys {
+            if let _: String = self.displayColours["new_" + key] {
+                self.displayColours["new_" + key] = nil
+            }
+        }
+    }
     
     /**
         Generic IBAction for any Prefs control to register it has been used.
@@ -577,6 +664,52 @@ final class AppDelegate: NSObject,
     @IBAction private func checkboxClicked(sender: Any) {
         
         self.havePrefsChanged = true
+    }
+
+
+    /**
+        Update the colour preferences dictionary with a value from the
+        colour well when a colour is chosen.
+        FROM 1.1.0
+
+        - Parameters:
+            - sender: The source of the action.
+     */
+    @objc @IBAction private func colourSelected(sender: Any) {
+
+        let keys: [String] = ["key", "string", "special", "mark"]
+        let key: String = "new_" + keys[self.colourSelectionPopup.indexOfSelectedItem]
+        self.displayColours[key] = self.codeColorWell.color.hexString
+        self.havePrefsChanged = true
+    }
+
+
+    /**
+        Update the colour well with the stored colour: either a new one, previously
+        chosen, or the loaded preference.
+        FROM 1.1.0
+
+        - Parameters:
+            - sender: The source of the action.
+     */
+    @IBAction private func doChooseColourType(sender: Any) {
+
+        let keys: [String] = ["key", "string", "special", "mark"]
+        let key: String = keys[self.colourSelectionPopup.indexOfSelectedItem]
+
+        // If there's no `new_xxx` key, the next line will evaluate to false
+        if let colour: String = self.displayColours["new_" + key] {
+            if colour.count != 0 {
+                // Set the colourwell with the updated colour and exit
+                self.codeColorWell.color = NSColor.hexToColour(colour)
+                return
+            }
+        }
+
+        // Set the colourwell with the stored colour
+        if let colour: String = self.displayColours[key] {
+            self.codeColorWell.color = NSColor.hexToColour(colour)
+        }
     }
 
 
@@ -604,7 +737,7 @@ final class AppDelegate: NSObject,
             // if we need to show the sheet by the checking the prefs
             if let defaults = UserDefaults(suiteName: self.appSuiteName) {
                 // Get the version-specific preference key
-                let key: String = BUFFOON_CONSTANTS.WHATS_NEW_PREF + getVersion()
+                let key: String = BUFFOON_CONSTANTS.PREFS_KEYS.WHATS_NEW + getVersion()
                 doShowSheet = defaults.bool(forKey: key)
             }
         }
@@ -652,13 +785,13 @@ final class AppDelegate: NSObject,
 
         // Set this version's preference
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            let key: String = "com-bps-previewjson-do-show-whats-new-" + getVersion()
+            let key: String = BUFFOON_CONSTANTS.PREFS_KEYS.WHATS_NEW + getVersion()
             defaults.setValue(false, forKey: key)
 
-            #if DEBUG
+#if DEBUG
             print("\(key) reset back to true")
             defaults.setValue(true, forKey: key)
-            #endif
+#endif
 
             defaults.synchronize()
         }
@@ -712,8 +845,8 @@ final class AppDelegate: NSObject,
             
             // Font for previews and thumbnails
             // Default: Courier
-            let codeFontName: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_FONT)
-            if codeFontName == nil {
+            let fontName: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_FONT)
+            if fontName == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.BODY_FONT_NAME,
                                   forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_FONT)
             }

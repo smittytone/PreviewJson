@@ -15,7 +15,7 @@ class PreviewViewController: NSViewController,
                              QLPreviewingController {
     
     
-    // MARK:- Class UI Properties
+    // MARK: - Class UI Properties
 
     @IBOutlet var renderTextView: NSTextView!
     @IBOutlet var renderTextScrollView: NSScrollView!
@@ -29,6 +29,7 @@ class PreviewViewController: NSViewController,
         // Do any additional setup after loading the view.
     }
 
+
     /*
      * Implement this method and set QLSupportsSearchableItems to YES in the Info.plist of the extension if you support CoreSpotlight.
      *
@@ -40,7 +41,8 @@ class PreviewViewController: NSViewController,
         handler(nil)
     }
      */
-    
+
+
     func preparePreviewOfFile(at url: URL, completionHandler handler: @escaping (Error?) -> Void) {
         
        /*
@@ -53,7 +55,7 @@ class PreviewViewController: NSViewController,
         // Hide the error message field
         self.renderTextScrollView.isHidden = false
         
-        // Set the base values
+        // Instantiate the common renderer
         let common: Common = Common.init()
         
         // Load the source file using a co-ordinator as we don't know what thread this function
@@ -142,7 +144,7 @@ class PreviewViewController: NSViewController,
     }
     
     
-    // MARK:- Utility Functions
+    // MARK: - Utility Functions
     
     /**
      Place an error message in its various outlets.
@@ -189,4 +191,5 @@ class PreviewViewController: NSViewController,
                        code: code,
                        userInfo: [NSLocalizedDescriptionKey: errDesc])
     }
+    
 }

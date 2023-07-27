@@ -21,6 +21,7 @@
                 <outlet property="codeFontPopup" destination="GS0-Os-jnX" id="K1D-1V-zvO"/>
                 <outlet property="codeIndentPopup" destination="fen-aP-loU" id="QQE-cg-uX4"/>
                 <outlet property="codeStylePopup" destination="2qh-h7-OMO" id="u4j-br-Bdg"/>
+                <outlet property="colourSelectionPopup" destination="zTD-LM-kGP" id="e9L-Oc-Pyf"/>
                 <outlet property="connectionProgress" destination="tAy-4n-Mlm" id="JrN-W5-JML"/>
                 <outlet property="doShowJsonFurnitureCheckbox" destination="1WJ-Ce-dro" id="Mc9-aS-p2M"/>
                 <outlet property="doShowRawJsonCheckbox" destination="Z9F-Y6-BVI" id="yEk-KN-E8a"/>
@@ -37,7 +38,6 @@
                 <outlet property="helpMenuReportBug" destination="9jb-nj-WtE" id="qc8-YK-mmo"/>
                 <outlet property="helpMenuWhatsNew" destination="8ow-rc-CzH" id="PFI-AM-2re"/>
                 <outlet property="mainMenuSettings" destination="BOF-NM-1cW" id="gEX-5P-8bk"/>
-                <outlet property="markColorWell" destination="9J6-So-zYx" id="c6W-qX-nxy"/>
                 <outlet property="preferencesWindow" destination="jjd-uj-Puq" id="1ud-bv-mbH"/>
                 <outlet property="reportWindow" destination="nk4-l2-g5W" id="SNf-z1-JQ2"/>
                 <outlet property="useLightCheckbox" destination="BoQ-JX-H8c" id="f1n-7h-UDu"/>
@@ -198,7 +198,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="335" y="390" width="610" height="432"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="3840" height="2135"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="610" height="432"/>
             <value key="maxSize" type="size" width="610" height="432"/>
             <value key="minFullScreenContentSize" type="size" width="610" height="432"/>
@@ -369,7 +369,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="560" height="388"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="3840" height="2135"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="560" height="388"/>
             <value key="maxSize" type="size" width="560" height="388"/>
             <value key="minFullScreenContentSize" type="size" width="560" height="388"/>
@@ -470,25 +470,16 @@ DQ
                         </connections>
                     </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YAR-RZ-VG6">
-                        <rect key="frame" x="18" y="214" width="256" height="16"/>
+                        <rect key="frame" x="18" y="220" width="104" height="16"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="JSON key colour:" id="zfg-xK-Rad">
-                            <font key="font" usesAppearanceFont="YES"/>
-                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IBX-Sa-rx3">
-                        <rect key="frame" x="18" y="186" width="256" height="16"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="JSON mark colour:" id="vbl-eY-2X8">
+                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Colours:" id="zfg-xK-Rad">
                             <font key="font" usesAppearanceFont="YES"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2qh-h7-OMO">
-                        <rect key="frame" x="277" y="237" width="158" height="25"/>
+                        <rect key="frame" x="277" y="243" width="158" height="25"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Regular" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="rvb-SO-ZKa" id="ytz-TM-OQU">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -504,7 +495,7 @@ DQ
                         </connections>
                     </popUpButton>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GS0-Os-jnX">
-                        <rect key="frame" x="277" y="267" width="206" height="25"/>
+                        <rect key="frame" x="277" y="273" width="206" height="25"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Proportional" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" autoenablesItems="NO" selectedItem="ou2-EH-IEv" id="REh-FL-G2G">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -556,7 +547,7 @@ DQ
                         </connections>
                     </popUpButton>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Abc-Nd-4fL">
-                        <rect key="frame" x="18" y="273" width="256" height="16"/>
+                        <rect key="frame" x="18" y="279" width="256" height="16"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Preview monospace font:" id="mDA-5G-Kv9">
                             <font key="font" usesAppearanceFont="YES"/>
@@ -565,23 +556,69 @@ DQ
                         </textFieldCell>
                     </textField>
                     <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c2F-Ul-2wK">
-                        <rect key="frame" x="278" y="210" width="44" height="23"/>
+                        <rect key="frame" x="278" y="216" width="44" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <connections>
-                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="Vcp-1t-I4p"/>
+                            <action selector="colourSelectedWithSender:" target="Voe-Tx-rLC" id="I2H-yo-mSm"/>
                         </connections>
                     </colorWell>
-                    <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9J6-So-zYx">
-                        <rect key="frame" x="278" y="183" width="44" height="23"/>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1WJ-Ce-dro">
+                        <rect key="frame" x="18" y="103" width="522" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <buttonCell key="cell" type="check" title="Show JSON object and array marks" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="nR1-bs-Ne9">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
                         <connections>
-                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="A1d-bn-1et"/>
+                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="hOH-Qy-K0P"/>
                         </connections>
-                    </colorWell>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BoQ-JX-H8c">
+                        <rect key="frame" x="18" y="59" width="522" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Use light background for previews in macOS Dark Mode" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="8o2-5l-ksb">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="mfV-PY-5jf"/>
+                        </connections>
+                    </button>
+                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Z9F-Y6-BVI">
+                        <rect key="frame" x="18" y="81" width="522" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Display raw JSON if it cannot be rendered" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="ZVp-1a-gQH">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="BLp-Xl-skr"/>
+                        </connections>
+                    </button>
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zTD-LM-kGP">
+                        <rect key="frame" x="125" y="214" width="151" height="25"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <popUpButtonCell key="cell" type="push" title="Keys" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="q22-qT-29i" id="gDK-J2-FBw">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="menu"/>
+                            <menu key="menu" id="Tmw-C4-sp6">
+                                <items>
+                                    <menuItem title="Keys" state="on" id="q22-qT-29i"/>
+                                    <menuItem title="Strings" id="qtJ-8x-PZy"/>
+                                    <menuItem title="True/False/Null" id="H66-6K-drg"/>
+                                    <menuItem title="JSON marks" id="g4B-DZ-L6G">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                        <connections>
+                            <action selector="doChooseColourTypeWithSender:" target="Voe-Tx-rLC" id="gCr-Jv-fen"/>
+                        </connections>
+                    </popUpButton>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fen-aP-loU">
-                        <rect key="frame" x="277" y="151" width="88" height="25"/>
+                        <rect key="frame" x="277" y="166" width="88" height="25"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="2" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="PsK-b9-0n0" id="qXL-EO-lAd">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -614,7 +651,7 @@ DQ
                         </popUpButtonCell>
                     </popUpButton>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Sk6-Ra-IOr">
-                        <rect key="frame" x="18" y="157" width="256" height="16"/>
+                        <rect key="frame" x="18" y="172" width="256" height="16"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="JSON indent size:" id="twb-pm-O1s">
                             <font key="font" usesAppearanceFont="YES"/>
@@ -622,19 +659,8 @@ DQ
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1WJ-Ce-dro">
-                        <rect key="frame" x="18" y="104" width="522" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Show JSON object and array marks" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="nR1-bs-Ne9">
-                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="hOH-Qy-K0P"/>
-                        </connections>
-                    </button>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L5P-Av-1Ii">
-                        <rect key="frame" x="18" y="129" width="256" height="16"/>
+                        <rect key="frame" x="18" y="144" width="256" height="16"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="True/False/Null style:" id="ZS9-J4-yjR">
                             <font key="font" metaFont="system"/>
@@ -643,44 +669,20 @@ DQ
                         </textFieldCell>
                     </textField>
                     <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FEb-Oc-ldy">
-                        <rect key="frame" x="277" y="127" width="266" height="24"/>
+                        <rect key="frame" x="277" y="142" width="266" height="24"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fillEqually" style="separated" trackingMode="selectOne" id="Yjl-4C-iBk">
                             <font key="font" metaFont="system"/>
                             <segments>
-                                <segment image="style_1" imageScaling="proportionallyUpOrDown" width="86" selected="YES"/>
-                                <segment image="style_2" imageScaling="proportionallyUpOrDown" width="86" tag="1"/>
-                                <segment image="style_3" imageScaling="proportionallyUpOrDown" width="86">
-                                    <nil key="label"/>
-                                </segment>
+                                <segment image="style_1" imageScaling="none" width="86" selected="YES"/>
+                                <segment image="style_2" imageScaling="none" width="86" tag="1"/>
+                                <segment image="style_3" imageScaling="none" width="86"/>
                             </segments>
                         </segmentedCell>
                         <connections>
                             <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="0IE-6a-s1I"/>
                         </connections>
                     </segmentedControl>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BoQ-JX-H8c">
-                        <rect key="frame" x="18" y="60" width="522" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Use light background for previews in macOS Dark Mode" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="8o2-5l-ksb">
-                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="mfV-PY-5jf"/>
-                        </connections>
-                    </button>
-                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Z9F-Y6-BVI">
-                        <rect key="frame" x="18" y="82" width="522" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="Display raw JSON if it cannot be rendered" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="ZVp-1a-gQH">
-                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                        <connections>
-                            <action selector="checkboxClickedWithSender:" target="Voe-Tx-rLC" id="BLp-Xl-skr"/>
-                        </connections>
-                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="L3S-3t-ZLg" secondAttribute="bottom" constant="20" symbolic="YES" id="2mX-5U-b59"/>
@@ -711,7 +713,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="560" height="410"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="3840" height="2135"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="560" height="410"/>
             <value key="maxSize" type="size" width="560" height="410"/>
             <value key="minFullScreenContentSize" type="size" width="560" height="410"/>
@@ -764,7 +766,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="560" height="356"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="3840" height="2135"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1415"/>
             <value key="minSize" type="size" width="560" height="356"/>
             <value key="maxSize" type="size" width="560" height="356"/>
             <value key="minFullScreenContentSize" type="size" width="560" height="356"/>

@@ -53,7 +53,7 @@ final class Common: NSObject {
     // JSON string attributes...
     private var keyAttributes:     [NSAttributedString.Key: Any] = [:]
     private var scalarAttributes:  [NSAttributedString.Key: Any] = [:]
-    private var markAttributes:    [NSAttributedString.Key: Any] = [:]
+    private var markStartAttributes:    [NSAttributedString.Key: Any] = [:]
     private var markEndAttributes: [NSAttributedString.Key: Any] = [:]
     // FROM 1.1.0
     private var stringAttributes:  [NSAttributedString.Key: Any] = [:]
@@ -66,12 +66,12 @@ final class Common: NSObject {
         
         super.init()
         
-        self.fontSize               = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
-        var fontName: String        = BUFFOON_CONSTANTS.BODY_FONT_NAME
-        var keyColour: String       = BUFFOON_CONSTANTS.KEY_COLOUR_HEX
-        var markColour: String      = BUFFOON_CONSTANTS.MARK_COLOUR_HEX
-        var stringColour: String    = BUFFOON_CONSTANTS.STRING_COLOUR_HEX
-        var specialColour: String   = BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX
+        self.fontSize                   = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+        var fontName: String            = BUFFOON_CONSTANTS.BODY_FONT_NAME
+        var keyColour: String           = BUFFOON_CONSTANTS.KEY_COLOUR_HEX
+        var markColour: String          = BUFFOON_CONSTANTS.MARK_COLOUR_HEX
+        var stringColour: String        = BUFFOON_CONSTANTS.STRING_COLOUR_HEX
+        var specialColour: String       = BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX
 
         self.isThumbnail = isThumbnail
         
@@ -87,12 +87,12 @@ final class Common: NSObject {
                                                   ? BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE
                                                   : prefs.float(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE))
 
-            fontName        = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_FONT) ?? BUFFOON_CONSTANTS.BODY_FONT_NAME
-            keyColour       = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.KEY_COLOUR) ?? BUFFOON_CONSTANTS.KEY_COLOUR_HEX
-            markColour      = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.MARK_COLOUR) ?? BUFFOON_CONSTANTS.MARK_COLOUR_HEX
+            fontName                    = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_FONT) ?? BUFFOON_CONSTANTS.BODY_FONT_NAME
+            keyColour                   = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.KEY_COLOUR) ?? BUFFOON_CONSTANTS.KEY_COLOUR_HEX
+            markColour                  = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.MARK_COLOUR) ?? BUFFOON_CONSTANTS.MARK_COLOUR_HEX
             // FROM 1.1.0
-            stringColour    = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR) ?? BUFFOON_CONSTANTS.STRING_COLOUR_HEX
-            specialColour   = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR) ?? BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX
+            stringColour                = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR) ?? BUFFOON_CONSTANTS.STRING_COLOUR_HEX
+            specialColour               = prefs.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR) ?? BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX
         }
         
         // Just in case the above block reads in zero values
@@ -123,19 +123,18 @@ final class Common: NSObject {
             .foregroundColor: (useLightMode ? NSColor.black : NSColor.labelColor),
             .font: font
         ]
-        
-        self.markAttributes = [
+
+        self.markStartAttributes = [
             .foregroundColor: NSColor.hexToColour(markColour),
             .font: font
         ]
-        
-        let markParaStyle: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
-        markParaStyle.paragraphSpacing = self.fontSize * 0.85
-        
+
+        let endMarkParaStyle: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
+        endMarkParaStyle.paragraphSpacing = self.fontSize * 0.85
         self.markEndAttributes = [
             .foregroundColor: NSColor.hexToColour(markColour),
             .font: font,
-            .paragraphStyle: markParaStyle
+            .paragraphStyle: endMarkParaStyle
         ]
         
         self.hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
@@ -172,7 +171,6 @@ final class Common: NSObject {
                                                   .strikethroughColor: self.doShowLightBackground ? NSColor.black : NSColor.white])
 
         self.scalarAttributes[.foregroundColor]  = self.doShowLightBackground ? NSColor.black : NSColor.labelColor
-
         self.spacer = self.doUseSpecialIndentChar ? "-" : " "
     }
 
@@ -195,6 +193,7 @@ final class Common: NSObject {
             // Attempt to parse the JSON data. First, get the data...
             let json: Any = try JSONSerialization.jsonObject(with: jsonFileData, options: [ .fragmentsAllowed ])
 
+            // Calculate column widths based on key sizes
             assembleColumns(json)
 
             // ...then render it
@@ -256,7 +255,7 @@ final class Common: NSObject {
             case BUFFOON_CONSTANTS.ITEM_TYPE.KEY:
                 attributes = self.keyAttributes
             case BUFFOON_CONSTANTS.ITEM_TYPE.MARK_START:
-                attributes = self.markAttributes
+                attributes = self.markStartAttributes
             case BUFFOON_CONSTANTS.ITEM_TYPE.MARK_END:
                 attributes = self.markEndAttributes
 
@@ -308,7 +307,7 @@ final class Common: NSObject {
             case .Key:
                 return self.keyAttributes
             case .MarkStart:
-                return self.markAttributes
+                return self.markStartAttributes
             case .MarkEnd:
                 return self.markEndAttributes
             case .String:
@@ -339,7 +338,7 @@ final class Common: NSObject {
             let imageString: NSAttributedString = NSAttributedString(attachment: insetImage)
             let spaceString = String(repeating: self.spacer, count: indent)
             let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
-            indentedString.append(NSAttributedString.init(string: spaceString, attributes: scalarAttributes))
+            indentedString.append(NSAttributedString.init(string: spaceString, attributes: self.scalarAttributes))
             indentedString.append(imageString)
             indentedString.append(self.cr)
             return indentedString
@@ -553,10 +552,7 @@ final class Common: NSObject {
                 let valueIsArray: Bool = (value is Array<Any>)
                 
                 if valueIsObject || valueIsArray {
-                    // Prepare the next level
-                    //if self.maxKeyLengths.count == level + 1 { self.maxKeyLengths.append(0) }
-                    
-                    // Process the next level
+                    // Process container values on the next level
                     assembleColumns(value, level + 1)
                 }
             }
@@ -569,7 +565,7 @@ final class Common: NSObject {
                 let valueIsArray: Bool = value is Array<Any>
                 
                 if valueIsObject || valueIsArray {
-                    // Process the array contents on the current level
+                    // Process container values on the next level
                     assembleColumns(value, level + 1)
                 }
             }

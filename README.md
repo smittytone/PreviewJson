@@ -31,6 +31,7 @@ Changing these settings will affect previews immediately, but may not affect thu
 ## Release Notes
 
 - 1.1.0 *Unreleased*
+    - Allow the colours of strings and special values (NAN, ±INF) to be chosen.
     - New columnar layout.
 - 1.0.4 *12 May 2023*
     - Fix incorrect presentation of integers `1` and `0` as booleans (thanks, anonymous).
