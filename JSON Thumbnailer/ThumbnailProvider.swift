@@ -63,12 +63,6 @@ class ThumbnailProvider: QLThumbnailProvider {
                         // Instantiate the common code within the closure
                         let common: Common = Common.init(true)
                         
-                        /* Get the Attributed String
-                        guard let shortData: Data = codeFileString.data(using: encoding) else {
-                            return .failure(ThumbnailerError.badFileUnsupportedEncoding("\(encoding)"))
-                        }
-                        */
-                        
                         let jsonAtts: NSAttributedString = common.getAttributedString(data)
 
                         // Set the primary drawing frame and a base font size

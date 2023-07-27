@@ -14,6 +14,9 @@ import AppKit
 
 final class Common: NSObject {
 
+    // MARK: - Definitions
+
+    // String attribute categories
     enum AttributeType {
         case Key
         case Scalar
@@ -188,7 +191,7 @@ final class Common: NSObject {
     func getAttributedString(_ jsonFileData: Data) -> NSAttributedString {
         
         var renderedString: NSMutableAttributedString
-        
+
         do {
             // Attempt to parse the JSON data. First, get the data...
             let json: Any = try JSONSerialization.jsonObject(with: jsonFileData, options: [ .fragmentsAllowed ])
@@ -198,7 +201,7 @@ final class Common: NSObject {
 
             // ...then render it
             renderedString = prettify(json)
-            
+
             // Just in case...
             if renderedString.length == 0 {
                 renderedString = NSMutableAttributedString.init(string: "Could not render the JSON.\n\(json)\n",
@@ -387,6 +390,7 @@ final class Common: NSObject {
         if json is NSNull {
             // Attempt to load the null symbol, but use a text version as a fallback on error
             if self.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
+                // Display NULL as an image
                 let name: String = "null_\(self.boolStyle)"
                 if !self.isThumbnail, let addString: NSAttributedString = getImageString(baseIndent, name) {
                     renderedString.append(addString)
@@ -400,14 +404,13 @@ final class Common: NSObject {
             // Display the number as is
             renderedString.append(getIndentedAttributedString("\(json)\n", baseIndent, .Scalar))
         } else if json is String {
-            // Display the string in curly quotes
-            // Need to do extra inset work here
             let value: String = json as! String
-            if value == "JSON-TRUE" || value == "JSON-FALSE" {
-                // We have a string-encoded boolean
+
+            // Is this a shimmed boolean?
+            if value == "PREVIEW-JSON-TRUE" || value == "PREVIEW-JSON-FALSE" {
                 if self.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
-                    let name: String = value == "JSON-TRUE" ? "true_\(self.boolStyle)" : "false_\(self.boolStyle)"
-                    
+                    // Render the bool as an image
+                    let name: String = value == "PREVIEW-JSON-TRUE" ? "true_\(self.boolStyle)" : "false_\(self.boolStyle)"
                     if !self.isThumbnail, let addString: NSAttributedString = getImageString(baseIndent, name) {
                         renderedString.append(addString)
                         return renderedString
@@ -415,8 +418,9 @@ final class Common: NSObject {
                 }
 
                 // Can't or won't show an image? Show text
-                renderedString.append(getIndentedAttributedString(value == "JSON-TRUE" ? "TRUE\n" : "FALSE\n", baseIndent, .Special))
+                renderedString.append(getIndentedAttributedString(value == "PREVIEW-JSON-TRUE" ? "TRUE\n" : "FALSE\n", baseIndent, .Special))
             } else {
+                // Regular string value; add quotes if necessary
                 let stringText: String = self.doShowFurniture ? "“" + (json as! String) + "”\n" : (json as! String) + "\n"
                 renderedString.append(getIndentedAttributedString(stringText, baseIndent, .String))
             }
@@ -427,8 +431,6 @@ final class Common: NSObject {
             
             if self.doShowFurniture {
                 // Add JSON furniture
-                // NOTE Parent is an object, so add furniture after key
-                //*****let initialFurnitureIndent: Int = parentIsObject ? BUFFOON_CONSTANTS.BASE_INDENT : baseIndent
                 renderedString.append(getIndentedAttributedString("{\n", baseIndent, .MarkStart))
             }
             
@@ -446,17 +448,22 @@ final class Common: NSObject {
                 // Get important value types
                 let value: Any = anyObject[key]!
                 let valueIsObject: Bool = (value is Dictionary<String, Any>)
-                let valueIsArray: Bool = (value is Array<Any>)
+                let valueIsArray: Bool  = (value is Array<Any>)
 
                 // Print the key
-                renderedString.append(getIndentedAttributedString(key, self.doShowFurniture ? baseIndent + self.jsonIndent : baseIndent, .Key))
+                let keyIndent: Int = self.doShowFurniture ? baseIndent + self.jsonIndent : baseIndent
+                renderedString.append(getIndentedAttributedString(key, keyIndent, .Key))
 
                 // Is the value non-scalar?
                 if valueIsObject || valueIsArray {
                     // Render the element at the next level
                     var nextIndent: Int = baseIndent + BUFFOON_CONSTANTS.BASE_INDENT + self.maxKeyLengths[currentLevel]
-                    if self.doShowFurniture { nextIndent += self.jsonIndent }
-                    if !self.doShowFurniture { renderedString.append(cr) }
+                    if self.doShowFurniture {
+                        nextIndent += self.jsonIndent
+                    } else {
+                        renderedString.append(self.cr)
+                    }
+
                     renderedString.append(prettify(value,
                                                    currentLevel + 1,    // Next level
                                                    nextIndent,
@@ -464,8 +471,7 @@ final class Common: NSObject {
                 } else {
                     // Render the scalar value immediately after the key
                     var scalarIndent: Int = self.maxKeyLengths[currentLevel] - key.count
-                    if scalarIndent < 0 { scalarIndent = 0 }
-                    scalarIndent += BUFFOON_CONSTANTS.BASE_INDENT
+                    scalarIndent = scalarIndent < 0 ? BUFFOON_CONSTANTS.BASE_INDENT : scalarIndent + BUFFOON_CONSTANTS.BASE_INDENT
                     renderedString.append(prettify(value,
                                                    0,                   // Same level
                                                    scalarIndent))
@@ -492,7 +498,6 @@ final class Common: NSObject {
                 // Get important value types
                 let valueIsObject: Bool = (value is Dictionary<String, Any>)
                 let valueIsArray: Bool = (value is Array<Any>)
-
                 
                 // Is the value non-scalar?
                 if valueIsObject || valueIsArray {
@@ -502,7 +507,10 @@ final class Common: NSObject {
                                                    baseIndent,
                                                    false))
 
-                    if count < anyArray.count - 1 && !self.doShowFurniture { renderedString.append(cr) }
+                    // Separate all but the last item with a blank line
+                    if count < anyArray.count - 1 && !self.doShowFurniture {
+                        renderedString.append(self.cr)
+                    }
                 } else {
                     // Render the scalar value
                     renderedString.append(prettify(value,
@@ -559,7 +567,6 @@ final class Common: NSObject {
         } else if json is Array<Any> {
             // For an array, enumerate the elements
             let anyArray: [Any] = json as! [Any]
-            
             anyArray.forEach { value in
                 let valueIsObject: Bool = value is Dictionary<String, Any>
                 let valueIsArray: Bool = value is Array<Any>
