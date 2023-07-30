@@ -286,10 +286,11 @@ final class Common: NSObject {
      */
     func getIndentedAttributedString(_ baseString: String, _ indent: Int, _ attributeType: AttributeType) -> NSAttributedString {
 
-        let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
-        let spaceString = String(repeating: self.spacer, count: indent)
         let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
+        let spaceString = indent > 0 ? String(repeating: self.spacer, count: indent) : ""
         indentedString.append(NSAttributedString.init(string: spaceString, attributes: getAttributes(.Scalar)))
+
+        let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
         indentedString.append(NSAttributedString.init(string: trimmedString, attributes: getAttributes(attributeType)))
         return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
     }
