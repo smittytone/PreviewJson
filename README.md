@@ -37,7 +37,7 @@ Contributions will only be accepted if the code they contain is licensed under t
 ## Release Notes
 
 - 1.1.0 *Unreleased*
-    - Allow the user to choose the colours of strings and special values (NAN, ±INF).
+    - Allow the user to choose the colours of strings and special values (NaN, ±INF).
     - New columnar layout.
 - 1.0.4 *12 May 2023*
     - Fix incorrect presentation of integers `1` and `0` as booleans (thanks, anonymous).
