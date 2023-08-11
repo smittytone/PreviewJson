@@ -18,7 +18,7 @@ You can disable and re-enable the Previewer and Thumbnailer extensions at any ti
 
 You can alter some of the key elements of the preview by using the **Preferences** panel:
 
-- The colour of object keys.
+- The colour of object keys, strings, true/false/null when displayed as text, and JSON tags.
 - The colour of JSON object and array delimiters, if they are displayed.
 - Whether to include JSON object and array delimiters in previews.
 - Whether to show raw JSON if it cannot be parsed without error.
@@ -32,12 +32,12 @@ Changing these settings will affect previews immediately, but may not affect thu
 
 Contributions are welcome, but pull requestss can only be accepted when they target the `develop` branch. PRs targetting `main` will be rejected.
 
-Contributions will only be accepted if they code they contain is licensed under the terms of [the MIT Licence](#LICENSE.md)
+Contributions will only be accepted if the code they contain is licensed under the terms of [the MIT Licence](#LICENSE.md)
 
 ## Release Notes
 
 - 1.1.0 *Unreleased*
-    - Allow the colours of strings and special values (NAN, ±INF) to be chosen.
+    - Allow the user to choose the colours of strings and special values (NAN, ±INF).
     - New columnar layout.
 - 1.0.4 *12 May 2023*
     - Fix incorrect presentation of integers `1` and `0` as booleans (thanks, anonymous).

@@ -139,7 +139,8 @@ final class Common: NSObject {
             .font: font,
             .paragraphStyle: endMarkParaStyle
         ]
-        
+
+        // NOTE This no longer provides a full-width rule -- seek a fix
         self.hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
                                      attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
                                                   .strikethroughColor: (useLightMode ? NSColor.black : NSColor.white)])
@@ -238,7 +239,7 @@ final class Common: NSObject {
     }
 
 
-    /**
+    /** REMOVED 1.1.0
      Return a space-prefix NSAttributedString.
 
      - Parameters:
@@ -247,7 +248,7 @@ final class Common: NSObject {
         - isKey:      Are we rendering an inset key (`true`) or value (`false`).
 
      - Returns: The indented string as an NSAttributedString.
-     */
+
     func getIndentedString(_ baseString: String, _ indent: Int = 0, _ itemType: Int = BUFFOON_CONSTANTS.ITEM_TYPE.VALUE) -> NSAttributedString {
         
         let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
@@ -271,8 +272,9 @@ final class Common: NSObject {
         indentedString.append(NSAttributedString.init(string: trimmedString, attributes: attributes))
         return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
     }
+     */
 
-
+    
     /**
      Return a space-prefix NSAttributedString.
      FROM 1.1.0

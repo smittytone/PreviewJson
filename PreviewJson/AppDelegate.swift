@@ -360,8 +360,10 @@ final class AppDelegate: NSObject,
             self.indentDepth                = defaults.integer(forKey: "com-bps-previewjson-json-indent")
             self.doShowLightBackground      = defaults.bool(forKey: "com-bps-previewjson-do-use-light")
             self.doShowRawJson              = defaults.bool(forKey: "com-bps-previewjson-show-bad-json")
-            //self.codeColourHex            = defaults.string(forKey: "com-bps-previewjson-code-colour-hex") ?? BUFFOON_CONSTANTS.KEY_COLOUR_HEX
-            //self.markColourHex            = defaults.string(forKey: "com-bps-previewjson-mark-colour-hex") ?? BUFFOON_CONSTANTS.MARK_COLOUR_HEX
+            /* REMOVED 1.1.0
+            self.codeColourHex            = defaults.string(forKey: "com-bps-previewjson-code-colour-hex") ?? BUFFOON_CONSTANTS.KEY_COLOUR_HEX
+            self.markColourHex            = defaults.string(forKey: "com-bps-previewjson-mark-colour-hex") ?? BUFFOON_CONSTANTS.MARK_COLOUR_HEX
+             */
             self.doShowFurniture            = defaults.bool(forKey: "com-bps-previewjson-do-indent-scalars")
             self.boolStyle                  = defaults.integer(forKey: "com-bps-previewjson-bool-style")
 
@@ -493,7 +495,7 @@ final class AppDelegate: NSObject,
             self.codeColorWell.deactivate()
         }
 
-        /*
+        /* REMOVED 1.1.0
         if self.markColorWell.isActive {
             NSColorPanel.shared.close()
             self.markColorWell.deactivate()
@@ -527,7 +529,7 @@ final class AppDelegate: NSObject,
             self.codeColorWell.deactivate()
         }
 
-        /*
+        /* REMOVED 1.1.0
         if self.markColorWell.isActive {
             NSColorPanel.shared.close()
             self.markColorWell.deactivate()
@@ -536,7 +538,7 @@ final class AppDelegate: NSObject,
 
         // Save any changed preferences
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            /*
+            /* REMOVED 1.1.0
             // Check for and record a JSON key colour change
             var newColour: String = self.codeColorWell.color.hexString
             if newColour != self.codeColourHex {
