@@ -59,13 +59,13 @@ class PreviewViewController: NSViewController,
                     let jsonStringTrue: String = regexTrue.stringByReplacingMatches(in: jsonString,
                                                                                     options: [],
                                                                                     range: NSMakeRange(0, jsonString.count),
-                                                                                    withTemplate: ": \"JSON-TRUE\"")
+                                                                                    withTemplate: ": \"PREVIEW-JSON-TRUE\"")
 
                     let regexFalse = try! NSRegularExpression(pattern: ":[\\s]*false")
                     let jsonStringFalse: String = regexFalse.stringByReplacingMatches(in: jsonStringTrue,
                                                                                       options: [],
                                                                                       range: NSMakeRange(0, jsonStringTrue.count),
-                                                                                      withTemplate: ": \"JSON-FALSE\"")
+                                                                                      withTemplate: ": \"PREVIEW-JSON-FALSE\"")
                     
                     // Get the key string first
                     let jsonDataCoded: Data = jsonStringFalse.data(using: encoding) ?? data
