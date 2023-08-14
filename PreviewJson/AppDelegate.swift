@@ -76,8 +76,6 @@ final class AppDelegate: NSObject,
     private  var fontName: String               = BUFFOON_CONSTANTS.BODY_FONT_NAME
     //private  var codeColourHex: String        = BUFFOON_CONSTANTS.KEY_COLOUR_HEX
     //private  var markColourHex: String        = BUFFOON_CONSTANTS.MARK_COLOUR_HEX
-    private  var appSuiteName: String           = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
-    private  var feedbackPath: String           = MNU_SECRETS.ADDRESS.B
     private  var doShowLightBackground: Bool    = false
     private  var doShowTag: Bool                = false
     private  var doShowRawJson: Bool            = false
@@ -88,7 +86,14 @@ final class AppDelegate: NSObject,
     private var havePrefsChanged: Bool = false
     // FROM 1.1.0
     private var displayColours: [String:String] = [:]
-    
+
+    /*
+     Replace the following string with your own team ID. This is used to
+     identify the app suite and so share preferences set by the main app with
+     the previewer and thumbnailer extensions.
+     */
+    private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
+
 
     // MARK: - Class Lifecycle Functions
 
@@ -310,7 +315,10 @@ final class AppDelegate: NSObject,
             // Start the connection indicator if it's not already visible
             self.connectionProgress.startAnimation(self)
             
-            self.feedbackTask = submitFeedback(feedback)
+            /*
+             Add your own `func sendFeedback(_ feedback: String) -> URLSessionTask?` function
+             */
+            self.feedbackTask = sendFeedback(feedback)
             
             if self.feedbackTask != nil {
                 // We have a valid URL Session Task, so start it to send
@@ -320,6 +328,8 @@ final class AppDelegate: NSObject,
                 // Report the error
                 sendFeedbackError()
             }
+
+            return
         }
         
         // No feedback, so close the sheet
@@ -927,66 +937,8 @@ final class AppDelegate: NSObject,
         }
 
     }
-    
 
-    /**
-     Send the feedback string etc.
 
-     - Parameters:
-        - feedback: The text of the user's comment.
-
-     - Returns: A URLSessionTask primed to send the comment, or `nil` on error.
-     */
-    private func submitFeedback(_ feedback: String) -> URLSessionTask? {
-
-        // First get the data we need to build the user agent string
-        let userAgent: String = getUserAgentForFeedback()
-        let endPoint: String = MNU_SECRETS.ADDRESS.A
-
-        // Get the date as a string
-        let dateString: String = getDateForFeedback()
-
-        // Assemble the message string
-        let dataString: String = """
-         *FEEDBACK REPORT*
-         *Date:* \(dateString)
-         *User Agent:* \(userAgent)
-         *FEEDBACK:*
-         \(feedback)
-         """
-
-        // Build the data we will POST:
-        let dict: NSMutableDictionary = NSMutableDictionary()
-        dict.setObject(dataString,
-                        forKey: NSString.init(string: "text"))
-        dict.setObject(true, forKey: NSString.init(string: "mrkdwn"))
-
-        // Make and return the HTTPS request for sending
-        if let url: URL = URL.init(string: self.feedbackPath + endPoint) {
-            var request: URLRequest = URLRequest.init(url: url)
-            request.httpMethod = "POST"
-
-            do {
-                request.httpBody = try JSONSerialization.data(withJSONObject: dict,
-                                                              options:JSONSerialization.WritingOptions.init(rawValue: 0))
-
-                request.addValue(userAgent, forHTTPHeaderField: "User-Agent")
-                request.addValue("application/json", forHTTPHeaderField: "Content-type")
-
-                let config: URLSessionConfiguration = URLSessionConfiguration.ephemeral
-                let session: URLSession = URLSession.init(configuration: config,
-                                                          delegate: self,
-                                                          delegateQueue: OperationQueue.main)
-                return session.dataTask(with: request)
-            } catch {
-                // NOP
-            }
-        }
-
-        return nil
-    }
-    
-    
     /**
      Handler for macOS UI mode change notifications
      */

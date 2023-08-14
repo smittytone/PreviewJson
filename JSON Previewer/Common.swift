@@ -62,6 +62,13 @@ final class Common: NSObject {
     private var stringAttributes:  [NSAttributedString.Key: Any] = [:]
     private var specialAttributes: [NSAttributedString.Key: Any] = [:]
 
+    /*
+     Replace the following string with your own team ID. This is used to
+     identify the app suite and so share preferences set by the main app with
+     the previewer and thumbnailer extensions.
+     */
+    private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
+
 
     // MARK: - Lifecycle Functions
     
@@ -79,7 +86,7 @@ final class Common: NSObject {
         self.isThumbnail = isThumbnail
         
         // The suite name is the app group name, set in each extension's entitlements, and the host app's
-        if let prefs = UserDefaults(suiteName: MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME) {
+        if let prefs = UserDefaults(suiteName: appSuiteName) {
             self.doShowFurniture        = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SCALARS)
             self.doShowRawJson          = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BAD)
             self.doShowLightBackground  = prefs.bool(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.USE_LIGHT)
