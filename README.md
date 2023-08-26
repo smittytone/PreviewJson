@@ -14,7 +14,7 @@ You can disable and re-enable the Previewer and Thumbnailer extensions at any ti
 
 You can alter some of the key elements of the preview by using the **Preferences** panel:
 
-- The colour of object keys, strings, true/false/null when displayed as text, and JSON tags.
+- The colour of object keys, strings, `true`/`false`/`null` when displayed as text, and JSON tags.
 - The colour of JSON object and array delimiters, if they are displayed.
 - Whether to include JSON object and array delimiters in previews.
 - Whether to show raw JSON if it cannot be parsed without error.
@@ -28,6 +28,8 @@ Changing these settings will affect previews immediately, but may not affect thu
 
 The source code is provided here for inspection and inspiration. The code will not build as is: graphical, other non-code resources and some code components are not included in the source release. To build *PreviewJson* from scratch, you will need to add these files yourself or remove them from your fork.
 
+The files `REPLACE_WITH_YOUR_FUNCTIONS` and `REPLACE_WITH_YOUR_CODES` must be replaced with your own files. The former will contain your `sendFeedback(_ feedback: String) -> URLSessionTask?` function. The latter your Developer Team ID, used as the App Suite identifier prefix.
+
 You will need to generate your own `Assets.xcassets` file containing the app icon and an `app_logo.png` file and `style_x.png` where x is 1-3 and are, respectively, the solid, outline and textual options presented by the **Preferences** window as True/False/Null styles.
 
 You will need to create your own `new` directory containing your own `new.html` file.
@@ -40,8 +42,8 @@ Contributions will only be accepted if the code they contain is licensed under t
 
 ## Release Notes
 
-- 1.1.0 *Unreleased*
-    - Allow the user to choose the colours of strings and special values (NaN, ±INF).
+- 1.1.0 *25 August 2023*
+    - Allow the user to choose the colours of strings and special values (`NaN`, `±INF`).
     - New columnar layout.
 - 1.0.4 *12 May 2023*
     - Fix incorrect presentation of integers `1` and `0` as booleans (thanks, anonymous).
