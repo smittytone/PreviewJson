@@ -1,4 +1,4 @@
-# PreviewJson 1.1.0 #
+# PreviewJson 1.1.1 #
 
 QuickLook JSON preview and icon thumbnailing app extensions for macOS Catalina and beyond
 
@@ -36,12 +36,14 @@ You will need to create your own `new` directory containing your own `new.html` 
 
 ## Contributions ##
 
-Contributions are welcome, but pull requestss can only be accepted when they target the `develop` branch. PRs targetting `main` will be rejected.
+Contributions are welcome, but pull requests can only be accepted when they target the `develop` branch. PRs targetting `main` will be rejected.
 
 Contributions will only be accepted if the code they contain is licensed under the terms of [the MIT Licence](#LICENSE.md)
 
 ## Release Notes
 
+- 1.1.1 *Unreleased*
+    - Make tabulated preview optional.
 - 1.1.0 *25 August 2023*
     - Allow the user to choose the colours of strings and special values (`NaN`, `±INF`).
     - New columnar layout.
@@ -62,4 +64,4 @@ Contributions will only be accepted if the code they contain is licensed under t
 
 ## Copyright and Credits
 
-Primary app code and UI design &copy; 2023, Tony Smith.
+Primary app code and UI design &copy; 2024, Tony Smith.

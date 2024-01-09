@@ -3,7 +3,7 @@
  *  PreviewJson
  *
  *  Created by Tony Smith on 12/08/2020.
- *  Copyright © 2023 Tony Smith. All rights reserved.
+ *  Copyright © 2024 Tony Smith. All rights reserved.
  */
 
 
@@ -111,5 +111,6 @@ struct BUFFOON_CONSTANTS {
         static let BOOL_STYLE                   = "com-bps-previewjson-bool-style"
     }
 
-
+    // FROM 1.1.1
+    static let TABULATION_INDENT_VALUE          = 999
 }

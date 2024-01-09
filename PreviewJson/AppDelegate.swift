@@ -3,7 +3,7 @@
  *  PreviewJson
  *
  *  Created by Tony Smith on 9/08/2023.
- *  Copyright © 2023 Tony Smith. All rights reserved.
+ *  Copyright © 2024 Tony Smith. All rights reserved.
  */
 
 
@@ -398,7 +398,7 @@ final class AppDelegate: NSObject,
         self.doShowJsonFurnitureCheckbox.state = self.doShowFurniture ? .on : .off
         
         // Set the indents popup
-        let indents: [Int] = [1, 2, 4, 8]
+        let indents: [Int] = [1, 2, 4, 8, BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE]
         self.codeIndentPopup.selectItem(at: indents.firstIndex(of: self.indentDepth)!)
         
         // Set the colour panel's initial view
@@ -588,7 +588,7 @@ final class AppDelegate: NSObject,
             }
             
             // Check for and record an indent change
-            let indents: [Int] = [1, 2, 4, 8]
+            let indents: [Int] = [1, 2, 4, 8, BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE]
             let indent: Int = indents[self.codeIndentPopup.indexOfSelectedItem]
             if self.indentDepth != indent {
                 defaults.setValue(indent,

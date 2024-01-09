@@ -4,7 +4,7 @@
  *  Code common to Json Previewer and Json Thumbnailer
  *
  *  Created by Tony Smith on 29/08/2023.
- *  Copyright © 2023 Tony Smith. All rights reserved.
+ *  Copyright © 2024 Tony Smith. All rights reserved.
  */
 
 
@@ -205,10 +205,36 @@ final class Common: NSObject {
             let json: Any = try JSONSerialization.jsonObject(with: jsonFileData, options: [ .fragmentsAllowed ])
 
             // Calculate column widths based on key sizes
-            assembleColumns(json)
+            // FROM 1.1.1 -- Check indent setting
+            if (self.jsonIndent == BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE) {
+                assembleColumns(json)
+            } else {
+                for i in 0..<self.maxKeyLengths.count {
+                    self.maxKeyLengths[i] = self.jsonIndent
+                }
+            }
+
+
+            // ***************************************
+            var mString: String = ""
+            for i in 0..<self.maxKeyLengths.count {
+                mString += "\(self.maxKeyLengths[i]) "
+            }
+
+            mString += "\n"
+            let maString = NSAttributedString.init(string: mString, attributes: self.keyAttributes)
+            // ***************************************
+
+
 
             // ...then render it
             renderedString = prettify(json)
+
+
+            // ***************************************
+            renderedString.insert(maString, at: 0)
+            // ***************************************
+
 
             // Just in case...
             if renderedString.length == 0 {
@@ -293,7 +319,7 @@ final class Common: NSObject {
 
      - Returns: The indented string as an NSAttributedString.
      */
-    func getIndentedAttributedString(_ baseString: String, _ indent: Int, _ attributeType: AttributeType) -> NSAttributedString {
+    private func getIndentedAttributedString(_ baseString: String, _ indent: Int, _ attributeType: AttributeType) -> NSAttributedString {
 
         let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
         let spaceString = indent > 0 ? String(repeating: self.spacer, count: indent) : ""
@@ -342,8 +368,8 @@ final class Common: NSObject {
      
      - Returns: The indented string as an optional NSAttributedString. Nil indicates an error
      */
-    func getImageString(_ indent: Int = 1, _ imageName: String) -> NSAttributedString? {
-        
+    private func getImageString(_ indent: Int = 1, _ imageName: String) -> NSAttributedString? {
+
         let insetImage: NSTextAttachment = NSTextAttachment()
         insetImage.image = NSImage(named: imageName)
         if insetImage.image != nil {
@@ -372,8 +398,8 @@ final class Common: NSObject {
 
      - Returns: The indented string as an NSAttributedString.
      */
-    func prettify(_ json: Any, _ currentLevel: Int = 0, _ currentIndent: Int = 0, _ parentIsObject: Bool = false) -> NSMutableAttributedString {
-        
+    private func prettify(_ json: Any, _ currentLevel: Int = 0, _ currentIndent: Int = 0, _ parentIsObject: Bool = false) -> NSMutableAttributedString {
+
         // Prep an NSMutableAttributedString for this JSON segment
         let renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: self.keyAttributes)
         
@@ -389,9 +415,9 @@ final class Common: NSObject {
         // Set the indent based on the current level
         // This will be used for rendering keys and calculating
         // next-level indents. It's just a multiple of the level
-        var baseIndent: Int = currentIndent
+        var indent: Int = currentIndent
         if self.isThumbnail {
-            baseIndent = currentLevel * BUFFOON_CONSTANTS.BASE_INDENT
+            indent = currentLevel * BUFFOON_CONSTANTS.BASE_INDENT
         }
         
         // Generate a string according to the JSON element's underlying type
@@ -402,17 +428,17 @@ final class Common: NSObject {
             if self.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
                 // Display NULL as an image
                 let name: String = "null_\(self.boolStyle)"
-                if !self.isThumbnail, let addString: NSAttributedString = getImageString(baseIndent, name) {
+                if !self.isThumbnail, let addString: NSAttributedString = getImageString(indent, name) {
                     renderedString.append(addString)
                     return renderedString
                 }
             }
             
             // Can't or won't show an image? Show text
-            renderedString.append(getIndentedAttributedString("NULL\n", baseIndent, .Special))
+            renderedString.append(getIndentedAttributedString("NULL\n", indent, .Special))
         } else if json is Int || json is Float || json is Double {
             // Display the number as is
-            renderedString.append(getIndentedAttributedString("\(json)\n", baseIndent, .Scalar))
+            renderedString.append(getIndentedAttributedString("\(json)\n", indent, .Scalar))
         } else if json is String {
             let value: String = json as! String
 
@@ -421,18 +447,18 @@ final class Common: NSObject {
                 if self.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
                     // Render the bool as an image
                     let name: String = value == "PREVIEW-JSON-TRUE" ? "true_\(self.boolStyle)" : "false_\(self.boolStyle)"
-                    if !self.isThumbnail, let addString: NSAttributedString = getImageString(baseIndent, name) {
+                    if !self.isThumbnail, let addString: NSAttributedString = getImageString(indent, name) {
                         renderedString.append(addString)
                         return renderedString
                     }
                 }
 
                 // Can't or won't show an image? Show text
-                renderedString.append(getIndentedAttributedString(value == "PREVIEW-JSON-TRUE" ? "TRUE\n" : "FALSE\n", baseIndent, .Special))
+                renderedString.append(getIndentedAttributedString(value == "PREVIEW-JSON-TRUE" ? "TRUE\n" : "FALSE\n", indent, .Special))
             } else {
                 // Regular string value; add quotes if necessary
                 let stringText: String = self.doShowFurniture ? "“" + (json as! String) + "”\n" : (json as! String) + "\n"
-                renderedString.append(getIndentedAttributedString(stringText, baseIndent, .String))
+                renderedString.append(getIndentedAttributedString(stringText, indent, .String))
             }
         } else if json is Dictionary<String, Any> {
             // For a dictionary, enumerate the key and value
@@ -441,7 +467,7 @@ final class Common: NSObject {
             
             if self.doShowFurniture {
                 // Add JSON furniture
-                renderedString.append(getIndentedAttributedString("{\n", baseIndent, .MarkStart))
+                renderedString.append(getIndentedAttributedString("{\n", indent, .MarkStart))
             }
             
             let anyObject: [String: Any] = json as! [String: Any]
@@ -461,16 +487,17 @@ final class Common: NSObject {
                 let valueIsArray: Bool  = (value is Array<Any>)
 
                 // Print the key
-                let keyIndent: Int = self.doShowFurniture ? baseIndent + self.jsonIndent : baseIndent
+                let keyIndent: Int = self.doShowFurniture ? indent + self.jsonIndent : indent
                 renderedString.append(getIndentedAttributedString(key, keyIndent, .Key))
 
                 // Is the value non-scalar?
                 if valueIsObject || valueIsArray {
                     // Render the element at the next level
-                    var nextIndent: Int = baseIndent + BUFFOON_CONSTANTS.BASE_INDENT + self.maxKeyLengths[currentLevel]
+                    var nextIndent: Int = indent + self.maxKeyLengths[currentLevel] // + BUFFOON_CONSTANTS.BASE_INDENT
                     if self.doShowFurniture {
                         nextIndent += self.jsonIndent
                     } else {
+                        // Next item is on a new line
                         renderedString.append(self.cr)
                     }
 
@@ -480,8 +507,9 @@ final class Common: NSObject {
                                                    true))
                 } else {
                     // Render the scalar value immediately after the key
-                    var scalarIndent: Int = self.maxKeyLengths[currentLevel] - key.count
-                    scalarIndent = scalarIndent < 0 ? BUFFOON_CONSTANTS.BASE_INDENT : scalarIndent + BUFFOON_CONSTANTS.BASE_INDENT
+                    var scalarIndent: Int = self.jsonIndent == BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE ? self.maxKeyLengths[currentLevel] - key.count : 1
+                    //scalarIndent = scalarIndent < 0 ? BUFFOON_CONSTANTS.BASE_INDENT : scalarIndent + BUFFOON_CONSTANTS.BASE_INDENT
+                    scalarIndent = scalarIndent < 0 ? 1 : scalarIndent
                     renderedString.append(prettify(value,
                                                    0,                   // Same level
                                                    scalarIndent))
@@ -490,13 +518,13 @@ final class Common: NSObject {
             
             if self.doShowFurniture {
                 // Bookend with JSON furniture
-                renderedString.append(getIndentedAttributedString("}\n", baseIndent, .MarkEnd))
+                renderedString.append(getIndentedAttributedString("}\n", indent, .MarkEnd))
             }
         } else if json is Array<Any> {
             if self.doShowFurniture {
                 // Add JSON furniture
                 // NOTE Parent is an object, so add furniture after key
-                let initialFurnitureIndent: Int = parentIsObject ? BUFFOON_CONSTANTS.BASE_INDENT : baseIndent
+                let initialFurnitureIndent: Int = parentIsObject ? BUFFOON_CONSTANTS.BASE_INDENT : indent
                 renderedString.append(getIndentedAttributedString("[\n", initialFurnitureIndent, .MarkStart))
             }
             
@@ -514,7 +542,7 @@ final class Common: NSObject {
                     // Render the element on the next level
                     renderedString.append(prettify(value,
                                                    currentLevel + 1,
-                                                   baseIndent,
+                                                   indent,
                                                    false))
 
                     // Separate all but the last item with a blank line
@@ -525,7 +553,7 @@ final class Common: NSObject {
                     // Render the scalar value
                     renderedString.append(prettify(value,
                                                    0,
-                                                   baseIndent))
+                                                   indent))
                 }
 
                 count += 1
@@ -533,7 +561,7 @@ final class Common: NSObject {
             
             if self.doShowFurniture {
                 // Bookend with JSON furniture
-                let markIndent: Int = baseIndent - (currentLevel > 0 ? self.maxKeyLengths[currentLevel - 1] : 0)
+                let markIndent: Int = indent - (currentLevel > 0 ? self.maxKeyLengths[currentLevel - 1] : 0)
                 renderedString.append(getIndentedAttributedString("]\n", markIndent, .MarkEnd))
             }
         }
@@ -549,8 +577,8 @@ final class Common: NSObject {
         - json:     The JSON element.
         - level:    The current level.
      */
-    func assembleColumns(_ json: Any, _ level: Int = 0) {
-        
+    private func assembleColumns(_ json: Any, _ level: Int = 0) {
+
         if json is Dictionary<String, Any> {
             // For a dictionary, enumerate the key and value
             let anyObject: [String: Any] = json as! [String: Any]
@@ -559,7 +587,7 @@ final class Common: NSObject {
             let keys: [String] = Array(anyObject.keys)
             for key in keys {
                 if key.count > self.maxKeyLengths[level] {
-                    self.maxKeyLengths[level] = key.count
+                    self.maxKeyLengths[level] = key.count + 1
                 }
             }
             
