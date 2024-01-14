@@ -22,6 +22,7 @@ final class Common: NSObject {
         case Scalar
         case String
         case Special
+        case Debug
         case MarkStart
         case MarkEnd
     }
@@ -54,13 +55,15 @@ final class Common: NSObject {
     private var displayColours: [String:String]     = [:]
 
     // JSON string attributes...
-    private var keyAttributes:     [NSAttributedString.Key: Any] = [:]
-    private var scalarAttributes:  [NSAttributedString.Key: Any] = [:]
+    private var keyAttributes:          [NSAttributedString.Key: Any] = [:]
+    private var scalarAttributes:       [NSAttributedString.Key: Any] = [:]
     private var markStartAttributes:    [NSAttributedString.Key: Any] = [:]
-    private var markEndAttributes: [NSAttributedString.Key: Any] = [:]
+    private var markEndAttributes:      [NSAttributedString.Key: Any] = [:]
     // FROM 1.1.0
-    private var stringAttributes:  [NSAttributedString.Key: Any] = [:]
-    private var specialAttributes: [NSAttributedString.Key: Any] = [:]
+    private var stringAttributes:       [NSAttributedString.Key: Any] = [:]
+    private var specialAttributes:      [NSAttributedString.Key: Any] = [:]
+    // FROM 1.1.1
+    private var debugAttributes:        [NSAttributedString.Key: Any] = [:]
 
     /*
      Replace the following string with your own team ID. This is used to
@@ -165,6 +168,13 @@ final class Common: NSObject {
             .foregroundColor: NSColor.hexToColour(specialColour),
             .font: font
         ]
+
+#if DEBUG
+        self.debugAttributes = [
+            .foregroundColor: NSColor.hexToColour("00FF00FF"),
+            .font: font
+        ]
+#endif
     }
 
 
@@ -201,40 +211,17 @@ final class Common: NSObject {
         var renderedString: NSMutableAttributedString
 
         do {
-            // Attempt to parse the JSON data. First, get the data...
+            // Attempt to parse the JSON data. First, get the data
             let json: Any = try JSONSerialization.jsonObject(with: jsonFileData, options: [ .fragmentsAllowed ])
 
             // Calculate column widths based on key sizes
             // FROM 1.1.1 -- Check indent setting
-            if (self.jsonIndent == BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE) {
+            if (self.jsonIndent == BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE && !self.isThumbnail) {
                 assembleColumns(json)
+                renderedString = tabulate(json)
             } else {
-                for i in 0..<self.maxKeyLengths.count {
-                    self.maxKeyLengths[i] = self.jsonIndent
-                }
+                renderedString = prettify(json)
             }
-
-
-            // ***************************************
-            var mString: String = ""
-            for i in 0..<self.maxKeyLengths.count {
-                mString += "\(self.maxKeyLengths[i]) "
-            }
-
-            mString += "\n"
-            let maString = NSAttributedString.init(string: mString, attributes: self.keyAttributes)
-            // ***************************************
-
-
-
-            // ...then render it
-            renderedString = prettify(json)
-
-
-            // ***************************************
-            renderedString.insert(maString, at: 0)
-            // ***************************************
-
 
             // Just in case...
             if renderedString.length == 0 {
@@ -322,13 +309,19 @@ final class Common: NSObject {
     private func getIndentedAttributedString(_ baseString: String, _ indent: Int, _ attributeType: AttributeType) -> NSAttributedString {
 
         let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
+#if DEBUG
+        let spaceString = indent > 0 ? String(repeating: " ", count: indent) : ""
+#else
         let spaceString = indent > 0 ? String(repeating: self.spacer, count: indent) : ""
+#endif
         indentedString.append(NSAttributedString.init(string: spaceString, attributes: getAttributes(.Scalar)))
 
         let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
         indentedString.append(NSAttributedString.init(string: trimmedString, attributes: getAttributes(attributeType)))
         return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
     }
+
+
 
 
     /**
@@ -353,6 +346,8 @@ final class Common: NSObject {
                 return self.stringAttributes
             case .Special:
                 return self.specialAttributes
+            case .Debug:
+                return self.debugAttributes
             default:
                 return self.scalarAttributes
         }
@@ -394,7 +389,7 @@ final class Common: NSObject {
         - json:           A unit of JSON, type Any.
         - currentLevel:   The current element depth.
         - currentIndent:  How much a subsequent value should be indented.
-        - parentIsObject: If the parent is an object.
+        - parentIsObject: If and only if the parent is an object.
 
      - Returns: The indented string as an NSAttributedString.
      */
@@ -467,7 +462,14 @@ final class Common: NSObject {
             
             if self.doShowFurniture {
                 // Add JSON furniture
-                renderedString.append(getIndentedAttributedString("{\n", indent, .MarkStart))
+                // If the parent is an object too, don't indent (we have already indented)
+                let initialFurnitureIndent: Int = parentIsObject ? 0 : indent
+                #if DEBUG
+                    renderedString.append(getIndentedAttributedString("{", initialFurnitureIndent, .MarkStart))
+                    renderedString.append(getIndentedAttributedString("\(initialFurnitureIndent)\n", 1, .Debug))
+                #else
+                    renderedString.append(getIndentedAttributedString("{\n", initialFurnitureIndent, .MarkStart))
+                #endif
             }
             
             let anyObject: [String: Any] = json as! [String: Any]
@@ -487,51 +489,72 @@ final class Common: NSObject {
                 let valueIsArray: Bool  = (value is Array<Any>)
 
                 // Print the key
-                let keyIndent: Int = self.doShowFurniture ? indent + self.jsonIndent : indent
-                renderedString.append(getIndentedAttributedString(key, keyIndent, .Key))
+                // Add extra indent if we're showing furniture: this deals with the initial, parent object
+                var keyIndent: Int = self.doShowFurniture ? indent + self.jsonIndent : indent
+
+                #if DEBUG
+                    renderedString.append(getIndentedAttributedString(key, keyIndent, .Key))
+                    renderedString.append(getIndentedAttributedString("\(keyIndent)", 1, .Debug))
+                #else
+                    renderedString.append(getIndentedAttributedString(key, keyIndent, .Key))
+                #endif
+
+                // Print a trailing space
+                renderedString.append(NSAttributedString.init(string: " ", attributes: getAttributes(.Key)))
 
                 // Is the value non-scalar?
                 if valueIsObject || valueIsArray {
-                    // Render the element at the next level
-                    var nextIndent: Int = indent + self.maxKeyLengths[currentLevel] // + BUFFOON_CONSTANTS.BASE_INDENT
-                    if self.doShowFurniture {
-                        nextIndent += self.jsonIndent
-                    } else {
-                        // Next item is on a new line
+                    // Render the element at the next level. When we're showing furniture, the ident is the same as the key,
+                    // because of how keyIndent is set, otherwise we need to add the standard indent
+                    let nextIndent: Int = self.doShowFurniture ? keyIndent : keyIndent + self.jsonIndent
+
+                    // Add a carriage return to space out objects
+                    // when we're not showing furniture
+                    if !self.doShowFurniture {
                         renderedString.append(self.cr)
                     }
 
                     renderedString.append(prettify(value,
-                                                   currentLevel + 1,    // Next level
-                                                   nextIndent,
+                                                   currentLevel + 1,    // Next level to key
+                                                   nextIndent,          // This level's base indent
                                                    true))
                 } else {
                     // Render the scalar value immediately after the key
-                    var scalarIndent: Int = self.jsonIndent == BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE ? self.maxKeyLengths[currentLevel] - key.count : 1
-                    //scalarIndent = scalarIndent < 0 ? BUFFOON_CONSTANTS.BASE_INDENT : scalarIndent + BUFFOON_CONSTANTS.BASE_INDENT
-                    scalarIndent = scalarIndent < 0 ? 1 : scalarIndent
-                    renderedString.append(prettify(value,
-                                                   0,                   // Same level
-                                                   scalarIndent))
+                    // NOTE The key has a trailing space, so no extra indent is required for the scalar value
+                    renderedString.append(prettify(value, 
+                                                   currentLevel,        // Same level as key
+                                                   0))                  // No indent
                 }
             }
             
             if self.doShowFurniture {
                 // Bookend with JSON furniture
-                renderedString.append(getIndentedAttributedString("}\n", indent, .MarkEnd))
+                #if DEBUG
+                    renderedString.append(getIndentedAttributedString("}", indent, .MarkEnd))
+                    renderedString.append(getIndentedAttributedString("\(indent)\n", 1, .Debug))
+                #else
+                    renderedString.append(getIndentedAttributedString("}\n", indent, .MarkEnd))
+                #endif
             }
         } else if json is Array<Any> {
             if self.doShowFurniture {
                 // Add JSON furniture
-                // NOTE Parent is an object, so add furniture after key
-                let initialFurnitureIndent: Int = parentIsObject ? BUFFOON_CONSTANTS.BASE_INDENT : indent
-                renderedString.append(getIndentedAttributedString("[\n", initialFurnitureIndent, .MarkStart))
+                // If parent is an object, add furniture right after key, otherwise indent
+                let initialIndent: Int = parentIsObject ? 0 : indent
+                #if DEBUG
+                    renderedString.append(getIndentedAttributedString("[", initialIndent, .MarkStart))
+                    renderedString.append(getIndentedAttributedString("\(initialIndent)\n", 1, .Debug))
+                #else
+                    renderedString.append(getIndentedAttributedString("[\n", initialIndent, .MarkStart))
+                #endif
             }
             
             // Iterate over the array's items
             // Array items are always rendered at the same level
             let anyArray: [Any] = json as! [Any]
+            let valueIndent: Int = self.doShowFurniture ? indent + self.jsonIndent : indent
             var count: Int = 0
+
             anyArray.forEach { value in
                 // Get important value types
                 let valueIsObject: Bool = (value is Dictionary<String, Any>)
@@ -542,8 +565,7 @@ final class Common: NSObject {
                     // Render the element on the next level
                     renderedString.append(prettify(value,
                                                    currentLevel + 1,
-                                                   indent,
-                                                   false))
+                                                   valueIndent))
 
                     // Separate all but the last item with a blank line
                     if count < anyArray.count - 1 && !self.doShowFurniture {
@@ -552,26 +574,219 @@ final class Common: NSObject {
                 } else {
                     // Render the scalar value
                     renderedString.append(prettify(value,
-                                                   0,
-                                                   indent))
+                                                   currentLevel,
+                                                   valueIndent))
                 }
 
                 count += 1
             }
             
+            // Bookend with JSON furniture
             if self.doShowFurniture {
-                // Bookend with JSON furniture
-                let markIndent: Int = indent - (currentLevel > 0 ? self.maxKeyLengths[currentLevel - 1] : 0)
-                renderedString.append(getIndentedAttributedString("]\n", markIndent, .MarkEnd))
+                #if DEBUG
+                    renderedString.append(getIndentedAttributedString("]", indent, .MarkEnd))
+                    renderedString.append(getIndentedAttributedString("\(indent)\n", 1, .Debug))
+                #else
+                    renderedString.append(getIndentedAttributedString("]\n", indent, .MarkEnd))
+                #endif
             }
         }
         
         return renderedString
     }
-    
+
+
+    /**
+     Render a unit of JSON as an NSAttributedString using Tabulation.
+     FROM 1.1.1
+
+     - Parameters:
+        - json:           A unit of JSON, type Any.
+        - currentLevel:   The current element depth.
+        - currentIndent:  How much a subsequent value should be indented.
+        - parentIsObject: If and only if the parent is an object.
+
+     - Returns: The indented string as an NSAttributedString.
+     */
+    private func tabulate(_ json: Any, _ currentLevel: Int = 0, _ currentIndent: Int = 0, _ parentIsObject: Bool = false) -> NSMutableAttributedString {
+
+        // Prep an NSMutableAttributedString for this JSON segment
+        let renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: self.keyAttributes)
+
+        // Generate a string according to the JSON element's underlying type
+        // Booleans are 'Bool' and 'Int', so remove the old bool check
+        // and rely on the earlier string encoding in PreviewViewController
+        if json is NSNull {
+            // Attempt to load the null symbol, but use a text version as a fallback on error
+            if self.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
+                // Display NULL as an image
+                let name: String = "null_\(self.boolStyle)"
+                if !self.isThumbnail, let addString: NSAttributedString = getImageString(currentIndent, name) {
+                    renderedString.append(addString)
+                    return renderedString
+                }
+            }
+
+            // Can't or won't show an image? Show text
+            renderedString.append(getIndentedAttributedString("NULL\n", currentIndent, .Special))
+        } else if json is Int || json is Float || json is Double {
+            // Display the number as is
+            renderedString.append(getIndentedAttributedString("\(json)", currentIndent, .Scalar))
+            renderedString.append(getIndentedAttributedString("--\(currentLevel)\n", 0, .Debug))
+        } else if json is String {
+            let value: String = json as! String
+
+            // Is this a shimmed boolean?
+            if value == "PREVIEW-JSON-TRUE" || value == "PREVIEW-JSON-FALSE" {
+                if self.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
+                    // Render the bool as an image
+                    let name: String = value == "PREVIEW-JSON-TRUE" ? "true_\(self.boolStyle)" : "false_\(self.boolStyle)"
+                    if !self.isThumbnail, let addString: NSAttributedString = getImageString(currentIndent, name) {
+                        renderedString.append(addString)
+                        return renderedString
+                    }
+                }
+
+                // Can't or won't show an image? Show text
+                renderedString.append(getIndentedAttributedString(value == "PREVIEW-JSON-TRUE" ? "TRUE\n" : "FALSE\n", currentIndent, .Special))
+            } else {
+                // Regular string value; add quotes if necessary
+                let stringText: String = self.doShowFurniture ? "“" + (json as! String) + "”\n" : (json as! String) //+ "\n"
+                renderedString.append(getIndentedAttributedString(stringText, currentIndent, .String))
+                renderedString.append(getIndentedAttributedString("--\(currentLevel)\n", 0, .Debug))
+            }
+        } else if json is Dictionary<String, Any> {
+            // For a dictionary, enumerate the key and value
+            // NOTE Should be only one of each, but value may
+            //      be an object or array
+
+            if self.doShowFurniture {
+                // Add JSON furniture
+                // If the parent is an object too, don't indent (we have already indented)
+                let initialIndent: Int = parentIsObject ? 0 : currentIndent
+                #if DEBUG
+                    renderedString.append(getIndentedAttributedString("{", initialIndent, .MarkStart))
+                    renderedString.append(getIndentedAttributedString("\(initialIndent)\n", 1, .Debug))
+                #else
+                    renderedString.append(getIndentedAttributedString("{\n", initialIndent, .MarkStart))
+                #endif
+            }
+
+            let anyObject: [String: Any] = json as! [String: Any]
+
+            // FROM 1.1.0 -- sort dictionaries alphabetically by key
+            var keys: [String] = Array(anyObject.keys)
+            if self.sortKeys {
+                keys = keys.sorted(by: { (a, b) -> Bool in
+                    return (a.lowercased() < b.lowercased())
+                })
+            }
+            
+            let keyIndent: Int = self.doShowFurniture ? currentIndent + BUFFOON_CONSTANTS.BASE_INDENT : currentIndent
+            for key in keys {
+                // Get important value types
+                let value: Any = anyObject[key]!
+                let valueIsObject: Bool = (value is Dictionary<String, Any>)
+                let valueIsArray: Bool  = (value is Array<Any>)
+
+                // Print the key
+                renderedString.append(getIndentedAttributedString(key, keyIndent, .Key))
+                //renderedString.append(NSAttributedString.init(string: " ", attributes: getAttributes(.Key)))
+
+                // Is the value non-scalar?
+                if valueIsObject || valueIsArray {
+                    // Render the element at the next level
+                    var nextIndent: Int = currentIndent + BUFFOON_CONSTANTS.BASE_INDENT + self.maxKeyLengths[currentLevel]
+                    if self.doShowFurniture {
+                        nextIndent += BUFFOON_CONSTANTS.BASE_INDENT
+                    } else {
+                        renderedString.append(self.cr)
+                    }
+
+                    renderedString.append(tabulate(value,
+                                                   currentLevel + (valueIsObject ? 1 : 0),    // Next level
+                                                   nextIndent,          // This level's base indent
+                                                   true))
+                } else {
+                    var scalarIndent: Int = self.maxKeyLengths[currentLevel] - key.count
+                    scalarIndent = scalarIndent < 0 ? BUFFOON_CONSTANTS.BASE_INDENT : scalarIndent + BUFFOON_CONSTANTS.BASE_INDENT
+                    renderedString.append(tabulate(value,
+                                                   currentLevel,                   // Same level
+                                                   scalarIndent))
+                }
+            }
+
+            if self.doShowFurniture {
+                // Bookend with JSON furniture
+                #if DEBUG
+                    renderedString.append(getIndentedAttributedString("}", currentIndent, .MarkEnd))
+                    renderedString.append(getIndentedAttributedString("\(currentIndent)\n", 1, .Debug))
+                #else
+                    renderedString.append(getIndentedAttributedString("}\n", currentIndent, .MarkEnd))
+                #endif
+            }
+        } else if json is Array<Any> {
+            if self.doShowFurniture {
+                // Add JSON furniture
+                // NOTE Parent is an object, so add furniture after key
+                let initialIndent: Int = parentIsObject ? BUFFOON_CONSTANTS.BASE_INDENT : currentIndent
+
+                #if DEBUG
+                    renderedString.append(getIndentedAttributedString("[", initialIndent, .MarkStart))
+                    renderedString.append(getIndentedAttributedString("\(initialIndent)\n", 1, .Debug))
+                #else
+                    renderedString.append(getIndentedAttributedString("[\n", initialIndent, .MarkStart))
+                #endif
+            }
+
+            // Iterate over the array's items
+            // Array items are always rendered at the same level
+            let anyArray: [Any] = json as! [Any]
+            var count: Int = 0
+            anyArray.forEach { value in
+                // Get important value types
+                let valueIsObject: Bool = (value is Dictionary<String, Any>)
+                let valueIsArray: Bool = (value is Array<Any>)
+
+                // Is the value non-scalar?
+                if valueIsObject || valueIsArray {
+                    // Render the element on the next level
+                    renderedString.append(tabulate(value,
+                                                   currentLevel + (valueIsObject ? 1 : 0),
+                                                   currentIndent))
+
+                    // Separate all but the last item with a blank line
+                    if count < anyArray.count - 1 && !self.doShowFurniture {
+                        renderedString.append(self.cr)
+                    }
+                } else {
+                    // Render the scalar value
+                    renderedString.append(tabulate(value,
+                                                   0,
+                                                   currentIndent))
+                }
+
+                count += 1
+            }
+
+            if self.doShowFurniture {
+                // Bookend with JSON furniture
+                #if DEBUG
+                    renderedString.append(getIndentedAttributedString("]", currentIndent, .MarkEnd))
+                    renderedString.append(getIndentedAttributedString("\(currentIndent)\n", 1, .Debug))
+                #else
+                    renderedString.append(getIndentedAttributedString("]\n", currentIndent, .MarkEnd))
+                #endif
+            }
+        }
+
+        return renderedString
+    }
+
     
     /**
-    Iterate through a JSON element to caclulate the current max. key length.
+     Iterate through a JSON element to caclulate the current max. key length.
+     FROM 1.1.0
 
      - Parameters:
         - json:     The JSON element.
@@ -599,7 +814,7 @@ final class Common: NSObject {
                 
                 if valueIsObject || valueIsArray {
                     // Process container values on the next level
-                    assembleColumns(value, level + 1)
+                    assembleColumns(value, level + (valueIsObject ? 1 : 0))
                 }
             }
         } else if json is Array<Any> {
