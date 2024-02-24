@@ -43,6 +43,7 @@ Contributions will only be accepted if the code they contain is licensed under t
 ## Release Notes
 
 - 1.1.1 *Unreleased*
+    - Correct indentation.
     - Make tabulated preview optional.
 - 1.1.0 *25 August 2023*
     - Allow the user to choose the colours of strings and special values (`NaN`, `±INF`).

@@ -66,6 +66,7 @@ struct BUFFOON_CONSTANTS {
 
     static let JSON_INDENT                      = 8     // Can change
     static let BASE_INDENT                      = 2     // Fixed
+    static let TABBED_INDENT                    = 4     // Fixed
 
     static let URL_MAIN                         = "https://smittytone.net/previewjson/index.html"
     static let APP_STORE                        = "https://apps.apple.com/us/app/previewjson/id6443584377?ls"
