@@ -54,7 +54,7 @@ final class Common: NSObject {
     private var spacer: String                      = " "
     private var displayColours: [String:String]     = [:]
     // FROM 1.1.1
-    private var debugSpacer: String                 = "*"
+    private var debugSpacer: String                 = "_"
 
     // JSON string attributes...
     private var keyAttributes:          [NSAttributedString.Key: Any] = [:]
@@ -790,6 +790,14 @@ final class Common: NSObject {
      */
     private func assembleColumns(_ json: Any, _ level: Int = 0) {
 
+        // FROM 1.1.1
+        if level > (self.maxKeyLengths.count - 1) {
+            let count = level - self.maxKeyLengths.count + 1
+            for _ in 0...count {
+                self.maxKeyLengths.append(0)
+            }
+        }
+         
         if json is Dictionary<String, Any> {
             // For a dictionary, enumerate the key and value
             let anyObject: [String: Any] = json as! [String: Any]

@@ -45,6 +45,7 @@ Contributions will only be accepted if the code they contain is licensed under t
 - 1.1.1 *Unreleased*
     - Correct indentation.
     - Make tabulated preview optional.
+    - Fix for crashes caused by very deeply nested JSON files.
 - 1.1.0 *25 August 2023*
     - Allow the user to choose the colours of strings and special values (`NaN`, `±INF`).
     - New columnar layout.
