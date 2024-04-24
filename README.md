@@ -42,7 +42,7 @@ Contributions will only be accepted if the code they contain is licensed under t
 
 ## Release Notes
 
-- 1.1.1 *Unreleased*
+- 1.1.1 *2 March 2024*
     - Correct indentation.
     - Make tabulated preview optional.
     - Fix for crashes caused by very deeply nested JSON files.
