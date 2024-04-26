@@ -1,4 +1,4 @@
-# PreviewJson 1.1.1 #
+# PreviewJson 1.1.2 #
 
 QuickLook JSON preview and icon thumbnailing app extensions for macOS Catalina and beyond
 
@@ -42,6 +42,8 @@ Contributions will only be accepted if the code they contain is licensed under t
 
 ## Release Notes
 
+- 1.1.2 *Unreleased*
+    - Fix 'white flash' on opening What's New sheet.
 - 1.1.1 *2 March 2024*
     - Correct indentation.
     - Make tabulated preview optional.
