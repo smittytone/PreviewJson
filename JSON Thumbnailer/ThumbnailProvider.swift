@@ -13,17 +13,20 @@ import QuickLookThumbnailing
 
 
 class ThumbnailProvider: QLThumbnailProvider {
-    
+
     // MARK:- Private Properties
-    
+
     private enum ThumbnailerError: Error {
         case badFileLoad(String)
         case badFileUnreadable(String)
         case badFileUnsupportedEncoding(String)
+        case badFileUnsupportedFile(String)
         case badGfxBitmap
         case badGfxDraw
     }
 
+
+    // MARK:- QLThumbnailProvider Required Functions
 
     override func provideThumbnail(for request: QLFileThumbnailRequest, _ handler: @escaping (QLThumbnailReply?, Error?) -> Void) {
 
@@ -52,7 +55,6 @@ class ThumbnailProvider: QLThumbnailProvider {
 
                 // Instantiate the common code within the closure
                 let common: Common = Common.init(true)
-                let jsonAtts: NSAttributedString = common.getAttributedString(data)
 
                 // Set the primary drawing frame and a base font size
                 let jsonFrame: CGRect = NSMakeRect(CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ORIGIN_X),
@@ -60,11 +62,11 @@ class ThumbnailProvider: QLThumbnailProvider {
                                                    CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.WIDTH),
                                                    CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.HEIGHT))
 
-                // Instantiate an NSTextField to display the NSAttributedString render of the code
+                // Instantiate an NSTextField to display the NSAttributedString render of the JSON
                 let jsonTextField: NSTextField = NSTextField.init(frame: jsonFrame)
-                jsonTextField.attributedStringValue = jsonAtts
+                jsonTextField.attributedStringValue = common.getAttributedString(data)
 
-                // Generate the bitmap from the rendered code text view
+                // Generate the bitmap from the rendered JSON text view
                 guard let bodyImageRep: NSBitmapImageRep = jsonTextField.bitmapImageRepForCachingDisplay(in: jsonFrame) else {
                     handler(nil, ThumbnailerError.badGfxBitmap)
                     return
@@ -82,7 +84,6 @@ class ThumbnailProvider: QLThumbnailProvider {
                                                                 0.0,
                                                                 CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ASPECT) * request.maximumSize.height,
                                                                 request.maximumSize.height)
-
                         let scaleFrame: CGRect = NSMakeRect(0.0,
                                                             0.0,
                                                             thumbnailFrame.width * request.scale,
@@ -108,5 +109,4 @@ class ThumbnailProvider: QLThumbnailProvider {
         // We didn't draw anything because of 'can't find file' error
         handler(nil, ThumbnailerError.badFileUnreadable(request.fileURL.path))
     }
-
 }
