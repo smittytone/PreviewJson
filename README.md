@@ -43,6 +43,7 @@ Contributions will only be accepted if the code they contain is licensed under t
 ## Release Notes
 
 - 1.1.2 *Unreleased*
+    - Revise thumbnailer to improve memory utilization and efficiency.
     - Fix 'white flash' on opening What's New sheet.
 - 1.1.1 *2 March 2024*
     - Correct indentation.
