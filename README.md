@@ -1,4 +1,4 @@
-# PreviewJson 1.1.2 #
+# PreviewJson 1.1.3 #
 
 QuickLook JSON preview and icon thumbnailing app extensions for macOS Catalina and beyond
 
