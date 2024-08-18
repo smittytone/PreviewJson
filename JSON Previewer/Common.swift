@@ -54,7 +54,7 @@ final class Common: NSObject {
     private var spacer: String                      = " "
     private var displayColours: [String:String]     = [:]
     // FROM 1.1.1
-    private var debugSpacer: String                 = "_"
+    private var debugSpacer: String                 = "."
 
     // JSON string attributes...
     private var keyAttributes:          [NSAttributedString.Key: Any] = [:]
@@ -313,10 +313,12 @@ final class Common: NSObject {
         let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
 #if DEBUG
         let spaceString = indent > 0 ? String(repeating: self.debugSpacer, count: indent) : ""
+        indentedString.append(NSAttributedString.init(string: spaceString, attributes: getAttributes(.Debug)))
 #else
         let spaceString = indent > 0 ? String(repeating: self.spacer, count: indent) : ""
-#endif
         indentedString.append(NSAttributedString.init(string: spaceString, attributes: getAttributes(.Scalar)))
+#endif
+        
 
         let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
         indentedString.append(NSAttributedString.init(string: trimmedString, attributes: getAttributes(attributeType)))
