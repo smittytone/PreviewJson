@@ -45,6 +45,7 @@ Contributions will only be accepted if the code they contain is licensed under t
 - 1.1.3 *Unreleased*
     - Correctly render the bad JSON separator line: revert NSTextViews to TextKit 1 (previously bumped to 2 by Xcode).
     - Improve `true`, `false` and `null` images.
+    - Improve preference change handling.
 - 1.1.2 *5 May 2024*
     - Revise thumbnailer to improve memory utilization and efficiency.
     - Fix 'white flash' on opening What's New sheet.
