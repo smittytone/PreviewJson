@@ -22,23 +22,23 @@ final class AppDelegate: NSObject,
     // MARK: - Class UI Properies
 
     // Menu Items
-    @IBOutlet var helpMenu: NSMenuItem!
-    @IBOutlet var helpMenuOnlineHelp: NSMenuItem!
-    @IBOutlet var helpMenuAppStoreRating: NSMenuItem!
-    @IBOutlet var helpMenuOthersPreviewMarkdown: NSMenuItem!
-    @IBOutlet var helpMenuOthersPreviewCode: NSMenuItem!
-    @IBOutlet var helpMenuOtherspreviewYaml: NSMenuItem!
+    @IBOutlet weak var helpMenu: NSMenuItem!
+    @IBOutlet weak var helpMenuOnlineHelp: NSMenuItem!
+    @IBOutlet weak var helpMenuAppStoreRating: NSMenuItem!
+    @IBOutlet weak var helpMenuOthersPreviewMarkdown: NSMenuItem!
+    @IBOutlet weak var helpMenuOthersPreviewCode: NSMenuItem!
+    @IBOutlet weak var helpMenuOtherspreviewYaml: NSMenuItem!
     // FROM 1.0.3
-    @IBOutlet var helpMenuWhatsNew: NSMenuItem!
-    @IBOutlet var helpMenuReportBug: NSMenuItem!
-    @IBOutlet var helpMenuOthersPreviewText: NSMenuItem!
-    @IBOutlet var mainMenuSettings: NSMenuItem!
+    @IBOutlet weak var helpMenuWhatsNew: NSMenuItem!
+    @IBOutlet weak var helpMenuReportBug: NSMenuItem!
+    @IBOutlet weak var helpMenuOthersPreviewText: NSMenuItem!
+    @IBOutlet weak var mainMenuSettings: NSMenuItem!
     
     // Panel Items
-    @IBOutlet var versionLabel: NSTextField!
+    @IBOutlet weak var versionLabel: NSTextField!
     
     // Windows
-    @IBOutlet var window: NSWindow!
+    @IBOutlet weak var window: NSWindow!
 
     // Report Sheet
     @IBOutlet weak var reportWindow: NSWindow!
@@ -59,7 +59,7 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var doShowRawJsonCheckbox: NSButton!
     @IBOutlet weak var doShowJsonFurnitureCheckbox: NSButton!
     // FROM 1.1.0
-    @IBOutlet var colourSelectionPopup: NSPopUpButton!
+    @IBOutlet weak var colourSelectionPopup: NSPopUpButton!
 
     // What's New Sheet
     @IBOutlet weak var whatsNewWindow: NSWindow!

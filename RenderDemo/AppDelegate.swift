@@ -14,12 +14,12 @@ class AppDelegate:  NSObject,
 
     // MARK: - Class UI Properies
     
-    @IBOutlet var window: NSWindow!
-    @IBOutlet var mainView: NSView!
-    @IBOutlet var previewTextView: NSTextView!
-    @IBOutlet var previewScrollView: NSScrollView!
-    @IBOutlet var modeButton: NSButton!
-    @IBOutlet var indentButton: NSButton!
+    @IBOutlet weak var window: NSWindow!
+    @IBOutlet weak var mainView: NSView!
+    @IBOutlet weak var previewTextView: NSTextView!
+    @IBOutlet weak var previewScrollView: NSScrollView!
+    @IBOutlet weak var modeButton: NSButton!
+    @IBOutlet weak var indentButton: NSButton!
 
 
     // MARK: - Private Properies
