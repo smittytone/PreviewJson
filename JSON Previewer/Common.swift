@@ -308,7 +308,7 @@ final class Common: NSObject {
 
      - Returns: The indented string as an NSAttributedString.
      */
-    private func getIndentedAttributedString(_ baseString: String, _ indent: Int, _ attributeType: AttributeType) -> NSAttributedString {
+    private func getIndentedAttributedString(_ baseString: Substring, _ indent: Int, _ attributeType: AttributeType) -> NSAttributedString {
 
         let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
 #if DEBUG
@@ -318,14 +318,10 @@ final class Common: NSObject {
         let spaceString = indent > 0 ? String(repeating: self.spacer, count: indent) : ""
         indentedString.append(NSAttributedString.init(string: spaceString, attributes: getAttributes(.Scalar)))
 #endif
-        
-
         let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
         indentedString.append(NSAttributedString.init(string: trimmedString, attributes: getAttributes(attributeType)))
         return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
     }
-
-
 
 
     /**
@@ -457,7 +453,7 @@ final class Common: NSObject {
             } else {
                 // Regular string value; add quotes if necessary
                 let stringText: String = self.doShowFurniture ? "“" + (json as! String) + "”\n" : (json as! String) + "\n"
-                renderedString.append(getIndentedAttributedString(stringText, indent, .String))
+                renderedString.append(getIndentedAttributedString(stringText[...], indent, .String))
             }
         } else if json is Dictionary<String, Any> {
             // For a dictionary, enumerate the key and value
@@ -492,7 +488,7 @@ final class Common: NSObject {
                 let valueIsArray: Bool  = (value is Array<Any>)
 
                 // Print the key
-                renderedString.append(getIndentedAttributedString(key, keyIndent, .Key))
+                renderedString.append(getIndentedAttributedString(key[...], keyIndent, .Key))
 
                 // Print a trailing space after the key
                 renderedString.append(NSAttributedString.init(string: " ", attributes: getAttributes(.Key)))
@@ -608,20 +604,20 @@ final class Common: NSObject {
             }
 
             // Can't or won't show an image? Show text
-            #if DEBUG
+#if DEBUG
             renderedString.append(getIndentedAttributedString("NULL", currentIndent, .Special))
             renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)\n", 1, .Debug))
-            #else
+#else
             renderedString.append(getIndentedAttributedString("NULL\n", currentIndent, .Special))
-            #endif
+#endif
         } else if json is Int || json is Float || json is Double {
             // Display the number as is
-            #if DEBUG
+#if DEBUG2
             renderedString.append(getIndentedAttributedString("\(json)", currentIndent, .Scalar))
             renderedString.append(getIndentedAttributedString(" \(currentLevel)/\(currentIndent)\n", 1, .Debug))
-            #else
+#else
             renderedString.append(getIndentedAttributedString("\(json)\n", currentIndent, .Scalar))
-            #endif
+#endif
         } else if json is String {
             let value: String = json as! String
 
@@ -637,22 +633,22 @@ final class Common: NSObject {
                 }
 
                 // Can't or won't show an image? Show text
-                #if DEBUG
+#if DEBUG2
                 renderedString.append(getIndentedAttributedString(value == "PREVIEW-JSON-TRUE" ? "TRUE" : "FALSE", currentIndent, .Special))
                 renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)\n", 1, .Debug))
-                #else
+#else
                 renderedString.append(getIndentedAttributedString(value == "PREVIEW-JSON-TRUE" ? "TRUE\n" : "FALSE\n", currentIndent, .Special))
-                #endif
+#endif
             } else {
                 // Regular string value; add quotes if necessary
-                #if DEBUG
+#if DEBUG2
                 let stringText: String = self.doShowFurniture ? "“" + (json as! String) + "”" : (json as! String)
-                renderedString.append(getIndentedAttributedString(stringText, currentIndent, .String))
+                renderedString.append(getIndentedAttributedString(stringText[...], currentIndent, .String))
                 renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)\n", 1, .Debug))
-                #else
+#else
                 let stringText: String = self.doShowFurniture ? "“" + (json as! String) + "”\n" : (json as! String) //+ "\n"
-                renderedString.append(getIndentedAttributedString(stringText, currentIndent, .String))
-                #endif
+                renderedString.append(getIndentedAttributedString(stringText[...], currentIndent, .String))
+#endif
             }
         } else if json is Dictionary<String, Any> {
             // For a dictionary, enumerate the key and value
@@ -663,12 +659,12 @@ final class Common: NSObject {
                 // Add JSON furniture
                 // If the parent is an object too, don't indent (we have already indented)
                 let initialIndent: Int = parentIsObject ? 0 : currentIndent
-                #if DEBUG
-                    renderedString.append(getIndentedAttributedString("{", initialIndent, .MarkStart))
-                    renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)/\(initialIndent)\n", 1, .Debug))
-                #else
-                    renderedString.append(getIndentedAttributedString("{\n", initialIndent, .MarkStart))
-                #endif
+#if DEBUG2
+                renderedString.append(getIndentedAttributedString("{", initialIndent, .MarkStart))
+                renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)/\(initialIndent)\n", 1, .Debug))
+#else
+                renderedString.append(getIndentedAttributedString("{\n", initialIndent, .MarkStart))
+#endif
             }
 
             let anyObject: [String: Any] = json as! [String: Any]
@@ -690,7 +686,7 @@ final class Common: NSObject {
                 let valueIsArray: Bool  = (value is Array<Any>)
 
                 // Print the key
-                renderedString.append(getIndentedAttributedString(key, keyIndent, .Key))
+                renderedString.append(getIndentedAttributedString(key[...], keyIndent, .Key))
                 // Space after
                 renderedString.append(NSAttributedString.init(string: String(repeating: self.spacer, count: self.maxKeyLengths[currentLevel] - key.count + 1), attributes: getAttributes(.Key)))
 
@@ -715,12 +711,12 @@ final class Common: NSObject {
 
             if self.doShowFurniture {
                 // Bookend with JSON furniture
-                #if DEBUG
-                    renderedString.append(getIndentedAttributedString("}", currentIndent, .MarkEnd))
-                    renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)\n", 1, .Debug))
-                #else
-                    renderedString.append(getIndentedAttributedString("}\n", currentIndent, .MarkEnd))
-                #endif
+#if DEBUG2
+                renderedString.append(getIndentedAttributedString("}", currentIndent, .MarkEnd))
+                renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)\n", 1, .Debug))
+#else
+                renderedString.append(getIndentedAttributedString("}\n", currentIndent, .MarkEnd))
+#endif
             }
         } else if json is Array<Any> {
             if self.doShowFurniture {
@@ -728,12 +724,12 @@ final class Common: NSObject {
                 // NOTE Parent is an object, so add furniture after key
                 let initialIndent: Int = parentIsObject ? 0 : currentIndent
 
-                #if DEBUG
-                    renderedString.append(getIndentedAttributedString("[", initialIndent, .MarkStart))
-                    renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)/\(initialIndent)\n", 1, .Debug))
-                #else
-                    renderedString.append(getIndentedAttributedString("[\n", initialIndent, .MarkStart))
-                #endif
+#if DEBUG2
+                renderedString.append(getIndentedAttributedString("[", initialIndent, .MarkStart))
+                renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)/\(initialIndent)\n", 1, .Debug))
+#else
+                renderedString.append(getIndentedAttributedString("[\n", initialIndent, .MarkStart))
+#endif
             }
 
             // Iterate over the array's items
@@ -769,12 +765,12 @@ final class Common: NSObject {
 
             if self.doShowFurniture {
                 // Bookend with JSON furniture
-                #if DEBUG
-                    renderedString.append(getIndentedAttributedString("]", currentIndent, .MarkEnd))
-                    renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)\n", 1, .Debug))
-                #else
-                    renderedString.append(getIndentedAttributedString("]\n", currentIndent, .MarkEnd))
-                #endif
+#if DEBUG2
+                renderedString.append(getIndentedAttributedString("]", currentIndent, .MarkEnd))
+                renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)\n", 1, .Debug))
+#else
+                renderedString.append(getIndentedAttributedString("]\n", currentIndent, .MarkEnd))
+#endif
             }
         }
 
