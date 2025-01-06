@@ -4,7 +4,7 @@
  *  Code common to Json Previewer and Json Thumbnailer
  *
  *  Created by Tony Smith on 29/08/2023.
- *  Copyright © 2024 Tony Smith. All rights reserved.
+ *  Copyright © 2025 Tony Smith. All rights reserved.
  */
 
 

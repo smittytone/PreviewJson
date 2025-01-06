@@ -1,4 +1,4 @@
-# PreviewJson 1.1.3 #
+# PreviewJson 1.1.4 #
 
 QuickLook JSON preview and icon thumbnailing app extensions for macOS Catalina and beyond
 
@@ -42,8 +42,9 @@ Contributions will only be accepted if the code they contain is licensed under t
 
 ## Release Notes
 
-- 1.1.3 *Unreleased*
+- 1.1.4 *Unreleased*
     - Better Swift string and substring handling.
+    - Correct outlet ownership to mitigate reference cycle formation.
 - 1.1.3 *30 August 2024*
     - Correctly render the bad JSON separator line: revert NSTextViews to TextKit 1 (previously bumped to 2 by Xcode).
     - Improve `true`, `false` and `null` images.
@@ -75,4 +76,4 @@ Contributions will only be accepted if the code they contain is licensed under t
 
 ## Copyright and Credits
 
-Primary app code and UI design &copy; 2024, Tony Smith.
+Primary app code and UI design &copy; 2025, Tony Smith.
