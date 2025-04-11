@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="32700.99.1234" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="23727" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="22690"/>
-        <plugIn identifier="com.apple.WebKit2IBPlugin" version="22690"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="23727"/>
+        <plugIn identifier="com.apple.WebKit2IBPlugin" version="23727"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -33,8 +33,6 @@
                 <outlet property="helpMenuOnlineHelp" destination="Tys-ee-tfE" id="jS7-J4-0L2"/>
                 <outlet property="helpMenuOthersPreviewCode" destination="wRu-mF-ECh" id="FUk-g8-FN8"/>
                 <outlet property="helpMenuOthersPreviewMarkdown" destination="a5a-JN-xae" id="efo-wb-Yel"/>
-                <outlet property="helpMenuOthersPreviewText" destination="Yc4-yV-XWG" id="eDa-xm-mp6"/>
-                <outlet property="helpMenuOtherspreviewYaml" destination="QaP-Sh-GBM" id="dG4-9f-SZ8"/>
                 <outlet property="helpMenuReportBug" destination="9jb-nj-WtE" id="qc8-YK-mmo"/>
                 <outlet property="helpMenuWhatsNew" destination="8ow-rc-CzH" id="PFI-AM-2re"/>
                 <outlet property="mainMenuSettings" destination="BOF-NM-1cW" id="gEX-5P-8bk"/>
@@ -160,18 +158,6 @@
                                                 <action selector="doShowSitesWithSender:" target="-1" id="oCu-mx-cdZ"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="PreviewYaml" id="QaP-Sh-GBM">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="doShowSitesWithSender:" target="-1" id="Jn1-JI-R21"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="PreviewText" id="Yc4-yV-XWG">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="doShowSitesWithSender:" target="Voe-Tx-rLC" id="wsS-4d-1np"/>
-                                            </connections>
-                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
@@ -277,7 +263,7 @@ DQ
                         <constraints>
                             <constraint firstAttribute="height" constant="22" id="Ufp-er-r74"/>
                         </constraints>
-                        <textFieldCell key="cell" controlSize="mini" lineBreakMode="clipping" alignment="center" title="PreviewJson © 2024, Tony Smith. All rights reserved." id="g12-Ft-65u">
+                        <textFieldCell key="cell" controlSize="mini" lineBreakMode="clipping" alignment="center" title="PreviewJson © 2025, Tony Smith. All rights reserved." id="g12-Ft-65u">
                             <font key="font" metaFont="miniSystem"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -601,7 +587,7 @@ DQ
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Keys" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="q22-qT-29i" id="gDK-J2-FBw">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="message"/>
                             <menu key="menu" id="Tmw-C4-sp6">
                                 <items>
                                     <menuItem title="Keys" state="on" id="q22-qT-29i"/>
@@ -622,7 +608,7 @@ DQ
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="kfH-8G-ucs" id="qXL-EO-lAd">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
+                            <font key="font" metaFont="message"/>
                             <menu key="menu" id="ZhC-aw-UN5">
                                 <items>
                                     <menuItem title="1" state="on" id="kfH-8G-ucs">

@@ -45,6 +45,7 @@ Contributions will only be accepted if the code they contain is licensed under t
 - 1.1.4 *Unreleased*
     - Better Swift string and substring handling.
     - Correct outlet ownership to mitigate reference cycle formation.
+    - Remove links to deprecated PreviewText and PreviewYaml.
 - 1.1.3 *30 August 2024*
     - Correctly render the bad JSON separator line: revert NSTextViews to TextKit 1 (previously bumped to 2 by Xcode).
     - Improve `true`, `false` and `null` images.

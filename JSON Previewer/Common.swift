@@ -860,10 +860,9 @@ Get the encoding of the string formed from data.
 extension Data {
     
     var stringEncoding: String.Encoding? {
-        var nss: NSString? = nil
         guard case let rawValue = NSString.stringEncoding(for: self,
                                                           encodingOptions: nil,
-                                                          convertedString: &nss,
+                                                          convertedString: nil,
                                                           usedLossyConversion: nil), rawValue != 0 else { return nil }
         return .init(rawValue: rawValue)
     }

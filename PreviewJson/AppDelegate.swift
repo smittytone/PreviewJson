@@ -27,11 +27,11 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var helpMenuAppStoreRating: NSMenuItem!
     @IBOutlet weak var helpMenuOthersPreviewMarkdown: NSMenuItem!
     @IBOutlet weak var helpMenuOthersPreviewCode: NSMenuItem!
-    @IBOutlet weak var helpMenuOtherspreviewYaml: NSMenuItem!
+    //@IBOutlet weak var helpMenuOtherspreviewYaml: NSMenuItem!
     // FROM 1.0.3
     @IBOutlet weak var helpMenuWhatsNew: NSMenuItem!
     @IBOutlet weak var helpMenuReportBug: NSMenuItem!
-    @IBOutlet weak var helpMenuOthersPreviewText: NSMenuItem!
+    //@IBOutlet weak var helpMenuOthersPreviewText: NSMenuItem!
     @IBOutlet weak var mainMenuSettings: NSMenuItem!
     
     // Panel Items
@@ -228,11 +228,11 @@ final class AppDelegate: NSObject,
             path = BUFFOON_CONSTANTS.APP_URLS.PM
         } else if item == self.helpMenuOthersPreviewCode {
             path = BUFFOON_CONSTANTS.APP_URLS.PC
-        } else if item == self.helpMenuOtherspreviewYaml {
-            path = BUFFOON_CONSTANTS.APP_URLS.PY
-        } else if item == self.helpMenuOthersPreviewText {
-            path = BUFFOON_CONSTANTS.APP_URLS.PT
-        }
+        } //else if item == self.helpMenuOtherspreviewYaml {
+        //    path = BUFFOON_CONSTANTS.APP_URLS.PY
+        //} else if item == self.helpMenuOthersPreviewText {
+        //    path = BUFFOON_CONSTANTS.APP_URLS.PT
+        //}
         
         // Open the selected website
         NSWorkspace.shared.open(URL.init(string:path)!)
