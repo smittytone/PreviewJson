@@ -42,7 +42,7 @@ Contributions will only be accepted if the code they contain is licensed under t
 
 ## Release Notes
 
-- 1.1.4 *Unreleased*
+- 1.1.4 *April 2025*
     - Better Swift string and substring handling.
     - Correct outlet ownership to mitigate reference cycle formation.
     - Remove links to deprecated PreviewText and PreviewYaml.
