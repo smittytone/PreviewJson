@@ -62,7 +62,7 @@ struct BUFFOON_CONSTANTS {
     static let BASE_THUMB_FONT_SIZE: Float      = 22.0
     static let THUMBNAIL_LINE_COUNT             = 33
     
-    static let FONT_SIZE_OPTIONS: [CGFloat]     = [10.0, 12.0, 14.0, 16.0, 18.0, 24.0, 28.0]
+    //static let FONT_SIZE_OPTIONS: [CGFloat]     = [10.0, 12.0, 14.0, 16.0, 18.0, 24.0, 28.0]
 
     static let JSON_INDENT                      = 8     // Can change
     static let BASE_INDENT                      = 2     // Fixed
@@ -74,9 +74,7 @@ struct BUFFOON_CONSTANTS {
     static let APP_CODE_PREVIEWER               = "com.bps.previewjson.JSON-Previewer"
     
     static let BODY_FONT_NAME                   = "Menlo-Regular"
-    static let KEY_COLOUR_HEX                  = "FF2600FF"
-    static let MARK_COLOUR_HEX                  = "929292FF"
-    
+
     static let RENDER_DEBUG                     = false
     
     // FROM 1.0.3
@@ -92,26 +90,77 @@ struct BUFFOON_CONSTANTS {
     static let WHATS_NEW_PREF                   = "com-bps-previewjson-do-show-whats-new-"
 
     // FROM 1.1.0
-    static let STRING_COLOUR_HEX                = "FC6A5DFF"
-    static let SPECIAL_COLOUR_HEX               = "D0BF69FF"
+    //static let STRING_COLOUR_HEX                = "FC6A5DFF"
+    //static let SPECIAL_COLOUR_HEX               = "D0BF69FF"
 
-    struct PREFS_KEYS {
+    struct PREFS_IDS {
 
-        static let BODY_FONT                    = "com-bps-previewjson-base-font-name"
-        static let BODY_SIZE                    = "com-bps-previewjson-base-font-size"
+        static let WHATS_NEW                    = "com-bps-previewjson-do-show-whats-new-"
+        static let PREVIEW_BODY_FONT_NAME       = "com-bps-previewjson-base-font-name"
+        static let PREVIEW_BODY_FONT_SIZE       = "com-bps-previewjson-base-font-size"
+        static let PREVIEW_USE_LIGHT            = "com-bps-previewjson-do-use-light"
+        static let PREVIEW_SHOW_MARKS           = "com-bps-previewjson-do-indent-scalars"
+        static let PREVIEW_SHOW_RAW             = "com-bps-previewjson-show-bad-json"
+        static let PREVIEW_JSON_INDENT          = "com-bps-previewjson-json-indent"
+        static let PREVIEW_BOOL_STYLE           = "com-bps-previewjson-bool-style"
+        static let PREVIEW_KEYS_COLOUR          = "com-bps-previewjson-code-colour-hex"
+        static let PREVIEW_STRINGS_COLOUR       = "com-bps-previewjson-string-colour-hex"
+        static let PREVIEW_SPECIALS_COLOUR      = "com-bps-previewjson-special-colour-hex"
+        static let PREVIEW_MARKS_COLOUR         = "com-bps-previewjson-mark-colour-hex"
+        static let PREVIEW_SHOW_MARGIN          = "com-bps-previewjson-do-show-margin"
+        static let PREVIEW_MARGIN_WIDTH         = "com-bps-previewjson-margin-width"
+        static let PREVIEW_WINDOW_SCALE         = "com-bps-previewjson-window-scale"
+        static let THUMB_MATCH_FINDER           = "com-bps-previewjson-thumb-match-finder"
         static let THUMB_SIZE                   = "com-bps-previewjson-thumb-font-size"
-        static let KEY_COLOUR                   = "com-bps-previewjson-code-colour-hex"
-        static let MARK_COLOUR                  = "com-bps-previewjson-mark-colour-hex"
-        static let STRING_COLOUR                = "com-bps-previewyaml-string-colour-hex"
-        static let SPECIAL_COLOUR               = "com-bps-previewyaml-special-colour-hex"
-        static let USE_LIGHT                    = "com-bps-previewjson-do-use-light"
-        static let WHATS_NEW                    = "com-bps-previewyaml-do-show-whats-new-"
-        static let INDENT                       = "com-bps-previewjson-json-indent"
-        static let SCALARS                      = "com-bps-previewjson-do-indent-scalars"
-        static let BAD                          = "com-bps-previewjson-show-bad-json"
-        static let BOOL_STYLE                   = "com-bps-previewjson-bool-style"
     }
+
+    struct COLOUR_IDS {
+
+        static let KEYS                         = "keys"
+        static let STRINGS                      = "strings"
+        static let SPECIALS                     = "specials"
+        static let MARKS                        = "marks"
+        static let NEW_KEYS                     = "new_keys"
+        static let NEW_STRINGS                  = "new_strings"
+        static let NEW_SPECIALS                 = "new_specials"
+        static let NEW_MARKS                    = "new_marks"
+    }
+
+    struct HEX_COLOUR {
+
+        static let KEYS                         = "FF2600FF"
+        static let STRINGS                      = "FC6A5DFF"
+        static let SPECIALS                     = "D0BF69FF"
+        static let MARKS                        = "929292FF"
+    }
+
+    struct PREVIEW_SIZE {
+
+        static let FONT_SIZE                    = 16.0
+        static let FONT_SIZE_OPTIONS: [CGFloat] = [10.0, 12.0, 14.0, 16.0, 18.0, 24.0, 28.0]
+        static let LINE_SPACING                 = 1.0
+        static let PREVIEW_MARGIN_WIDTH         = 16.0
+        static let PREVIEW_MARGIN_WIDTH_MIN     = 0
+        static let PREVIEW_MARGIN_WIDTH_MAX     = 256
+        static let PREVIEW_MARGIN_SIZE          = NSSize(width: PREVIEW_MARGIN_WIDTH, height: PREVIEW_MARGIN_WIDTH)
+
+    }
+
+    struct SCALERS {
+
+        static let WINDOW_SIZE_L                = 0.75
+        static let WINDOW_SIZE_M                = 0.50
+        static let WINDOW_SIZE_S                = 0.42
+    }
+
+    static let COLOUR_OPTIONS                   = [BUFFOON_CONSTANTS.COLOUR_IDS.KEYS,
+                                                   BUFFOON_CONSTANTS.COLOUR_IDS.STRINGS,
+                                                   BUFFOON_CONSTANTS.COLOUR_IDS.SPECIALS,
+                                                   BUFFOON_CONSTANTS.COLOUR_IDS.MARKS]
 
     // FROM 1.1.1
     static let TABULATION_INDENT_VALUE          = 999
+
+    // FROM 2.0.0
+    static let MAX_FEEDBACK_SIZE                = 512
 }

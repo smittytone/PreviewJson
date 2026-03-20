@@ -7,16 +7,19 @@
  */
 
 
-import Cocoa
+import AppKit
 import CoreServices
 import WebKit
 
 
 @main
-final class AppDelegate: NSObject,
+@MainActor
+final class AppDelegate: NSResponder,
                          NSApplicationDelegate,
-                         URLSessionDelegate,
-                         URLSessionDataDelegate,
+                         NSControlTextEditingDelegate,
+                         NSMenuDelegate,
+                         NSTextFieldDelegate,
+                         NSWindowDelegate,
                          WKNavigationDelegate {
 
     // MARK: - Class UI Properies
@@ -27,72 +30,66 @@ final class AppDelegate: NSObject,
     @IBOutlet weak var helpMenuAppStoreRating: NSMenuItem!
     @IBOutlet weak var helpMenuOthersPreviewMarkdown: NSMenuItem!
     @IBOutlet weak var helpMenuOthersPreviewCode: NSMenuItem!
-    //@IBOutlet weak var helpMenuOtherspreviewYaml: NSMenuItem!
     // FROM 1.0.3
     @IBOutlet weak var helpMenuWhatsNew: NSMenuItem!
     @IBOutlet weak var helpMenuReportBug: NSMenuItem!
-    //@IBOutlet weak var helpMenuOthersPreviewText: NSMenuItem!
     @IBOutlet weak var mainMenuSettings: NSMenuItem!
-    
-    // Panel Items
-    @IBOutlet weak var versionLabel: NSTextField!
-    
-    // Windows
+
+    // Window
     @IBOutlet weak var window: NSWindow!
+    @IBOutlet weak var infoButton: NSButton!
+    @IBOutlet weak var settingsButton: NSButton!
+    @IBOutlet weak var feedbackButton: NSButton!
+    @IBOutlet weak var mainTabView: NSTabView!
 
-    // Report Sheet
-    @IBOutlet weak var reportWindow: NSWindow!
-    @IBOutlet weak var feedbackText: NSTextField!
-    @IBOutlet weak var connectionProgress: NSProgressIndicator!
+    // Window > Info Tab Items
+    @IBOutlet weak var versionLabel: NSTextField!
+    @IBOutlet weak var infoLabel: NSTextField!
 
-    // Preferences Sheet
-    @IBOutlet weak var preferencesWindow: NSWindow!
+    // Window > Settings Tab Items
     @IBOutlet weak var fontSizeSlider: NSSlider!
     @IBOutlet weak var fontSizeLabel: NSTextField!
-    @IBOutlet weak var codeFontPopup: NSPopUpButton!
-    @IBOutlet weak var codeStylePopup: NSPopUpButton!
-    @IBOutlet weak var codeIndentPopup: NSPopUpButton!
-    @IBOutlet weak var codeColorWell: NSColorWell!
-    //@IBOutlet weak var markColorWell: NSColorWell!
-    @IBOutlet weak var boolStyleSegment: NSSegmentedControl!
-    @IBOutlet weak var useLightCheckbox: NSButton!
-    @IBOutlet weak var doShowRawJsonCheckbox: NSButton!
-    @IBOutlet weak var doShowJsonFurnitureCheckbox: NSButton!
-    // FROM 1.1.0
+    @IBOutlet weak var fontPopup: NSPopUpButton!
+    @IBOutlet weak var stylePopup: NSPopUpButton!
+    @IBOutlet weak var indentPopup: NSPopUpButton!
     @IBOutlet weak var colourSelectionPopup: NSPopUpButton!
+    @IBOutlet weak var colourWell: NSColorWell!
+    @IBOutlet weak var useLightSwitch: NSSwitch!
+    @IBOutlet weak var showJsonMarksSwitch: NSSwitch!
+    @IBOutlet weak var showbadJsonSwitch: NSSwitch!
+    @IBOutlet weak var boolStyleSegment: NSSegmentedControl!
+    @IBOutlet weak var applyButton: NSButton!
+
+    // Window > Feedback Tab Items
+    @IBOutlet weak var messageSizeLabel: NSTextField!
+    @IBOutlet weak var messageSendButton: NSButton!
+    @IBOutlet weak var feedbackText: NSTextField!
+    @IBOutlet weak var connectionProgress: NSProgressIndicator!
 
     // What's New Sheet
     @IBOutlet weak var whatsNewWindow: NSWindow!
     @IBOutlet weak var whatsNewWebView: WKWebView!
-    
+
 
     // MARK: - Private Properies
 
     internal var whatsNewNav: WKNavigation?     = nil
-    private  var feedbackTask: URLSessionTask?  = nil
-    private  var indentDepth: Int               = BUFFOON_CONSTANTS.JSON_INDENT
-    private  var boolStyle: Int                 = BUFFOON_CONSTANTS.BOOL_STYLE.FULL
-    private  var fontSize: CGFloat              = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
-    private  var fontName: String               = BUFFOON_CONSTANTS.BODY_FONT_NAME
-    //private  var codeColourHex: String        = BUFFOON_CONSTANTS.KEY_COLOUR_HEX
-    //private  var markColourHex: String        = BUFFOON_CONSTANTS.MARK_COLOUR_HEX
-    private  var doShowLightBackground: Bool    = false
-    private  var doShowTag: Bool                = false
-    private  var doShowRawJson: Bool            = false
-    private  var doShowFurniture: Bool          = true
-    internal var isMontereyPlus: Bool           = false
-    internal var codeFonts: [PMFont]            = []
-    // FROM 1.0.3
-    //private var havePrefsChanged: Bool = false
-    // FROM 1.1.0
-    private var displayColours: [String:String] = [:]
+    internal var fonts: [PMFont]                = []
+    // FROM 2.0.0
+    private  var tabManager: PMTabManager = PMTabManager()
+    internal var hasSentFeedback: Bool          = false
+    internal var timer: Timer?                  = nil
+    internal let defaultSettings: PJSettings    = PJSettings()      // Standard values
+    internal var currentSettings: PJSettings    = PJSettings()      // Loaded values - load takes place after fonts loaded asynchronously
+    //internal var initialLoadDone: Bool          = false
 
+    
     /*
      Replace the following string with your own team ID. This is used to
      identify the app suite and so share preferences set by the main app with
      the previewer and thumbnailer extensions.
      */
-    private var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
+    internal var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
 
 
     // MARK: - Class Lifecycle Functions
@@ -100,14 +97,15 @@ final class AppDelegate: NSObject,
     func applicationDidFinishLaunching(_ notification: Notification) {
         
         // Asynchronously get the list of code fonts
-        DispatchQueue.init(label: "com.bps.previewjson.async-queue").async {
-            self.asyncGetFonts()
+        // FROM 2.0.0 - Use Swift Concurrency
+        Task {
+            asyncGetFonts()
         }
 
         // Set application group-level defaults
-        registerPreferences()
-        recordSystemState()
-        
+        // Set application group-level defaults
+        self.defaultSettings.registerSettings(self.appSuiteName, getVersion())
+
         // Add the app's version number to the UI
         let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
         let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
@@ -118,19 +116,46 @@ final class AppDelegate: NSObject,
         let theApp = NSApplication.shared
         theApp.helpMenu = dummyHelpMenu
         
-        // Watch for macOS UI mode changes
-        DistributedNotificationCenter.default.addObserver(self,
-                                                          selector: #selector(interfaceModeChanged),
-                                                          name: NSNotification.Name(rawValue: "AppleInterfaceThemeChangedNotification"),
-                                                          object: nil)
-        
+        // FROM 2.0.0
+        // Configure the tab manager
+        self.tabManager.parent = self
+        self.tabManager.buttons.append(self.infoButton)
+        self.tabManager.buttons.append(self.settingsButton)
+        self.tabManager.buttons.append(self.feedbackButton)
+        self.infoButton.toolTip = "About PreviewJson 2"
+        self.settingsButton.toolTip = "Set preview styles and content"
+        self.feedbackButton.toolTip = "Send feedback to the developer"
+        self.infoButton.alphaValue = 1.0
+        self.settingsButton.alphaValue = 1.0
+        self.feedbackButton.alphaValue = 1.0
+
+        // Add callback closures, one per tab, to the tab manager
+        self.tabManager.callbacks.append(nil)   // Info tab
+        self.tabManager.callbacks.append {      // Settings tab
+            self.willShowSettingsPage()
+        }
+        self.tabManager.callbacks.append {
+            self.willShowFeedbackPage()         // Feedback tab
+        }
+
+        // Clear the Feedback tab
+        // NOTE Don't initialise the Settings tab here too:
+        //      It must happen after we've got a list of fonts
+        initialiseFeedback()
+
+        // ADVANCED SETTIBGS
+        //self.previewMarginSizeText.delegate = self
+        //self.previewMarginRangeText.stringValue = "Valid range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MAX)"
+
         // Centre the main window and display
+        setInfoText()
+        self.window.delegate = self
         self.window.center()
         self.window.makeKeyAndOrderFront(self)
 
         // Show the 'What's New' panel if we need to
         // NOTE Has to take place at the end of the function
-        doShowWhatsNew(self)
+        //doShowWhatsNew(self)
     }
 
 
@@ -143,70 +168,127 @@ final class AppDelegate: NSObject,
 
     // MARK: - Action Functions
 
-    /**
-     Called from **File > Close** and the various Quit controls.
+    @IBAction
+    private func doClose(_ sender: Any) {
 
-     - Parameters:
-        - sender: The source of the action.
+        closeBasics()
+        closeSettings()
+    }
+
+
+    /**
+     Close sheets and perform other general close-related tasks.
+
+     FROM 2.0.0
      */
-    @IBAction private func doClose(_ sender: Any) {
-        
-        // Reset the QL thumbnail cache... just in case it helps
-        _ = runProcess(app: "/usr/bin/qlmanage", with: ["-r", "cache"])
-        
-        // FROM 1.0.3
-        // Check for open panels
-        if self.preferencesWindow.isVisible {
-            if checkPrefs() {
-                let alert: NSAlert = showAlert("You have unsaved settings",
-                                               "Do you wish to cancel and save these, or quit the app anyway?",
-                                               false)
-                alert.addButton(withTitle: "Quit")
-                alert.addButton(withTitle: "Cancel")
-                alert.beginSheetModal(for: self.preferencesWindow) { (response: NSApplication.ModalResponse) in
-                    if response == NSApplication.ModalResponse.alertFirstButtonReturn {
-                        // The user clicked 'Quit'
-                        self.preferencesWindow.close()
-                        self.window.close()
-                    }
-                }
-                
-                return
-            }
-            
-            self.preferencesWindow.close()
-        }
-        
+    internal func closeBasics() {
+
+        // Close the What's New sheet if it's open
         if self.whatsNewWindow.isVisible {
             self.whatsNewWindow.close()
         }
-        
-        if self.reportWindow.isVisible {
-            if self.feedbackText.stringValue.count > 0 {
-                let alert: NSAlert = showAlert("You have unsent feedback",
-                                               "Do you wish to cancel and send it, or quit the app anyway?",
-                                               false)
-                alert.addButton(withTitle: "Quit")
-                alert.addButton(withTitle: "Cancel")
-                alert.beginSheetModal(for: self.reportWindow) { (response: NSApplication.ModalResponse) in
-                    if response == NSApplication.ModalResponse.alertFirstButtonReturn {
-                        // The user clicked 'Quit'
-                        self.reportWindow.close()
-                        self.window.close()
-                    }
+    }
+
+
+    /**
+     Handle a settings-change call to action, if there is one, and either bail (to allow the user
+     to save the settings) or move on to the feedback check.
+
+     FROM 2.0.0
+     */
+    internal func closeSettings() {
+
+        // Are there any unsaved changes to the settings?
+        if checkSettingsOnQuit() {
+            let alert: NSAlert = makeAlert("You have unsaved settings",
+                                           "Do you wish to cancel and save or change them, or quit the app anyway?",
+                                           false)
+            alert.addButton(withTitle: "Quit")
+            alert.addButton(withTitle: "Cancel")
+            alert.beginSheetModal(for: self.window) { (response) in
+                if response == .alertFirstButtonReturn {
+                    // The user clicked 'Quit': now check for feedback changes
+                    self.closeFeedback()
                 }
-                
-                return
             }
-            
-            self.reportWindow.close()
+
+            // Exit the close process to allow the user to save their changed settings
+            return
         }
-        
-        // Close the window... which will trigger an app closure
+
+        // Move on to the next phase: the feedback check
+        closeFeedback()
+    }
+
+
+    /**
+     Handle a feedback-unsent call to action, if one is needed, and either bail (to all the user
+     to send the feedback) or close the main window.
+
+     FROM 2.0.0
+     */
+    internal func closeFeedback() {
+
+        // Does the feeback page contain text? If so let the user know
+        if self.feedbackText.stringValue.count > 0 && !self.hasSentFeedback {
+            let alert: NSAlert = makeAlert("You have unsent feedback",
+                                           "Do you wish to cancel and send it, or quit the app anyway?",
+                                           false)
+            alert.addButton(withTitle: "Quit")
+            alert.addButton(withTitle: "Cancel")
+            alert.beginSheetModal(for: self.window) { (response) in
+                if response == .alertFirstButtonReturn {
+                    // The user clicked 'Quit'
+                    self.window.close()
+                }
+            }
+
+            // Exit the close process to allow the user to send their entered feedback
+            return
+        }
+
+        // No feedback text to send/ignore so close the window which will trigger an app closure
         self.window.close()
     }
-    
-    
+
+
+    @IBAction
+    private func doSwitchTab(sender: NSButton) {
+
+        // FROM 2.0.0
+        self.tabManager.buttonClicked(sender)
+    }
+
+
+    @IBAction
+    private func doShowSettings(sender: Any) {
+
+        // FROM 2.0.0
+        self.tabManager.programmaticallyClickButton(at: 1)
+    }
+
+
+    @IBAction
+    private func doShowFeedback(sender: Any) {
+
+        // FROM 2.0.0
+        self.tabManager.programmaticallyClickButton(at: 2)
+    }
+
+
+    /**
+     Alternative route to help.
+     */
+    @IBAction
+    private func doShowPrefsHelp(sender: Any) {
+
+        let path: String = BUFFOON_CONSTANTS.URL_MAIN + "#customise-the-preview"
+        NSWorkspace.shared.open(URL(string:path)!)
+    }
+
+
+
+
     /**
      Called from various **Help** items to open various websites.
 
@@ -228,786 +310,38 @@ final class AppDelegate: NSObject,
             path = BUFFOON_CONSTANTS.APP_URLS.PM
         } else if item == self.helpMenuOthersPreviewCode {
             path = BUFFOON_CONSTANTS.APP_URLS.PC
-        } //else if item == self.helpMenuOtherspreviewYaml {
-        //    path = BUFFOON_CONSTANTS.APP_URLS.PY
-        //} else if item == self.helpMenuOthersPreviewText {
-        //    path = BUFFOON_CONSTANTS.APP_URLS.PT
-        //}
+        }
         
         // Open the selected website
         NSWorkspace.shared.open(URL.init(string:path)!)
     }
 
-    
-    /**
-     Open the System Preferences app at the Extensions pane.
 
-     - Parameters:
-        - sender: The source of the action.
-     */
-    @IBAction private func doOpenSysPrefs(sender: Any) {
-
-        // Open the System Preferences app at the Extensions pane
-        NSWorkspace.shared.open(URL(fileURLWithPath: "/System/Library/PreferencePanes/Extensions.prefPane"))
-    }
-
-
-    // MARK: - Report Functions
+    // MARK: - Window Set Up Functions
 
     /**
-     Display a window in which the user can submit feedback, or report a bug.
-
-     - Parameters:
-        - sender: The source of the action.
+     Create and display the information text label. This is done programmatically
+     because we're using an NSAttributedString rather than a plain string.
      */
-    @IBAction @objc private func doShowReportWindow(sender: Any?) {
-        
-        // FROM 1.0.3
-        // Hide menus we don't want used while panel is open
-        hidePanelGenerators()
-        
-        // Reset the UI
-        self.connectionProgress.stopAnimation(self)
-        self.feedbackText.stringValue = ""
+    private func setInfoText() {
 
-        // Present the window
-        self.window.beginSheet(self.reportWindow,
-                               completionHandler: nil)
+        // Set the attributes
+        let bodyAtts: [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: 13.0),
+            .foregroundColor: NSColor.labelColor
+        ]
+
+        let boldAtts : [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: 13.0, weight: .bold),
+            .foregroundColor: NSColor.labelColor
+        ]
+
+        let infoText: NSMutableAttributedString = NSMutableAttributedString(string: "You need only run this app once, to register its JSON Previewer and JSON Thumbnailer application extensions with macOS. You can then manage these extensions in ", attributes: bodyAtts)
+        let boldText: NSAttributedString = NSAttributedString(string: "System Settings > Extensions > Quick Look", attributes: boldAtts)
+        infoText.append(boldText)
+        infoText.append(NSAttributedString(string: ".\n\nCases where previews cannot be rendered can usually be resolved by logging out of your Mac, logging in again and running this app once more.", attributes: bodyAtts))
+        self.infoLabel.attributedStringValue = infoText
     }
-
-
-    /**
-     User has clicked the Report window's **Cancel** button, so just close the sheet.
-
-     - Parameters:
-        - sender: The source of the action.
-     */
-    @IBAction @objc private func doCancelReportWindow(sender: Any) {
-
-        // User has clicked the Report window's 'Cancel' button,
-        // so just close the sheet
-
-        self.connectionProgress.stopAnimation(self)
-        self.window.endSheet(self.reportWindow)
-        
-        // FROM 1.0.3
-        // Restore menus
-        showPanelGenerators()
-    }
-
-    
-    /**
-     User has clicked the Report window's **Send** button.
-
-     Get the message (if there is one) from the text field and submit it.
-
-     - Parameters:
-        - sender: The source of the action.
-     */
-    @IBAction @objc private func doSendFeedback(sender: Any) {
-
-        // User has clicked the Report window's 'Send' button,
-        // so get the message (if there is one) from the text field and submit it
-        
-        let feedback: String = self.feedbackText.stringValue
-
-        if feedback.count > 0 {
-            // Start the connection indicator if it's not already visible
-            self.connectionProgress.startAnimation(self)
-            
-            /*
-             Add your own `func sendFeedback(_ feedback: String) -> URLSessionTask?` function
-             */
-            self.feedbackTask = sendFeedback(feedback)
-            
-            if self.feedbackTask != nil {
-                // We have a valid URL Session Task, so start it to send
-                self.feedbackTask!.resume()
-                return
-            } else {
-                // Report the error
-                sendFeedbackError()
-            }
-
-            return
-        }
-        
-        // No feedback, so close the sheet
-        self.window.endSheet(self.reportWindow)
-        
-        // FROM 1.0.3
-        // Restore menus
-        showPanelGenerators()
-        
-        // NOTE sheet closes asynchronously unless there was no feedback to send,
-        //      or an error occured with setting up the feedback session
-    }
-    
-
-    // MARK: - Preferences Functions
-
-    /**
-     Initialise and display the **Preferences** sheet.
-
-     - Parameters:
-        - sender: The source of the action.
-     */
-    @IBAction private func doShowPreferences(sender: Any) {
-
-        // FROM 1.0.3
-        // Hide menus we don't want used while panel is open
-        hidePanelGenerators()
-        
-        // FROM 1.0.3
-        // Reset changes prefs flag
-        //self.havePrefsChanged = false
-
-        // The suite name is the app group name, set in each the entitlements file of
-        // the host app and of each extension
-        if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            self.fontSize                   = CGFloat(defaults.float(forKey: "com-bps-previewjson-base-font-size"))
-            self.fontName                   = defaults.string(forKey: "com-bps-previewjson-base-font-name") ?? BUFFOON_CONSTANTS.BODY_FONT_NAME
-            self.indentDepth                = defaults.integer(forKey: "com-bps-previewjson-json-indent")
-            self.doShowLightBackground      = defaults.bool(forKey: "com-bps-previewjson-do-use-light")
-            self.doShowRawJson              = defaults.bool(forKey: "com-bps-previewjson-show-bad-json")
-            /* REMOVED 1.1.0
-            self.codeColourHex            = defaults.string(forKey: "com-bps-previewjson-code-colour-hex") ?? BUFFOON_CONSTANTS.KEY_COLOUR_HEX
-            self.markColourHex            = defaults.string(forKey: "com-bps-previewjson-mark-colour-hex") ?? BUFFOON_CONSTANTS.MARK_COLOUR_HEX
-             */
-            self.doShowFurniture            = defaults.bool(forKey: "com-bps-previewjson-do-indent-scalars")
-            self.boolStyle                  = defaults.integer(forKey: "com-bps-previewjson-bool-style")
-
-            // FROM 1.1.0
-            self.displayColours["key"]      = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.KEY_COLOUR)
-            self.displayColours["string"]   = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR) ?? BUFFOON_CONSTANTS.STRING_COLOUR_HEX
-            self.displayColours["special"]  = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR) ?? BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX
-            self.displayColours["mark"]     = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.MARK_COLOUR) ?? BUFFOON_CONSTANTS.MARK_COLOUR_HEX
-        }
-
-        // Get the menu item index from the stored value
-        // NOTE The index is that of the list of available fonts (see 'Common.swift') so
-        //      we need to convert this to an equivalent menu index because the menu also
-        //      contains a separator and two title items
-        let index: Int = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS.lastIndex(of: self.fontSize) ?? 3
-        self.fontSizeSlider.floatValue = Float(index)
-        self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
-        
-        // Set the checkboxes
-        self.useLightCheckbox.state = self.doShowLightBackground ? .on : .off
-        self.doShowRawJsonCheckbox.state = self.doShowRawJson ? .on : .off
-        self.doShowJsonFurnitureCheckbox.state = self.doShowFurniture ? .on : .off
-        
-        // Set the indents popup
-        let indents: [Int] = [1, 2, 4, 8, BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE]
-        self.codeIndentPopup.selectItem(at: indents.firstIndex(of: self.indentDepth)!)
-        
-        // Set the colour panel's initial view
-        NSColorPanel.setPickerMode(.RGB)
-        self.codeColorWell.color = NSColor.hexToColour(self.displayColours["key"] ?? BUFFOON_CONSTANTS.KEY_COLOUR_HEX)
-        //self.markColorWell.color = NSColor.hexToColour(self.markColourHex)
-        
-        // Set the font name popup
-        // List the current system's monospace fonts
-        self.codeFontPopup.removeAllItems()
-        for i: Int in 0..<self.codeFonts.count {
-            let font: PMFont = self.codeFonts[i]
-            self.codeFontPopup.addItem(withTitle: font.displayName)
-        }
-        
-        // Set the font style
-        self.codeStylePopup.isEnabled = false
-        selectFontByPostScriptName(self.fontName)
-        
-        // Set the style for JSON bools and null
-        self.boolStyleSegment.selectedSegment = self.boolStyle
-        
-        // Check for the OS mode
-        let appearance: NSAppearance = NSApp.effectiveAppearance
-        if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
-            self.useLightCheckbox.isHidden = (appearName == .aqua)
-        }
-
-        // FROM 1.1.0
-        self.colourSelectionPopup.selectItem(at: 0)
-        
-        // Display the sheet
-        self.window.beginSheet(self.preferencesWindow, completionHandler: nil)
-    }
-
-
-    /**
-        Close the **Preferences** sheet and save any settings that have changed.
-
-        - Parameters:
-            - sender: The source of the action.
-     */
-    @IBAction private func doSavePreferences(sender: Any) {
-
-        // Save any changed preferences
-        if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            /* REMOVED 1.1.0
-            // Check for and record a JSON key colour change
-            var newColour: String = self.codeColorWell.color.hexString
-            if newColour != self.codeColourHex {
-                self.codeColourHex = newColour
-                defaults.setValue(newColour,
-                                  forKey: "com-bps-previewjson-code-colour-hex")
-            }
-            
-            // Check for and record a JSON marker colour change
-            newColour = self.markColorWell.color.hexString
-            if newColour != self.markColourHex {
-                self.markColourHex = newColour
-                defaults.setValue(newColour,
-                                  forKey: "com-bps-previewjson-mark-colour-hex")
-            }
-            */
-
-            // Check for and record a use light background change
-            var state: Bool = self.useLightCheckbox.state == .on
-            if self.doShowLightBackground != state {
-                defaults.setValue(state,
-                                  forKey: "com-bps-previewjson-do-use-light")
-            }
-            
-            // Check for and record a raw JSON presentation change
-            state = self.doShowRawJsonCheckbox.state == .on
-            if self.doShowRawJson != state {
-                defaults.setValue(state,
-                                  forKey: "com-bps-previewjson-show-bad-json")
-            }
-            
-            // Check for and record a JSON marker presentation change
-            state = self.doShowJsonFurnitureCheckbox.state == .on
-            if self.doShowFurniture != state {
-                defaults.setValue(state,
-                                  forKey: "com-bps-previewjson-do-indent-scalars")
-            }
-            
-            // Check for and record an indent change
-            let indents: [Int] = [1, 2, 4, 8, BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE]
-            let indent: Int = indents[self.codeIndentPopup.indexOfSelectedItem]
-            if self.indentDepth != indent {
-                defaults.setValue(indent,
-                                  forKey: "com-bps-previewjson-json-indent")
-            }
-            
-            // Check for and record a font and style change
-            if let fontName: String = getPostScriptName() {
-                if fontName != self.fontName {
-                    self.fontName = fontName
-                    defaults.setValue(fontName,
-                                      forKey: "com-bps-previewjson-base-font-name")
-                }
-            }
-            
-            // Check for and record a font size change
-            let newValue: CGFloat = BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[Int(self.fontSizeSlider.floatValue)]
-            if newValue != self.fontSize {
-                defaults.setValue(newValue,
-                                  forKey: "com-bps-previewjson-base-font-size")
-            }
-            
-            // Check for and record a JSON bool style change
-            let selectedStyle = self.boolStyleSegment.selectedSegment
-            if self.boolStyle != selectedStyle {
-                self.boolStyle = selectedStyle
-                defaults.setValue(selectedStyle,
-                                  forKey: "com-bps-previewjson-bool-style")
-            }
-
-            // FROM 1.1.0
-            if let newColour: String = self.displayColours["new_key"] {
-                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.KEY_COLOUR)
-            }
-
-            if let newColour: String = self.displayColours["new_string"] {
-                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR)
-            }
-
-            if let newColour: String = self.displayColours["new_special"] {
-                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR)
-            }
-
-            if let newColour: String = self.displayColours["new_mark"] {
-                defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_KEYS.MARK_COLOUR)
-            }
-
-            // Sync any changes
-            defaults.synchronize()
-        }
-        
-        // Hide the sheet and tidy up
-        closePrefsWindow()
-    }
-    
-    
-    /**
-        Close the **Preferences** sheet without saving, ie. **Cancel** is clicked.
-
-        - Parameters:
-            - sender: The source of the action.
-     */
-    @IBAction private func doClosePreferences(sender: Any) {
-
-        if checkPrefs() {
-            let alert: NSAlert = showAlert("You have made changes",
-                                           "Do you wish to go back and save them, or ignore them? ",
-                                           false)
-            alert.addButton(withTitle: "Go Back")
-            alert.addButton(withTitle: "Ignore Changes")
-            alert.beginSheetModal(for: self.preferencesWindow) { (response: NSApplication.ModalResponse) in
-                if response != NSApplication.ModalResponse.alertFirstButtonReturn {
-                    // The user clicked 'Cancel'
-                    self.closePrefsWindow()
-                }
-            }
-        } else {
-            closePrefsWindow()
-        }
-    }
-
-
-    /**
-        Follow-on function to close the **Preferences** sheet without saving.
-        FROM 1.1.0
-
-        - Parameters:
-            - sender: The source of the action.
-     */
-    private func closePrefsWindow() {
-
-        // Close the colour selection panel(s) if they're open
-        if self.codeColorWell.isActive {
-            NSColorPanel.shared.close()
-            self.codeColorWell.deactivate()
-        }
-
-        /* REMOVED 1.1.0
-        if self.markColorWell.isActive {
-            NSColorPanel.shared.close()
-            self.markColorWell.deactivate()
-        }
-        */
-
-        // Shut the window
-        self.window.endSheet(self.preferencesWindow)
-
-        // FROM 1.0.3
-        // Restore menus
-        self.showPanelGenerators()
-
-        // FROM 1.1.0
-        self.clearNewColours()
-        //self.havePrefsChanged = false
-    }
-    
-    
-    /**
-        Check prefs for differences from the initial state.
-        Used when the **Preferences** sheet is closed with the Cancel button.
-        FROM 1.1.3
-     */
-    private func checkPrefs() -> Bool {
-        
-        var haveChanged: Bool = false
-        
-        // Check for and record a use light background change
-        var state: Bool = self.useLightCheckbox.state == .on
-        haveChanged = (self.doShowLightBackground != state)
-        
-        // Check for and record a raw JSON presentation change
-        if !haveChanged {
-            state = self.doShowRawJsonCheckbox.state == .on
-            haveChanged = (self.doShowRawJson != state)
-        }
-        
-        // Check for and record a JSON marker presentation change
-        if !haveChanged {
-            state = self.doShowJsonFurnitureCheckbox.state == .on
-            haveChanged = (self.doShowFurniture != state)
-        }
-        
-        // Check for and record an indent change
-        if !haveChanged {
-            let indents: [Int] = [1, 2, 4, 8, BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE]
-            haveChanged = (self.indentDepth != indents[self.codeIndentPopup.indexOfSelectedItem])
-        }
-        
-        // Check for and record a font and style change
-        if let fontName: String = getPostScriptName() {
-            if !haveChanged {
-                haveChanged = (fontName != self.fontName)
-            }
-        }
-        
-        // Check for and record a font size change
-        if !haveChanged {
-            haveChanged = (self.fontSize != BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[Int(self.fontSizeSlider.floatValue)])
-        }
-        
-        // Check for and record a JSON bool style change
-        if !haveChanged {
-            haveChanged = (self.boolStyle != self.boolStyleSegment.selectedSegment)
-        }
-        
-        // FROM 1.1.0
-        if let _ = self.displayColours["new_key"] {
-            haveChanged = true
-        }
-
-        if let _ = self.displayColours["new_string"] {
-            haveChanged = true
-        }
-
-        if let _ = self.displayColours["new_special"] {
-            haveChanged = true
-        }
-
-        if let _ = self.displayColours["new_mark"] {
-            haveChanged = true
-        }
-        
-        return haveChanged
-    }
-    
-    
-    /**
-        Zap any temporary colour values.
-        FROM 1.1.0
-     
-     */
-    private func clearNewColours() {
-
-        let keys: [String] = ["key", "string", "special", "mark"]
-        for key in keys {
-            if let _: String = self.displayColours["new_" + key] {
-                self.displayColours["new_" + key] = nil
-            }
-        }
-    }
-    
-    
-    /**
-        When the font size slider is moved and released, this function updates the font size readout.
-
-        - Parameters:
-            - sender: The source of the action.
-     */
-    @IBAction private func doMoveSlider(sender: Any) {
-        
-        let index: Int = Int(self.fontSizeSlider.floatValue)
-        self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.FONT_SIZE_OPTIONS[index]))pt"
-        //self.havePrefsChanged = false
-    }
-
-
-    /**
-     Called when the user selects a font from either list.
-
-     FROM 1.1.0
-
-     - Parameters:
-        - sender: The source of the action.
-     */
-    @IBAction private func doUpdateFonts(sender: Any) {
-        
-        //self.havePrefsChanged = false
-        setStylePopup()
-    }
-
-    
-    /**
-        Generic IBAction for any Prefs control to register it has been used.
-     
-        - Parameters:
-            - sender: The source of the action.
-     */
-    @IBAction private func checkboxClicked(sender: Any) {
-        
-        //self.havePrefsChanged = true
-    }
-
-
-    /**
-        Update the colour preferences dictionary with a value from the
-        colour well when a colour is chosen.
-        FROM 1.1.0
-
-        - Parameters:
-            - sender: The source of the action.
-     */
-    @objc @IBAction private func colourSelected(sender: Any) {
-
-        let keys: [String] = ["key", "string", "special", "mark"]
-        let key: String = "new_" + keys[self.colourSelectionPopup.indexOfSelectedItem]
-        self.displayColours[key] = self.codeColorWell.color.hexString
-        //self.havePrefsChanged = true
-    }
-
-
-    /**
-        Update the colour well with the stored colour: either a new one, previously
-        chosen, or the loaded preference.
-        FROM 1.1.0
-
-        - Parameters:
-            - sender: The source of the action.
-     */
-    @IBAction private func doChooseColourType(sender: Any) {
-
-        let keys: [String] = ["key", "string", "special", "mark"]
-        let key: String = keys[self.colourSelectionPopup.indexOfSelectedItem]
-
-        // If there's no `new_xxx` key, the next line will evaluate to false
-        if let colour: String = self.displayColours["new_" + key] {
-            if colour.count != 0 {
-                // Set the colourwell with the updated colour and exit
-                self.codeColorWell.color = NSColor.hexToColour(colour)
-                return
-            }
-        }
-
-        // Set the colourwell with the stored colour
-        if let colour: String = self.displayColours[key] {
-            self.codeColorWell.color = NSColor.hexToColour(colour)
-        }
-    }
-
-
-    // MARK: - What's New Sheet Functions
-
-    /**
-        Show the **What's New** sheet.
-
-        If we're on a new, non-patch version, of the user has explicitly
-        asked to see it with a menu click See if we're coming from a menu click
-        (`sender != self`) or directly in code from *appDidFinishLoading()*
-        (`sender == self`)
-
-        - Parameters:
-            - sender: The source of the action.
-     */
-    @IBAction private func doShowWhatsNew(_ sender: Any) {
-
-        // See if we're coming from a menu click (sender != self) or
-        // directly in code from 'appDidFinishLoading()' (sender == self)
-        var doShowSheet: Bool = type(of: self) != type(of: sender)
-        
-        if !doShowSheet {
-            // We are coming from the 'appDidFinishLoading()' so check
-            // if we need to show the sheet by the checking the prefs
-            if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-                // Get the version-specific preference key
-                let key: String = BUFFOON_CONSTANTS.PREFS_KEYS.WHATS_NEW + getVersion()
-                doShowSheet = defaults.bool(forKey: key)
-            }
-        }
-      
-        // Configure and show the sheet
-        if doShowSheet {
-            // FROM 1.0.3
-            // Hide menus we don't want used while panel is open
-            hidePanelGenerators()
-            
-            // First, get the folder path
-            let htmlFolderPath = Bundle.main.resourcePath! + "/new"
-            
-            // Set up the WKWebBiew: no elasticity, horizontal scroller
-            self.whatsNewWebView.enclosingScrollView?.hasHorizontalScroller = false
-            self.whatsNewWebView.enclosingScrollView?.horizontalScrollElasticity = .none
-            self.whatsNewWebView.enclosingScrollView?.verticalScrollElasticity = .none
-            
-            // Just in case, make sure we can load the file
-            if FileManager.default.fileExists(atPath: htmlFolderPath) {
-                let htmlFileURL = URL.init(fileURLWithPath: htmlFolderPath + "/new.html")
-                let htmlFolderURL = URL.init(fileURLWithPath: htmlFolderPath)
-                self.whatsNewNav = self.whatsNewWebView.loadFileURL(htmlFileURL, allowingReadAccessTo: htmlFolderURL)
-            }
-        }
-    }
-
-
-    /**
-        Close the **What's New** sheet.
-
-        Make sure we clear the preference flag for this minor version, so that
-        the sheet is not displayed next time the app is run (unless the version changes)
-
-        - Parameters:
-            - sender: The source of the action.
-     */
-    @IBAction private func doCloseWhatsNew(_ sender: Any) {
-
-        // Close the sheet
-        self.window.endSheet(self.whatsNewWindow)
-        
-        // Scroll the web view back to the top
-        self.whatsNewWebView.evaluateJavaScript("window.scrollTo(0,0)", completionHandler: nil)
-
-        // Set this version's preference
-        if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            let key: String = BUFFOON_CONSTANTS.PREFS_KEYS.WHATS_NEW + getVersion()
-            defaults.setValue(false, forKey: key)
-
-#if DEBUG
-            print("\(key) reset back to true")
-            defaults.setValue(true, forKey: key)
-#endif
-
-            defaults.synchronize()
-        }
-        
-        // FROM 1.0.3
-        // Restore menus
-        showPanelGenerators()
-    }
-
-
-    // MARK: - Misc Functions
-
-    /**
-     Called by the app at launch to register its initial defaults.
-     */
-    private func registerPreferences() {
-
-        // Check if each preference value exists -- set if it doesn't
-        if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            // Preview body font size, stored as a CGFloat
-            // Default: 16.0
-            let bodyFontSizeDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE)
-            if bodyFontSizeDefault == nil {
-                defaults.setValue(CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE),
-                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_SIZE)
-            }
-
-            // Thumbnail view base font size, stored as a CGFloat, not currently used
-            // Default: 28.0
-            let thumbFontSizeDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.THUMB_SIZE)
-            if thumbFontSizeDefault == nil {
-                defaults.setValue(CGFloat(BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE),
-                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.THUMB_SIZE)
-            }
-            
-            // Colour of JSON keys in the preview, stored as a hex string
-            // Default: #CA0D0E
-            var colourDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.KEY_COLOUR)
-            if colourDefault == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.KEY_COLOUR_HEX,
-                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.KEY_COLOUR)
-            }
-            
-            // Colour of JSON markers in the preview, stored as a hex string
-            // Default: #0096FF
-            colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.MARK_COLOUR)
-            if colourDefault == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.MARK_COLOUR_HEX,
-                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.MARK_COLOUR)
-            }
-            
-            // Font for previews and thumbnails
-            // Default: Courier
-            let fontName: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_FONT)
-            if fontName == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.BODY_FONT_NAME,
-                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BODY_FONT)
-            }
-            
-            // Use light background even in dark mode, stored as a bool
-            // Default: false
-            let useLightDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.USE_LIGHT)
-            if useLightDefault == nil {
-                defaults.setValue(false,
-                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.USE_LIGHT)
-            }
-
-            // Show the What's New sheet
-            // Default: true
-            // This is a version-specific preference suffixed with, eg, '-2-3'. Once created
-            // this will persist, but with each new major and/or minor version, we make a
-            // new preference that will be read by 'doShowWhatsNew()' to see if the sheet
-            // should be shown this run
-            let key: String = BUFFOON_CONSTANTS.PREFS_KEYS.WHATS_NEW + getVersion()
-            let showNewDefault: Any? = defaults.object(forKey: key)
-            if showNewDefault == nil {
-                defaults.setValue(true, forKey: key)
-            }
-            
-            // Record the preferred indent depth in spaces
-            // Default: 8
-            let indentDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.INDENT)
-            if indentDefault == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.JSON_INDENT,
-                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.INDENT)
-            }
-            
-            // Despite var names, should we show JSON furniture?
-            // Default: true
-            let indentScalarsDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SCALARS)
-            if indentScalarsDefault == nil {
-                defaults.setValue(true,
-                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SCALARS)
-            }
-            
-            // Present malformed JSON on error?
-            // Default: false
-            let presentBadJsonDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BAD)
-            if presentBadJsonDefault == nil {
-                defaults.setValue(false,
-                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BAD)
-            }
-            
-            // Set the boolean presentation style
-            // Default: false
-            let boolStyle: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BOOL_STYLE)
-            if boolStyle == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.BOOL_STYLE.FULL,
-                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.BOOL_STYLE)
-            }
-
-            // FROM 1.1.0
-            // Colour of strings in the preview, stored as a hex string
-            // Default: #FC6A5DFF
-            colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR)
-            if colourDefault == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.STRING_COLOUR_HEX,
-                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.STRING_COLOUR)
-            }
-
-            // Colour of special values (Bools, NULL, etc) in the preview, stored as a hex string
-            // Default: #FC6A5DFF
-            colourDefault = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR)
-            if colourDefault == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.SPECIAL_COLOUR_HEX,
-                                  forKey: BUFFOON_CONSTANTS.PREFS_KEYS.SPECIAL_COLOUR)
-            }
-
-            // Sync any additions
-            defaults.synchronize()
-        }
-
-    }
-
-
-    /**
-     Handler for macOS UI mode change notifications
-     */
-    @objc private func interfaceModeChanged() {
-        
-        if self.preferencesWindow.isVisible {
-            // Prefs window is up, so switch the use light background checkbox
-            // on or off according to whether the current mode is light
-            // NOTE For light mode, this checkbox is irrelevant, so the
-            //      checkbox should be disabled
-            let appearance: NSAppearance = NSApp.effectiveAppearance
-            if let appearName: NSAppearance.Name = appearance.bestMatch(from: [.aqua, .darkAqua]) {
-                // NOTE Appearance it this point seems to reflect the mode
-                //      we're coming FROM, not what it has changed to
-                self.useLightCheckbox.isHidden = (appearName != .aqua)
-            }
-        }
-    }
-
 }
 
 

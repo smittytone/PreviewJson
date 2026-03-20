@@ -28,7 +28,7 @@ class AppDelegate:  NSObject,
     private var currentURL: URL? = nil
     private var renderAsDark: Bool = true
     private var renderIndents: Bool = false
-    private var common: Common = Common.init(false)
+    private var common: Common = Common(forThumbnail: false)
 
     
     // MARK: - Class Lifecycle Functions

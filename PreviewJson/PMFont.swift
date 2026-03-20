@@ -3,11 +3,12 @@
  *  PreviewApps
  *
  *  Created by Tony Smith on 02/07/2021.
- *  Copyright © 2025 Tony Smith. All rights reserved.
+ *  Copyright © 2026 Tony Smith. All rights reserved.
  */
 
 
 import Foundation
+
 
 /**
  Internal font record structure.

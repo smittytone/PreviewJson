@@ -38,7 +38,7 @@ class PreviewViewController: NSViewController,
         self.renderTextScrollView.isHidden = false
         
         // Instantiate the common renderer
-        let common: Common = Common.init()
+        let common: Common = Common(forThumbnail: false)
         
         // Load the source file using a co-ordinator as we don't know what thread this function
         // will be executed in when it's called by macOS' QuickLook code
