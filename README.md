@@ -1,4 +1,4 @@
-# PreviewJson 1.1.4 #
+# PreviewJson 2.0.0 #
 
 QuickLook JSON preview and icon thumbnailing app extensions for macOS Catalina and beyond
 
@@ -42,38 +42,7 @@ Contributions will only be accepted if the code they contain is licensed under t
 
 ## Release Notes
 
-- 1.1.4 *April 2025*
-    - Better Swift string and substring handling.
-    - Correct outlet ownership to mitigate reference cycle formation.
-    - Remove links to deprecated PreviewText and PreviewYaml.
-- 1.1.3 *30 August 2024*
-    - Correctly render the bad JSON separator line: revert NSTextViews to TextKit 1 (previously bumped to 2 by Xcode).
-    - Improve `true`, `false` and `null` images.
-    - Improve preference change handling.
-- 1.1.2 *5 May 2024*
-    - Revise thumbnailer to improve memory utilization and efficiency.
-    - Fix 'white flash' on opening What's New sheet.
-- 1.1.1 *2 March 2024*
-    - Correct indentation.
-    - Make tabulated preview optional.
-    - Fix for crashes caused by very deeply nested JSON files.
-- 1.1.0 *25 August 2023*
-    - Allow the user to choose the colours of strings and special values (`NaN`, `±INF`).
-    - New columnar layout.
-- 1.0.4 *12 May 2023*
-    - Fix incorrect presentation of integers `1` and `0` as booleans (thanks, anonymous).
-- 1.0.3 *21 January 2023*
-    - Add link to [PreviewText](https://smittytone.net/previewtext/index.html).
-    - Better menu handling when panels are visible.
-    - Better app exit management.
-- 1.0.2 *14 December 2022*
-    - Reduce thumbnail rendering load.
-    - Handle dark-to-light UI mode switches.
-    - Add App Store link.
-- 1.0.1 *4 October 2022*
-    - Correct some text style discrepancies.
-- 1.0.0 *2 October 2022*
-    - Initial public release.
+See [CHANGELOG.md](./CHANGELOG.md)
 
 ## Copyright and Credits
 
