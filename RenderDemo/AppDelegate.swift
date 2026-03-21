@@ -38,7 +38,12 @@ class AppDelegate:  NSObject,
         // Set the mode button
         self.modeButton.state = self.renderAsDark ? .on : .off
         self.indentButton.state = self.renderIndents ? .on : .off
-        
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.doRender),
+                                               name: NSNotification.Name(rawValue: "com.bps.rd.load"),
+                                               object: nil)
+
         // Centre the main window and display
         self.window.center()
         self.window.makeKeyAndOrderFront(self)
@@ -54,21 +59,36 @@ class AppDelegate:  NSObject,
 
     // MARK: - Action Functions
     
-    @IBAction private func doLoadFile(_ sender: Any) {
+    @IBAction
+    private func doLoadFile(_ sender: Any) {
 
-        self.openDialog = NSOpenPanel.init()
+        /*
+         self.openDialog = NSOpenPanel()
         self.openDialog!.canChooseFiles = true
         self.openDialog!.canChooseDirectories = false
         self.openDialog!.allowsMultipleSelection = false
         self.openDialog!.delegate = self
         self.openDialog!.directoryURL = URL.init(fileURLWithPath: "")
+         */
 
-        if self.openDialog!.runModal() == .OK {
+        let openPanel = NSOpenPanel()
+        openPanel.canChooseFiles = true
+        openPanel.allowsMultipleSelection = false
+        openPanel.canChooseDirectories = false
+        openPanel.directoryURL = FileManager.default.homeDirectoryForCurrentUser
+        openPanel.delegate = self
+
+        /*
+         if self.openDialog!.runModal() == .OK {
             self.currentURL = self.openDialog!.url
-            let possibleError: NSError? = renderContent(self.openDialog!.url)
-            if possibleError != nil {
-                let errorAlert: NSAlert = NSAlert.init(error: possibleError!)
-                errorAlert.beginSheetModal(for: self.window)
+            NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "com.bps.rd.load")))
+        }
+         */
+
+        openPanel.beginSheetModal(for: self.window) { (response) in
+            if response == .OK {
+                self.currentURL = openPanel.url
+                NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "com.bps.rd.load")))
             }
         }
 
@@ -76,14 +96,16 @@ class AppDelegate:  NSObject,
     }
     
     
-    @IBAction private func doSwitchMode(_ sender: Any) {
+    @IBAction
+    private func doSwitchMode(_ sender: Any) {
 
         self.renderAsDark = self.modeButton.state == .on
         doReRenderFile(self)
     }
 
 
-    @IBAction private func doReRenderFile(_ sender: Any) {
+    @IBAction
+    private func doReRenderFile(_ sender: Any) {
 
         let possibleError: NSError? = renderContent(self.currentURL)
         if possibleError != nil {
@@ -92,9 +114,10 @@ class AppDelegate:  NSObject,
             errorAlert.beginSheetModal(for: self.window)
         }
     }
+    
 
-
-    @IBAction private func doSetIndentCharacter(_ sender: Any) {
+    @IBAction
+    private func doSetIndentCharacter(_ sender: Any) {
 
         self.renderIndents = self.indentButton.state == .on
         doReRenderFile(self)
@@ -102,9 +125,20 @@ class AppDelegate:  NSObject,
 
     
     // MARK: - Rendering Functions
-    
-    func renderContent(_ fileToRender: URL?) -> NSError? {
-        
+
+    @objc
+    private func doRender(_ note: Notification) {
+
+        let possibleError: NSError? = renderContent(self.currentURL!)
+        if possibleError != nil {
+            let errorAlert: NSAlert = NSAlert.init(error: possibleError!)
+            errorAlert.beginSheetModal(for: self.window)
+        }
+    }
+
+
+    private func renderContent(_ fileToRender: URL?) -> NSError? {
+
         var reportError: NSError? = nil
 
         do {
@@ -118,10 +152,12 @@ class AppDelegate:  NSObject,
                 let encoding: String.Encoding = data.stringEncoding ?? .utf8
 
                 if let jsonString: String = String.init(data: data, encoding: encoding) {
+
                     common.doShowLightBackground = !self.renderAsDark
                     common.doUseSpecialIndentChar = self.renderIndents
                     common.resetStylesOnModeChange()
 
+                    /*
                     let regexTrue = try! NSRegularExpression(pattern: ":[\\s]*true")
                     let jsonStringTrue: String = regexTrue.stringByReplacingMatches(in: jsonString,
                                                                                     options: [],
@@ -137,7 +173,8 @@ class AppDelegate:  NSObject,
                     // Get the key string first
                     let jsonDataCoded: Data = jsonStringFalse.data(using: encoding) ?? data
                     let jsonAttString: NSAttributedString = common.getAttributedString(jsonDataCoded)
-
+                     */
+                    let jsonAttString: NSAttributedString = common.getAttStr(fromJson: jsonString)
                     self.previewTextView.backgroundColor = common.doShowLightBackground ? NSColor.init(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
                     self.previewScrollView.scrollerKnobStyle = common.doShowLightBackground ? .dark : .light
 
