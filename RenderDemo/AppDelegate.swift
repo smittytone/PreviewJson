@@ -26,9 +26,10 @@ class AppDelegate:  NSObject,
 
     private var openDialog: NSOpenPanel? = nil
     private var currentURL: URL? = nil
+    private var currentDirURL: URL? = nil
     private var renderAsDark: Bool = true
     private var renderIndents: Bool = false
-    private var common: Common = Common(forThumbnail: false)
+    private var common: Common? = nil
 
     
     // MARK: - Class Lifecycle Functions
@@ -72,11 +73,15 @@ class AppDelegate:  NSObject,
          */
 
         let openPanel = NSOpenPanel()
+        openPanel.delegate = self
         openPanel.canChooseFiles = true
         openPanel.allowsMultipleSelection = false
         openPanel.canChooseDirectories = false
-        openPanel.directoryURL = FileManager.default.homeDirectoryForCurrentUser
-        openPanel.delegate = self
+        if self.currentDirURL != nil {
+            openPanel.directoryURL = self.currentDirURL!
+        } else {
+            openPanel.directoryURL = FileManager.default.homeDirectoryForCurrentUser
+        }
 
         /*
          if self.openDialog!.runModal() == .OK {
@@ -88,6 +93,7 @@ class AppDelegate:  NSObject,
         openPanel.beginSheetModal(for: self.window) { (response) in
             if response == .OK {
                 self.currentURL = openPanel.url
+                self.currentDirURL = openPanel.directoryURL
                 NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "com.bps.rd.load")))
             }
         }
@@ -141,6 +147,8 @@ class AppDelegate:  NSObject,
 
         var reportError: NSError? = nil
 
+        self.common = Common(forThumbnail: false)
+
         do {
             if let yamlUrl: URL = fileToRender {
                 self.window.title = yamlUrl.absoluteString
@@ -153,9 +161,9 @@ class AppDelegate:  NSObject,
 
                 if let jsonString: String = String.init(data: data, encoding: encoding) {
 
-                    common.doShowLightBackground = !self.renderAsDark
-                    common.doUseSpecialIndentChar = self.renderIndents
-                    common.resetStylesOnModeChange()
+                    self.common!.doShowLightBackground = !self.renderAsDark
+                    self.common!.doUseSpecialIndentChar = self.renderIndents
+                    self.common!.resetStylesOnModeChange()
 
                     /*
                     let regexTrue = try! NSRegularExpression(pattern: ":[\\s]*true")
@@ -174,14 +182,15 @@ class AppDelegate:  NSObject,
                     let jsonDataCoded: Data = jsonStringFalse.data(using: encoding) ?? data
                     let jsonAttString: NSAttributedString = common.getAttributedString(jsonDataCoded)
                      */
-                    let jsonAttString: NSAttributedString = common.getAttStr(fromJson: jsonString)
-                    self.previewTextView.backgroundColor = common.doShowLightBackground ? NSColor.init(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
-                    self.previewScrollView.scrollerKnobStyle = common.doShowLightBackground ? .dark : .light
+                    let jsonAttString: NSAttributedString = self.common!.getAttStr(fromJson: jsonString)
+                    self.previewTextView.backgroundColor = self.common!.doShowLightBackground ? NSColor.init(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
+                    self.previewScrollView.scrollerKnobStyle = self.common!.doShowLightBackground ? .dark : .light
 
                     if let renderTextStorage: NSTextStorage = self.previewTextView.textStorage {
                         renderTextStorage.beginEditing()
                         renderTextStorage.setAttributedString(jsonAttString)
                         renderTextStorage.endEditing()
+                        self.common = nil
                         return nil
                     }
 
@@ -205,7 +214,8 @@ class AppDelegate:  NSObject,
             // We couldn't read the file so set an appropriate error to report back
             reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
         }
-        
+
+        self.common = nil
         return reportError
     }
     
