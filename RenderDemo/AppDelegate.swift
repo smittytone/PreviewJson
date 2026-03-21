@@ -63,15 +63,6 @@ class AppDelegate:  NSObject,
     @IBAction
     private func doLoadFile(_ sender: Any) {
 
-        /*
-         self.openDialog = NSOpenPanel()
-        self.openDialog!.canChooseFiles = true
-        self.openDialog!.canChooseDirectories = false
-        self.openDialog!.allowsMultipleSelection = false
-        self.openDialog!.delegate = self
-        self.openDialog!.directoryURL = URL.init(fileURLWithPath: "")
-         */
-
         let openPanel = NSOpenPanel()
         openPanel.delegate = self
         openPanel.canChooseFiles = true
@@ -82,13 +73,6 @@ class AppDelegate:  NSObject,
         } else {
             openPanel.directoryURL = FileManager.default.homeDirectoryForCurrentUser
         }
-
-        /*
-         if self.openDialog!.runModal() == .OK {
-            self.currentURL = self.openDialog!.url
-            NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "com.bps.rd.load")))
-        }
-         */
 
         openPanel.beginSheetModal(for: self.window) { (response) in
             if response == .OK {
@@ -116,7 +100,7 @@ class AppDelegate:  NSObject,
         let possibleError: NSError? = renderContent(self.currentURL)
         if possibleError != nil {
             // Pop up an alert
-            let errorAlert: NSAlert = NSAlert.init(error: possibleError!)
+            let errorAlert: NSAlert = NSAlert(error: possibleError!)
             errorAlert.beginSheetModal(for: self.window)
         }
     }
@@ -137,7 +121,7 @@ class AppDelegate:  NSObject,
 
         let possibleError: NSError? = renderContent(self.currentURL!)
         if possibleError != nil {
-            let errorAlert: NSAlert = NSAlert.init(error: possibleError!)
+            let errorAlert: NSAlert = NSAlert(error: possibleError!)
             errorAlert.beginSheetModal(for: self.window)
         }
     }
@@ -154,12 +138,12 @@ class AppDelegate:  NSObject,
                 self.window.title = yamlUrl.absoluteString
 
                 // Get the file contents as a string
-                let data: Data = try Data.init(contentsOf: yamlUrl, options: [.uncached])
+                let data: Data = try Data(contentsOf: yamlUrl, options: [.uncached])
 
                 // Get the string's encoding, or fail back to .utf8
                 let encoding: String.Encoding = data.stringEncoding ?? .utf8
 
-                if let jsonString: String = String.init(data: data, encoding: encoding) {
+                if let jsonString: String = String(data: data, encoding: encoding) {
 
                     self.common!.doShowLightBackground = !self.renderAsDark
                     self.common!.doUseSpecialIndentChar = self.renderIndents
@@ -183,7 +167,7 @@ class AppDelegate:  NSObject,
                     let jsonAttString: NSAttributedString = common.getAttributedString(jsonDataCoded)
                      */
                     let jsonAttString: NSAttributedString = self.common!.getAttStr(fromJson: jsonString)
-                    self.previewTextView.backgroundColor = self.common!.doShowLightBackground ? NSColor.init(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
+                    self.previewTextView.backgroundColor = self.common!.doShowLightBackground ? NSColor(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
                     self.previewScrollView.scrollerKnobStyle = self.common!.doShowLightBackground ? .dark : .light
 
                     
