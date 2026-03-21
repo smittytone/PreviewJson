@@ -186,6 +186,7 @@ class AppDelegate:  NSObject,
                     self.previewTextView.backgroundColor = self.common!.doShowLightBackground ? NSColor.init(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
                     self.previewScrollView.scrollerKnobStyle = self.common!.doShowLightBackground ? .dark : .light
 
+                    
                     if let renderTextStorage: NSTextStorage = self.previewTextView.textStorage {
                         renderTextStorage.beginEditing()
                         renderTextStorage.setAttributedString(jsonAttString)
