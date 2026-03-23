@@ -31,10 +31,12 @@ class PJSettings {
         BUFFOON_CONSTANTS.COLOUR_IDS.MARKS:     BUFFOON_CONSTANTS.HEX_COLOUR.MARKS
     ]
 
-    var doShowMargin: Bool                  = false                                                 // Advanced
-    var previewMarginWidth: CGFloat         = BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH   // Advanced
-    var previewWindowScale: CGFloat         = BUFFOON_CONSTANTS.SCALERS.WINDOW_SIZE_L               // Advanced
-    var thumbnailMatchFinderMode: Bool      = false                                                 // Advanced
+    /*
+     ADVANCED SETTINGS
+     */
+    var previewMarginWidth: CGFloat         = BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH
+    var previewWindowScale: CGFloat         = BUFFOON_CONSTANTS.SCALERS.WINDOW_SIZE_L
+    var thumbnailMatchFinderMode: Bool      = false
 
 
     /**
@@ -63,7 +65,6 @@ class PJSettings {
             self.displayColours[BUFFOON_CONSTANTS.COLOUR_IDS.MARKS] = defaults.string(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARKS_COLOUR)
             ?? BUFFOON_CONSTANTS.HEX_COLOUR.MARKS
 
-            self.doShowMargin = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_SHOW_MARGIN)
             self.previewMarginWidth = CGFloat(defaults.double(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARGIN_WIDTH))
             self.previewWindowScale = CGFloat(defaults.double(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_WINDOW_SCALE))
             self.thumbnailMatchFinderMode = defaults.bool(forKey: BUFFOON_CONSTANTS.PREFS_IDS.THUMB_MATCH_FINDER)
@@ -115,7 +116,6 @@ class PJSettings {
                 defaults.setValue(newColour, forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARKS_COLOUR)
             }
 
-            defaults.setValue(self.doShowMargin, forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_SHOW_MARGIN)
             defaults.setValue(self.previewMarginWidth, forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARGIN_WIDTH)
             defaults.setValue(self.previewWindowScale, forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_WINDOW_SCALE)
             defaults.setValue(self.thumbnailMatchFinderMode, forKey: BUFFOON_CONSTANTS.PREFS_IDS.THUMB_MATCH_FINDER)
@@ -230,29 +230,22 @@ class PJSettings {
                                   forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARKS_COLOUR)
             }
 
-            // ADVANCED - Should we show a preview margin?
-            var showMargin: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_SHOW_MARGIN)
-            if showMargin == nil {
-                defaults.setValue(false,
-                                  forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_SHOW_MARGIN)
-            }
-
             // ADVANCED - What margin size should we apply?
-            var marginWidth: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARGIN_WIDTH)
+            let marginWidth: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARGIN_WIDTH)
             if marginWidth == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH,
                                   forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARGIN_WIDTH)
             }
 
             // ADVANCED - What is the default preview window size multiplier?
-            var winScale: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_WINDOW_SCALE)
+            let winScale: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_WINDOW_SCALE)
             if winScale == nil {
                 defaults.setValue(BUFFOON_CONSTANTS.SCALERS.WINDOW_SIZE_L,
                                   forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_WINDOW_SCALE)
             }
 
             // ADVANCED - Should we match thumbnail colours to the macOS mode?
-            var matchFinder: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.THUMB_MATCH_FINDER)
+            let matchFinder: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.THUMB_MATCH_FINDER)
             if matchFinder == nil {
                 defaults.setValue(false,
                                   forKey: BUFFOON_CONSTANTS.PREFS_IDS.THUMB_MATCH_FINDER)
