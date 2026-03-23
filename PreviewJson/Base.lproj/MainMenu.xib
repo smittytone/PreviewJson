@@ -1083,10 +1083,10 @@ running this app once more.</string>
                                                         <menuItem title="Italic" id="O8p-7g-guO"/>
                                                     </items>
                                                 </menu>
-                                                <connections>
-                                                    <action selector="doUpdateFontsWithSender:" target="Voe-Tx-rLC" id="A4O-XM-G30"/>
-                                                </connections>
                                             </popUpButtonCell>
+                                            <connections>
+                                                <action selector="doChangeValueWithSender:" target="Voe-Tx-rLC" id="gn0-B1-D1U"/>
+                                            </connections>
                                         </popUpButton>
                                         <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KO9-sw-AsX">
                                             <rect key="frame" x="18" y="109" width="512" height="16"/>
