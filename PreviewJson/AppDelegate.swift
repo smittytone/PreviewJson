@@ -112,7 +112,7 @@ final class AppDelegate: NSResponder,
         versionLabel.stringValue = "Version \(version) (\(build))"
 
         // Disable the Help menu Spotlight features
-        let dummyHelpMenu: NSMenu = NSMenu.init(title: "Dummy")
+        let dummyHelpMenu: NSMenu = NSMenu(title: "Dummy")
         let theApp = NSApplication.shared
         theApp.helpMenu = dummyHelpMenu
         
@@ -287,8 +287,6 @@ final class AppDelegate: NSResponder,
     }
 
 
-
-
     /**
      Called from various **Help** items to open various websites.
 
@@ -313,7 +311,7 @@ final class AppDelegate: NSResponder,
         }
         
         // Open the selected website
-        NSWorkspace.shared.open(URL.init(string:path)!)
+        NSWorkspace.shared.open(URL(string:path)!)
     }
 
 

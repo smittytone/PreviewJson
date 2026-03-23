@@ -49,7 +49,7 @@ extension AppDelegate {
 
                 for font: [Any] in fonts {
                     let fontTraits: UInt = font[3] as! UInt
-                    if monoTrait & fontTraits != 0 {
+                    //if monoTrait & fontTraits != 0 {
                         // The font is good to use, so add it to the list
                         var fontRecord: PMFont = PMFont()
                         fontRecord.postScriptName = font[0] as! String
@@ -61,7 +61,7 @@ extension AppDelegate {
                         }
 
                         familyRecord.styles!.append(fontRecord)
-                    }
+                    //}
                 }
 
                 if familyRecord.styles != nil && familyRecord.styles!.count > 0 {
