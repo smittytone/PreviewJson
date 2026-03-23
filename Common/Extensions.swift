@@ -51,10 +51,36 @@ extension NSColor {
         }
 
         let hexns: NSString = hex as NSString
-        let red: CGFloat = hexToFloat(hexns.substring(with: NSRange.init(location: 0, length: 2))) / 255
-        let green: CGFloat = hexToFloat(hexns.substring(with: NSRange.init(location: 2, length: 2))) / 255
-        let blue: CGFloat = hexToFloat(hexns.substring(with: NSRange.init(location: 4, length: 2))) / 255
-        let alpha: CGFloat = hexToFloat(hexns.substring(with: NSRange.init(location: 6, length: 2))) / 255
-        return NSColor.init(srgbRed: red, green: green, blue: blue, alpha: alpha)
+        let red: CGFloat = hexToFloat(hexns.substring(with: NSRange(location: 0, length: 2))) / 255
+        let green: CGFloat = hexToFloat(hexns.substring(with: NSRange(location: 2, length: 2))) / 255
+        let blue: CGFloat = hexToFloat(hexns.substring(with: NSRange(location: 4, length: 2))) / 255
+        let alpha: CGFloat = hexToFloat(hexns.substring(with: NSRange(location: 6, length: 2))) / 255
+        return NSColor(srgbRed: red, green: green, blue: blue, alpha: alpha)
+    }
+}
+
+
+extension NSAttributedString {
+
+    /**
+     Return the width of the rendered string in points.
+     */
+    var width: CGFloat {
+        let rectA = boundingRect(
+          with: NSSize(width: Double.infinity, height: Double.infinity),
+          options: [.usesLineFragmentOrigin]
+        )
+
+        let textStorage = NSTextStorage(attributedString: self)
+        let textContainer = NSTextContainer()
+        let layoutManager = NSLayoutManager()
+
+        layoutManager.addTextContainer(textContainer)
+        textStorage.addLayoutManager(layoutManager)
+        textContainer.lineFragmentPadding = 0.0
+        layoutManager.glyphRange(for: textContainer)
+
+        let rectB = layoutManager.usedRect(for: textContainer)
+        return ceil(max(rectA.width, rectB.width))
     }
 }
