@@ -17,10 +17,7 @@
 		3B300AB42F6D7916000D70E7 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E98962F6C620000477E96 /* Entities.swift */; };
 		3B5E292B28BE60C10018808A /* ThumbAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3B5E292A28BE60C10018808A /* ThumbAssets.xcassets */; };
 		3B5E988F2F6C5AE600477E96 /* JsonEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E988E2F6C5ADC00477E96 /* JsonEntities.swift */; };
-		3B5E98912F6C5B8900477E96 /* JsonParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E98902F6C5B8400477E96 /* JsonParser.swift */; };
 		3B5E98922F6C5BD000477E96 /* JsonEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E988E2F6C5ADC00477E96 /* JsonEntities.swift */; };
-		3B5E98932F6C5BD500477E96 /* JsonParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E98902F6C5B8400477E96 /* JsonParser.swift */; };
-		3B5E98942F6C5E0E00477E96 /* JsonParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E98902F6C5B8400477E96 /* JsonParser.swift */; };
 		3B5E98952F6C5E1300477E96 /* JsonEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E988E2F6C5ADC00477E96 /* JsonEntities.swift */; };
 		3B5E98972F6C620300477E96 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E98962F6C620000477E96 /* Entities.swift */; };
 		3B5E98992F6C631D00477E96 /* AppDelegateFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E98982F6C631D00477E96 /* AppDelegateFeedback.swift */; };
@@ -124,7 +121,6 @@
 		3B300AB22F6D4D4C000D70E7 /* CHANGELOG.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CHANGELOG.md; sourceTree = "<group>"; };
 		3B5E292A28BE60C10018808A /* ThumbAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = ThumbAssets.xcassets; path = "../../../Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewJson/ThumbAssets.xcassets"; sourceTree = "<group>"; };
 		3B5E988E2F6C5ADC00477E96 /* JsonEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonEntities.swift; sourceTree = "<group>"; };
-		3B5E98902F6C5B8400477E96 /* JsonParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonParser.swift; sourceTree = "<group>"; };
 		3B5E98962F6C620000477E96 /* Entities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
 		3B5E98982F6C631D00477E96 /* AppDelegateFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegateFeedback.swift; sourceTree = "<group>"; };
 		3B5E989A2F6C64E100477E96 /* PMTabManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PMTabManager.swift; sourceTree = "<group>"; };
@@ -229,7 +225,6 @@
 				3B67EBB828BCB5D70048F8AE /* Common.swift */,
 				3B5E988E2F6C5ADC00477E96 /* JsonEntities.swift */,
 				3B5E98AF2F6D4ADA00477E96 /* Extensions.swift */,
-				3B5E98902F6C5B8400477E96 /* JsonParser.swift */,
 				3B5E98A32F6C697400477E96 /* PJSettings.swift */,
 			);
 			path = Common;
@@ -574,7 +569,6 @@
 				3B1FA42C28C124F4001DA63C /* Common.swift in Sources */,
 				3B1FA42B28C124A1001DA63C /* Constants.swift in Sources */,
 				3B5E98B02F6D4ADE00477E96 /* Extensions.swift in Sources */,
-				3B5E98932F6C5BD500477E96 /* JsonParser.swift in Sources */,
 				3B5E98A52F6C697800477E96 /* PJSettings.swift in Sources */,
 				3B1FA42228C1242E001DA63C /* ThumbnailProvider.swift in Sources */,
 				3B5E98AC2F6D415100477E96 /* Constants.swift in Sources */,
@@ -630,7 +624,6 @@
 				3B67EBBA28BCB61B0048F8AE /* Constants.swift in Sources */,
 				3B67EBA728BCB3610048F8AE /* PreviewViewController.swift in Sources */,
 				3B5E98B12F6D4ADE00477E96 /* Extensions.swift in Sources */,
-				3B5E98912F6C5B8900477E96 /* JsonParser.swift in Sources */,
 				3B5E98A62F6C697800477E96 /* PJSettings.swift in Sources */,
 				3B67EBB928BCB5D70048F8AE /* Common.swift in Sources */,
 				3B5E98AD2F6D415100477E96 /* Constants.swift in Sources */,
@@ -645,7 +638,6 @@
 				3B5E98952F6C5E1300477E96 /* JsonEntities.swift in Sources */,
 				3B5E98B22F6D4ADE00477E96 /* Extensions.swift in Sources */,
 				3BA7AC202A6ABFE300457247 /* Common.swift in Sources */,
-				3B5E98942F6C5E0E00477E96 /* JsonParser.swift in Sources */,
 				3B300AB32F6D6427000D70E7 /* REPLACE_WITH_YOUR_CODES.swift in Sources */,
 				3B5E98A42F6C697800477E96 /* PJSettings.swift in Sources */,
 				3BA7AC162A6ABF8700457247 /* AppDelegate.swift in Sources */,

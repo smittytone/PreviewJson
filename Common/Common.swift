@@ -25,6 +25,7 @@ final class Common {
         case Debug
         case MarkStart
         case MarkEnd
+        case Custom
     }
 
 
@@ -42,8 +43,8 @@ final class Common {
     private var isThumbnail:Bool                    = false
     private var maxKeyLengths: [Int]                = [0,0,0,0,0,0,0,0,0,0,0,0]
     // String artifacts...
-    private var hr: NSAttributedString              = NSAttributedString.init(string: "")
-    private var cr: NSAttributedString              = NSAttributedString.init(string: "")
+    private var hr: NSMutableAttributedString       = NSMutableAttributedString(string: "")
+    private var cr: NSAttributedString              = NSAttributedString(string: "")
     // FROM 1.0.2
     private var lineCount: Int                      = 0
     // FROM 1.1.0
@@ -52,6 +53,8 @@ final class Common {
     private var displayColours: [String:String]     = [:]
     // FROM 1.1.1
     private var debugSpacer: String                 = "."
+    // FROM 2.0.0
+    private var emptyString: NSMutableAttributedString = NSMutableAttributedString(string: "*")
 
     // JSON string attributes...
     private var keyAttributes:          [NSAttributedString.Key: Any] = [:]
@@ -63,6 +66,7 @@ final class Common {
     private var specialAttributes:      [NSAttributedString.Key: Any] = [:]
     // FROM 1.1.1
     private var debugAttributes:        [NSAttributedString.Key: Any] = [:]
+    private var lineAttributes:         [NSAttributedString.Key: Any] = [:]
 
 
     /*
@@ -87,7 +91,7 @@ final class Common {
 
         // Set the JSON key:value fonts and sizes
         var font: NSFont
-        if let chosenFont: NSFont = NSFont.init(name: self.settings.fontName, size: self.settings.fontSize) {
+        if let chosenFont: NSFont = NSFont(name: self.settings.fontName, size: self.settings.fontSize) {
             font = chosenFont
         } else {
             font = NSFont.systemFont(ofSize: self.settings.fontSize)
@@ -97,6 +101,15 @@ final class Common {
         let useLightMode: Bool = isThumbnail || self.settings.doReverseMode
 
         // Set up the attributed string components we may use during rendering
+        let endMarkParaStyle: NSMutableParagraphStyle = NSMutableParagraphStyle()
+        endMarkParaStyle.paragraphSpacing = self.settings.fontSize * 0.25
+        endMarkParaStyle.tabStops = []
+        for i in stride(from: 10.0, through: 120.0, by: 10.0) {
+            endMarkParaStyle.tabStops.append(NSTextTab(type: .leftTabStopType, location: i))
+        }
+
+        endMarkParaStyle.defaultTabInterval = CGFloat(self.settings.indentSize * 10) // ASSUME NO TABLULATION!!!!
+
         self.keyAttributes = [
             .foregroundColor: NSColor.hexToColour(self.settings.displayColours[BUFFOON_CONSTANTS.COLOUR_IDS.KEYS] ?? BUFFOON_CONSTANTS.HEX_COLOUR.KEYS),
             .font: font
@@ -112,23 +125,27 @@ final class Common {
             .font: font
         ]
 
-        let endMarkParaStyle: NSMutableParagraphStyle = NSMutableParagraphStyle.init()
-        endMarkParaStyle.paragraphSpacing = self.settings.fontSize * 0.85
         self.markEndAttributes = [
             .foregroundColor: NSColor.hexToColour(self.settings.displayColours[BUFFOON_CONSTANTS.COLOUR_IDS.MARKS] ?? BUFFOON_CONSTANTS.HEX_COLOUR.MARKS),
-            .font: font,
-            .paragraphStyle: endMarkParaStyle
+            .font: font
         ]
 
         // NOTE This no longer provides a full-width rule -- seek a fix
-        self.hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
+
+        self.hr = NSMutableAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
                                      attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
                                                   .strikethroughColor: (useLightMode ? NSColor.black : NSColor.white)])
-        
-        self.cr = NSAttributedString.init(string: "\n",
-                                          attributes: scalarAttributes)
+
+        // FROM 2.0.0
+        // New, TextKit 2-friendly horizontal rule
+
+
+
+        self.cr = NSAttributedString(string: BUFFOON_CONSTANTS.CR, attributes: scalarAttributes)
 
         // FRON 1.1.0
+        let stringParaStyle = endMarkParaStyle
+        stringParaStyle.headIndent = CGFloat(self.settings.indentSize) * 20.0
         self.stringAttributes = [
             .foregroundColor: NSColor.hexToColour(self.settings.displayColours[BUFFOON_CONSTANTS.COLOUR_IDS.STRINGS] ?? BUFFOON_CONSTANTS.HEX_COLOUR.STRINGS),
             .font: font
@@ -139,10 +156,16 @@ final class Common {
             .font: font
         ]
 
+        self.lineAttributes = [
+            .foregroundColor: NSColor.labelColor,
+            .font: NSFont.systemFont(ofSize: 6.0)
+        ]
+
 #if DEBUG
         self.debugAttributes = [
             .foregroundColor: NSColor.hexToColour("444444FF"),
-            .font: font
+            .font: font,
+            .paragraphStyle: endMarkParaStyle
         ]
 #endif
     }
@@ -157,9 +180,11 @@ final class Common {
     func resetStylesOnModeChange() {
 
         // Set up the attributed string components we may use during rendering
+        /*
         self.hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
                                      attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
                                                   .strikethroughColor: self.doShowLightBackground ? NSColor.black : NSColor.white])
+         */
 
         self.scalarAttributes[.foregroundColor]  = self.doShowLightBackground ? NSColor.black : NSColor.labelColor
         self.spacer = self.doUseSpecialIndentChar ? "-" : " "
@@ -168,157 +193,84 @@ final class Common {
 
     // MARK: - The Primary Function
 
-    /**
-     Render the input JSON as an NSAttributedString.
+    /*
 
-     - Parameters:
-        - jsonFileData: The path to the JSON code.
-
-     - Returns: The rendered source as an NSAttributedString.
      */
-    func getAttributedString(_ jsonFileData: Data) -> NSAttributedString {
-        
-        var renderedString: NSMutableAttributedString
+    public func getAttStr(fromJson json: String) -> NSAttributedString {
 
-        do {
-            // Attempt to parse the JSON data. First, get the data
-            let json: Any = try JSONSerialization.jsonObject(with: jsonFileData, options: [ .fragmentsAllowed ])
+        // Convert the JSON string into JSON entities, then convert them
+        // into a series of paragraph objects
+        let previewParagraphs = NSMutableArray()
+        let renderString = NSMutableAttributedString(string: "", attributes: self.scalarAttributes)
+        var parser = JSONParser(json)
+        prettify(parser.parseValue()!, 0, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), previewParagraphs)
 
-            // Calculate column widths based on key sizes
-            // FROM 1.1.1 -- Check indent setting
-            if (self.settings.indentSize == BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE && !self.isThumbnail) {
-                assembleColumns(json)
-                renderedString = tabulate(json)
-            } else {
-                renderedString = prettify(json)
+        // These are required for tabulation
+        var maxDepth = -1
+        var maxKeyWidths: [Int: CGFloat] = [:]
+        for i in 0..<previewParagraphs.count {
+            let paragraph = previewParagraphs.object(at: i) as! Paragraph
+            if paragraph.depth > maxDepth {
+                maxDepth = paragraph.depth
             }
 
-            // Just in case...
-            if renderedString.length == 0 {
-                renderedString = NSMutableAttributedString.init(string: "Could not render the JSON.\n\(json)\n",
-                                                                attributes: self.keyAttributes)
+            if maxKeyWidths[paragraph.depth] == nil {
+                maxKeyWidths[paragraph.depth] = paragraph.keyLength
+            } else if paragraph.keyLength > maxKeyWidths[paragraph.depth]! {
+                maxKeyWidths[paragraph.depth] = paragraph.keyLength
             }
-        } catch {
-            // No JSON to render, or the JSON was mis-formatted
-            // Assemble the error string
-            let errorString: NSMutableAttributedString = NSMutableAttributedString.init(string: "Could not render the JSON. ",
-                                                                                        attributes: self.keyAttributes)
+        }
 
-            // Should we include the raw Json?
-            // At least the user can see the data this way
-            if self.settings.showRawJsonOnError {
-                errorString.append(NSMutableAttributedString.init(string: "Here is its raw form:",
-                                                                  attributes: self.keyAttributes))
-                errorString.append(self.hr)
-                
-                let encoding: String.Encoding = jsonFileData.stringEncoding ?? .utf8
-                
-                if let jsonFileString: String = String.init(data: jsonFileData, encoding: encoding) {
-                    errorString.append(NSMutableAttributedString.init(string: "\(jsonFileString)\n",
-                                                                      attributes: self.scalarAttributes))
-                } else {
-                    errorString.append(NSMutableAttributedString.init(string: "Sorry, this JSON file uses an unsupported coding: \(encoding)\n",
-                                                                      attributes: self.scalarAttributes))
+        // Assemble the final attributed string
+        // NOTE Do with an autorelease pool?
+        for i in 0..<previewParagraphs.count {
+            let paragraph = previewParagraphs.object(at: i) as! Paragraph
+            if var paragraphText = paragraph.text {
+                let inset: CGFloat = CGFloat(paragraph.depth) * 20.0 * CGFloat(self.settings.indentSize)
+
+                if self.settings.showJsonMarks && paragraph.marker != .none {
+                    let marker = paragraph.marker.string()
+                    let attrMarker = NSMutableAttributedString(string: marker, attributes: self.markStartAttributes)
+
+                    if i == 0 {
+                        attrMarker.append(paragraphText)
+                        paragraphText = attrMarker
+                    } else {
+                        paragraphText.append(attrMarker)
+                    }
+                }
+
+                if paragraphText.length > 0 {
+                    // Instantiate a generic paragraph style
+                    let paragraphStyle = NSMutableParagraphStyle()
+                    paragraphStyle.firstLineHeadIndent = inset
+                    paragraphStyle.alignment = .left
+
+                    if paragraphText.string.hasPrefix("*") {
+                        // Render an empty spacer line
+                        // Set the spacer line paragraph style
+                        paragraphStyle.paragraphSpacing = 0.0
+                        paragraphStyle.headIndent = inset
+
+                        // Add a fixed-text paragraph, then apply the spacer paragraph style
+                        paragraphText = NSMutableAttributedString(string: BUFFOON_CONSTANTS.COLLECTION_SPACER, attributes: self.lineAttributes)
+                    } else {
+                        // Define a text paragraph style that's indented
+                        paragraphStyle.headIndent = inset + paragraph.keyLength
+
+                        // Add a paragraph terminator, then apply the text paragraph style
+                        paragraphText.append(self.cr)
+                    }
+
+                    // Add the paragraph attributed string to the main store
+                    paragraphText.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: paragraphText.length))
+                    renderString.append(paragraphText)
                 }
             }
-
-            renderedString = errorString
         }
-        
-        return renderedString as NSAttributedString
-    }
 
-
-    /** REMOVED 1.1.0
-     Return a space-prefix NSAttributedString.
-
-     - Parameters:
-        - baseString: The string to be indented.
-        - indent:     The number of indent spaces to add.
-        - isKey:      Are we rendering an inset key (`true`) or value (`false`).
-
-     - Returns: The indented string as an NSAttributedString.
-
-    func getIndentedString(_ baseString: String, _ indent: Int = 0, _ itemType: Int = BUFFOON_CONSTANTS.ITEM_TYPE.VALUE) -> NSAttributedString {
-        
-        let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
-        let spaceString = String(repeating: self.spacer, count: indent)
-        
-        var attributes: [NSAttributedString.Key: Any]
-        switch itemType {
-            case BUFFOON_CONSTANTS.ITEM_TYPE.KEY:
-                attributes = self.keyAttributes
-            case BUFFOON_CONSTANTS.ITEM_TYPE.MARK_START:
-                attributes = self.markStartAttributes
-            case BUFFOON_CONSTANTS.ITEM_TYPE.MARK_END:
-                attributes = self.markEndAttributes
-
-            default:
-                attributes = self.scalarAttributes
-        }
-        
-        let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
-        indentedString.append(NSAttributedString.init(string: spaceString, attributes: self.scalarAttributes))
-        indentedString.append(NSAttributedString.init(string: trimmedString, attributes: attributes))
-        return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
-    }
-     */
-
-    
-    /**
-     Return a space-prefix NSAttributedString.
-     FROM 1.1.0
-
-     - Parameters:
-        - baseString:    The string to be indented.
-        - indent:        The number of indent spaces to add.
-        - attributeType: The attribute to apply.
-
-     - Returns: The indented string as an NSAttributedString.
-     */
-    private func getIndentedAttributedString(_ baseString: Substring, _ indent: Int, _ attributeType: AttributeType) -> NSAttributedString {
-
-        let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
-#if DEBUG
-        let spaceString = indent > 0 ? String(repeating: self.debugSpacer, count: indent) : ""
-        indentedString.append(NSAttributedString.init(string: spaceString, attributes: getAttributes(.Debug)))
-#else
-        let spaceString = indent > 0 ? String(repeating: self.spacer, count: indent) : ""
-        indentedString.append(NSAttributedString.init(string: spaceString, attributes: getAttributes(.Scalar)))
-#endif
-        let trimmedString = baseString.trimmingCharacters(in: .whitespaces)
-        indentedString.append(NSAttributedString.init(string: trimmedString, attributes: getAttributes(attributeType)))
-        return indentedString.attributedSubstring(from: NSMakeRange(0, indentedString.length))
-    }
-
-
-    /**
-     Return an attribute dictionary from a passed attribute type.
-     FROM 1.1.0
-
-     - Parameters:
-        - attributeType: The requested attribute type.
-
-     - Returns: The attributes as a dictionary.
-     */
-    private func getAttributes(_ attributeType: AttributeType) -> [NSAttributedString.Key: Any] {
-
-        switch attributeType {
-            case .Key:
-                return self.keyAttributes
-            case .MarkStart:
-                return self.markStartAttributes
-            case .MarkEnd:
-                return self.markEndAttributes
-            case .String:
-                return self.stringAttributes
-            case .Special:
-                return self.specialAttributes
-            case .Debug:
-                return self.debugAttributes
-            default:
-                return self.scalarAttributes
-        }
+        // Hand back the rendered JSON
+        return renderString as NSAttributedString
     }
 
 
@@ -331,212 +283,155 @@ final class Common {
      
      - Returns: The indented string as an optional NSAttributedString. Nil indicates an error
      */
-    private func getImageString(_ indent: Int = 1, _ imageName: String) -> NSAttributedString? {
+    private func getImageString(_ imageName: String) -> NSAttributedString? {
 
         let insetImage: NSTextAttachment = NSTextAttachment()
         insetImage.image = NSImage(named: imageName)
-        if insetImage.image != nil {
-            insetImage.image!.size = NSMakeSize(insetImage.image!.size.width * self.settings.fontSize / insetImage.image!.size.height, self.settings.fontSize)
-            let imageString: NSAttributedString = NSAttributedString(attachment: insetImage)
-            let spaceString = String(repeating: self.spacer, count: indent)
-            let indentedString: NSMutableAttributedString = NSMutableAttributedString.init()
-            indentedString.append(NSAttributedString.init(string: spaceString, attributes: self.scalarAttributes))
-            indentedString.append(imageString)
-            indentedString.append(self.cr)
-            return indentedString
+        guard let image = insetImage.image else {
+            return nil
         }
-        
-        return nil
+
+        image.size = NSMakeSize(image.size.width * self.settings.fontSize / image.size.height, self.settings.fontSize)
+        let imageAsString = NSMutableAttributedString(string: " ")
+        imageAsString.append(NSMutableAttributedString(attachment: insetImage))
+        imageAsString.addAttributes(self.scalarAttributes, range: NSRange(location: 0, length: imageAsString.length))
+        return imageAsString
     }
     
-    
+
     /**
-     Render a unit of JSON as an NSAttributedString.
+     Assemble an ordered sequence of Paragraphs from a JSON entity.
 
-     - Parameters:
-        - json:           A unit of JSON, type Any.
-        - currentLevel:   The current element depth.
-        - currentIndent:  How much a subsequent value should be indented.
-        - parentIsObject: If and only if the parent is an object.
+     FROM 2.0.0
 
-     - Returns: The indented string as an NSAttributedString.
+     - Parameters
+        - json:       A JSON entity, which may be incomplete.
+        - depth:      The level at which the entity is nested.
+        - prefix:     Any text to which the rendered JSON entity should be appended.
+        - paragraphs: The array of paragraphs to which the generated one will be added.
+        - marker:     A key-assigned JSON marker type.
      */
-    private func prettify(_ json: Any, _ currentLevel: Int = 0, _ currentIndent: Int = 0, _ parentIsObject: Bool = false) -> NSMutableAttributedString {
 
-        // Prep an NSMutableAttributedString for this JSON segment
-        let renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: self.keyAttributes)
-        
-        // FROM 1.0.2
-        // Break early at a sensible location, ie. one that
-        // leaves us with a valid subset of the source JSON
-        // NOTE This can be done better with checks on the returned string
-        self.lineCount += 1;
-        if self.isThumbnail && (self.lineCount > BUFFOON_CONSTANTS.THUMBNAIL_LINE_COUNT) {
-            return renderedString
-        }
-        
-        // Set the indent based on the current level
-        // This will be used for rendering keys and calculating
-        // next-level indents. It's just a multiple of the level
-        var indent: Int = currentIndent
-        if self.isThumbnail {
-            indent = currentLevel * BUFFOON_CONSTANTS.BASE_INDENT
-        }
-        
-        // Generate a string according to the JSON element's underlying type
-        // FROM 1.0.4 Booleans are 'Bool' and 'Int', so remove the old bool check
-        //            and rely on the earlier string encoding in PreviewViewController
-        if json is NSNull {
-            // Attempt to load the null symbol, but use a text version as a fallback on error
-            if self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
-                // Display NULL as an image
-                let name: String = "null_\(self.settings.boolStyle)"
-                if !self.isThumbnail, let addString: NSAttributedString = getImageString(indent, name) {
-                    renderedString.append(addString)
-                    return renderedString
-                }
-            }
-            
-            // Can't or won't show an image? Show text
-            renderedString.append(getIndentedAttributedString("NULL\n", indent, .Special))
-        } else if json is Int || json is Float || json is Double {
-            // Display the number as is
-            renderedString.append(getIndentedAttributedString("\(json)\n", indent, .Scalar))
-        } else if json is String {
-            let value: String = json as! String
+    private func prettify(_ json: JSONValue, _ depth: Int = 0, _ prefix: NSMutableAttributedString, _ paragraphs: NSMutableArray, _ marker: JSONMarkType = .none) {
 
-            // Is this a shimmed boolean?
-            if value == "PREVIEW-JSON-TRUE" || value == "PREVIEW-JSON-FALSE" {
-                if self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
-                    // Render the bool as an image
-                    let name: String = value == "PREVIEW-JSON-TRUE" ? "true_\(self.settings.boolStyle)" : "false_\(self.settings.boolStyle)"
-                    if !self.isThumbnail, let addString: NSAttributedString = getImageString(indent, name) {
-                        renderedString.append(addString)
-                        return renderedString
-                    }
+        // Get the point size of the rendered key if there is one
+        let keyLength = prefix.length > 0 ? prefix.width : 0.0
+
+        // Match the JSON entity by type to generate paragraph styled text
+        if json.objectValue != nil {
+            // For an object (dictionary), enumerate the keys and their values
+            for (index, keyValuePair) in json.objectValue!.enumerated() {
+                let key = keyValuePair.0
+                let value = keyValuePair.1
+
+                // Is the value a collection?
+                let valueIsObject: Bool = value.objectValue != nil
+                let valueIsArray: Bool  = value.arrayValue != nil
+
+                // First, render the key
+                let keyString = NSMutableAttributedString(string: key.description + " ", attributes: self.keyAttributes)
+                let keyLength = keyString.width
+
+                // Set the JSON marker type
+                var marker: JSONMarkType = .none
+                if index == 0 {
+                    // First value in the list
+                    marker = .objectOpen
+                } else if index == json.objectValue!.count - 1 {
+                    // Last value in the list
+                    marker = .objectClose
                 }
 
-                // Can't or won't show an image? Show text
-                renderedString.append(getIndentedAttributedString(value == "PREVIEW-JSON-TRUE" ? "TRUE\n" : "FALSE\n", indent, .Special))
-            } else {
-                // Regular string value; add quotes if necessary
-                let stringText: String = self.settings.showJsonMarks ? "“" + (json as! String) + "”\n" : (json as! String) + "\n"
-                renderedString.append(getIndentedAttributedString(stringText[...], indent, .String))
-            }
-        } else if json is Dictionary<String, Any> {
-            // For a dictionary, enumerate the key and value
-            // NOTE Should be only one of each, but value may
-            //      be an object or array
-            
-            if self.settings.showJsonMarks {
-                // Add JSON furniture
-                // If the parent is an object too, don't indent (we have already indented)
-                let initialFurnitureIndent: Int = parentIsObject ? 0 : indent
-                    renderedString.append(getIndentedAttributedString("{\n", initialFurnitureIndent, .MarkStart))
-            }
-            
-            let anyObject: [String: Any] = json as! [String: Any]
-
-            // FROM 1.1.0 -- sort dictionaries alphabetically by key
-            var keys: [String] = Array(anyObject.keys)
-            if self.sortKeys {
-                keys = keys.sorted(by: { (a, b) -> Bool in
-                    return (a.lowercased() < b.lowercased())
-                })
-            }
-
-            // Set the indent of each key
-            // The base indent or, if we're showing furniture, base + the specific indent value
-            let keyIndent: Int = self.settings.showJsonMarks ? indent + self.settings.indentSize : indent
-
-            for key in keys {
-                // Get important value types
-                let value: Any = anyObject[key]!
-                let valueIsObject: Bool = (value is Dictionary<String, Any>)
-                let valueIsArray: Bool  = (value is Array<Any>)
-
-                // Print the key
-                renderedString.append(getIndentedAttributedString(key[...], keyIndent, .Key))
-
-                // Print a trailing space after the key
-                renderedString.append(NSAttributedString.init(string: " ", attributes: getAttributes(.Key)))
-
-                // Now for the value: is it non-scalar?
+                // Now render the value
                 if valueIsObject || valueIsArray {
-                    // Render the element at the next level. When we're showing furniture, the ident is the same as the key,
-                    // because of how keyIndent is set, otherwise we need to add the standard indent
-                    let valueIndent: Int = self.settings.showJsonMarks ? keyIndent : keyIndent + self.settings.indentSize
-
-                    // Add a carriage return to space out objects
-                    // when we're not showing furniture
-                    if !self.settings.showJsonMarks {
-                        renderedString.append(self.cr)
-                    }
-
-                    renderedString.append(prettify(value,
-                                                   currentLevel + 1,    // Next level to key
-                                                   valueIndent,          // This level's base indent
-                                                   true))
+                    // The value is a collection type
+                    marker = valueIsArray ? .arrayOpen : .objectOpen
+                    paragraphs.add(Paragraph(text: keyString, depth: depth, keyLength: keyLength, marker: marker))
+                    prettify(value, depth + 1, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs)
                 } else {
-                    // Render the scalar value immediately after the key
+                    // The value is a scalar
                     // NOTE The key has a trailing space, so no extra indent is required for the scalar value
-                    renderedString.append(prettify(value, 
-                                                   currentLevel,        // Same level as key
-                                                   0))                  // No indent
+                    prettify(value, depth, keyString, paragraphs, marker)
                 }
             }
-            
-            if self.settings.showJsonMarks {
-                // Bookend with JSON furniture
-                renderedString.append(getIndentedAttributedString("}\n", indent, .MarkEnd))
-            }
-        } else if json is Array<Any> {
-            if self.settings.showJsonMarks {
-                // Add JSON furniture
-                // If parent is an object, add furniture right after key, otherwise indent
-                let initialIndent: Int = parentIsObject ? 0 : indent
-                renderedString.append(getIndentedAttributedString("[\n", initialIndent, .MarkStart))
-            }
-            
-            // Iterate over the array's items
-            // Array items are always rendered at the same level
-            let anyArray: [Any] = json as! [Any]
-            let valueIndent: Int = self.settings.showJsonMarks ? indent + self.settings.indentSize : indent
-            var count: Int = 0
 
-            anyArray.forEach { value in
-                // Get important value types
-                let valueIsObject: Bool = (value is Dictionary<String, Any>)
-                let valueIsArray: Bool = (value is Array<Any>)
-                
-                // Is the value non-scalar?
+            return
+        } else if json.arrayValue != nil {
+            // For aan array, enumerate the values
+            // NOTE Should be only one of each, but value may be an object or array
+            for (index, value) in json.arrayValue!.enumerated() {
+                // Is the value a collection?
+                let valueIsObject: Bool = value.objectValue != nil
+                let valueIsArray: Bool = value.arrayValue != nil
+
+                // Set the JSON marker type
+                var marker: JSONMarkType = .none
+                if index == 0 {
+                    marker = .arrayOpen
+                } else if index == json.arrayValue!.count - 1 {
+                    marker = .arrayClose
+                }
+
+                // Render the value
                 if valueIsObject || valueIsArray {
-                    // Render the element on the next level
-                    renderedString.append(prettify(value,
-                                                   currentLevel + 1,
-                                                   valueIndent))
-
-                    // Separate all but the last item with a blank line
-                    if count < anyArray.count - 1 && !self.settings.showJsonMarks {
-                        renderedString.append(self.cr)
+                    // The value is a collection type
+                    marker = valueIsArray ? .arrayOpen : .objectOpen
+                    if prefix.length > 0 {
+                        paragraphs.add(Paragraph(text: prefix, depth: depth, marker: marker))
                     }
+
+                    prettify(value, depth + 1, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs)
+
+                    // Grab the most tail-end paragraph and add a close marker
+                    let lastPara = paragraphs.lastObject as! Paragraph
+                    lastPara.marker = valueIsArray ? .arrayClose : .objectClose
                 } else {
-                    // Render the scalar value
-                    renderedString.append(prettify(value,
-                                                   currentLevel,
-                                                   valueIndent))
+                    // The value is a scalar
+                    prettify(value, depth, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs, marker)
                 }
 
-                count += 1
+                // Add a narrow spacer line after all collections except the last one in the array
+                if index < json.arrayValue!.count - 1 && (valueIsArray || valueIsObject) {
+                    paragraphs.add(Paragraph(text: self.emptyString, depth: depth))
+                }
             }
-            
-            // Bookend with JSON furniture
-            if self.settings.showJsonMarks {
-                renderedString.append(getIndentedAttributedString("]\n", indent, .MarkEnd))
+
+            return
+        } else if json.isNull {
+            // Attempt to load the `NULL` symbol, but use a text version as a fallback on error
+            if !self.isThumbnail && self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
+                let imageName: String = "null_\(self.settings.boolStyle)"
+                if let image: NSAttributedString = getImageString(imageName) {
+                    prefix.append(image)
+                }
+            } else {
+                // Can't or won't show an image? Show text
+                prefix.append(NSAttributedString(string: "NULL", attributes: self.specialAttributes))
             }
+        } else if json.boolValue != nil {
+            // Attempt to load the `TRUE`/`FALSE` symbol, but use a text version as a fallback on error
+            if !self.isThumbnail && self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
+                let boolType: String = json.boolValue! ? "true" : "false"
+                let imageName: String = "\(boolType)_\(self.settings.boolStyle)"
+                if let image: NSAttributedString = getImageString(imageName) {
+                    prefix.append(image)
+                }
+            } else {
+                // Can't or won't show an image? Show text
+                prefix.append(NSAttributedString(string: json.boolValue!.description.uppercased(), attributes: self.specialAttributes))
+            }
+        } else if json.numberValue != nil {
+            // Display the number as is
+            prefix.append(NSAttributedString(string: "\(json.numberValue!.description)", attributes: self.scalarAttributes))
+        } else if json.stringValue != nil {
+            // Display the string with quotemarks if the user wants to see markers
+            let value: String = json.stringValue!.description
+            let valueString: String = self.settings.showJsonMarks ? "“" + value + "”" : value
+            prefix.append(NSAttributedString(string: valueString, attributes: self.stringAttributes))
         }
-        
-        return renderedString
+
+        // Stash the paragraph
+        paragraphs.add(Paragraph(text: prefix, depth: depth, keyLength: keyLength, marker: marker))
     }
 
 
@@ -551,11 +446,11 @@ final class Common {
         - parentIsObject: If and only if the parent is an object.
 
      - Returns: The indented string as an NSAttributedString.
-     */
+
     private func tabulate(_ json: Any, _ currentLevel: Int = 0, _ currentIndent: Int = 0, _ parentIsObject: Bool = false) -> NSMutableAttributedString {
 
         // Prep an NSMutableAttributedString for this JSON segment
-        let renderedString: NSMutableAttributedString = NSMutableAttributedString.init(string: "", attributes: self.keyAttributes)
+        let renderedString: NSMutableAttributedString = NSMutableAttributedString(string: "", attributes: self.keyAttributes)
 
         // Generate a string according to the JSON element's underlying type
         // Booleans are 'Bool' and 'Int', so remove the old bool check
@@ -656,7 +551,7 @@ final class Common {
                 // Print the key
                 renderedString.append(getIndentedAttributedString(key[...], keyIndent, .Key))
                 // Space after
-                renderedString.append(NSAttributedString.init(string: String(repeating: self.spacer, count: self.maxKeyLengths[currentLevel] - key.count + 1), attributes: getAttributes(.Key)))
+                renderedString.append(NSAttributedString(string: String(repeating: self.spacer, count: self.maxKeyLengths[currentLevel] - key.count + 1), attributes: getAttributes(.Key)))
 
                 // Is the value non-scalar?
                 if valueIsObject || valueIsArray {
@@ -744,8 +639,9 @@ final class Common {
 
         return renderedString
     }
-
+     */
     
+
     /**
      Iterate through a JSON element to caclulate the current max. key length.
      FROM 1.1.0
@@ -810,47 +706,10 @@ final class Common {
 
      - Returns: `true` if the Mac is in light mode, otherwise `false`.
      */
-    private func isMacInLightMode() -> Bool {
+    internal func isMacInLightMode() -> Bool {
 
         let appearNameString: String = NSApp.effectiveAppearance.name.rawValue
         return (appearNameString == "NSAppearanceNameAqua")
-    }
-
-
-    public func getAttStr(fromJson json: String) -> NSAttributedString {
-
-        var attStr: NSAttributedString
-
-        if let jsonData = parseJSON(json) {
-            let mattrStr = NSMutableAttributedString(string: "")
-            
-            attStr = mattrStr as NSAttributedString
-        } else {
-            attStr = NSAttributedString(string: "INVALID JSON")
-
-        }
-
-        return attStr
-    }
-
-    
-    /// Parses a complete or partial JSON string into an order-preserving `JSONValue`.
-    ///
-    /// - Objects   → `.object([(key: String, value: JSONValue)])` — insertion order retained.
-    /// - Arrays    → `.array([JSONValue])` — element order retained.
-    /// - Strings   → `.string(String)`, Numbers → `.number(Double)`,
-    ///   Booleans  → `.bool(Bool)`, Null → `.null`
-    ///
-    /// Partial documents (truncated strings, unclosed arrays/objects, incomplete literals)
-    /// are parsed leniently — whatever was successfully read is returned.
-    ///
-    /// - Parameter jsonString: A JSON string, which may be partial/incomplete.
-    /// - Returns: The parsed `JSONValue`, or `nil` if the input is empty or starts with
-    ///   an unrecognisable character.
-    public func parseJSON(_ jsonString: String) -> JSONValue? {
-
-        var parser = JSONParser(jsonString)
-        return parser.parseValue()
     }
 
 }
