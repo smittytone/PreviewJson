@@ -37,84 +37,79 @@ class PreviewViewController: NSViewController,
         // Hide the error message field
         self.renderTextScrollView.isHidden = false
         
-        // Instantiate the common renderer
-        let common: Common = Common(forThumbnail: false)
-        
         // Load the source file using a co-ordinator as we don't know what thread this function
         // will be executed in when it's called by macOS' QuickLook code
-        if FileManager.default.isReadableFile(atPath: url.path) {
-            // Only proceed if the file is accessible from here
-            do {
-                // Get the file contents as a string
-                let data: Data = try Data.init(contentsOf: url, options: [.uncached])
-                let encoding: String.Encoding = data.stringEncoding ?? .utf8
-                
-                if let jsonString: String = String.init(data: data, encoding: encoding) {
-                    // FROM 1.0.4
-                    // Scan for JSON booleans and replace with a marker string.
-                    // This is to deal with the issue with NSJsonSerialization which causes
-                    // booleans to be replaced with 1 or 0 and therefore indistinguishable
-                    // from integer 1 or 0. Maybe there is a better option?
-                    let regexTrue = try! NSRegularExpression(pattern: ":[\\s]*true")
-                    let jsonStringTrue: String = regexTrue.stringByReplacingMatches(in: jsonString,
-                                                                                    options: [],
-                                                                                    range: NSMakeRange(0, jsonString.count),
-                                                                                    withTemplate: ": \"PREVIEW-JSON-TRUE\"")
+        do {
+            // Get the file contents as a string
+            let data: Data = try Data(contentsOf: url, options: [.uncached])
+            let encoding: String.Encoding = data.stringEncoding ?? .utf8
 
-                    let regexFalse = try! NSRegularExpression(pattern: ":[\\s]*false")
-                    let jsonStringFalse: String = regexFalse.stringByReplacingMatches(in: jsonStringTrue,
-                                                                                      options: [],
-                                                                                      range: NSMakeRange(0, jsonStringTrue.count),
-                                                                                      withTemplate: ": \"PREVIEW-JSON-FALSE\"")
-                    
-                    // Get the key string first
-                    let jsonDataCoded: Data = jsonStringFalse.data(using: encoding) ?? data
-                    let jsonAttString: NSAttributedString = common.getAttributedString(jsonDataCoded)
-                    
-                    // Knock back the light background to make the scroll bars visible in dark mode
-                    // NOTE If !doShowLightBackground,
-                    //              in light mode, the scrollers show up dark-on-light, in dark mode light-on-dark
-                    //      If doShowLightBackground,
-                    //              in light mode, the scrollers show up light-on-light, in dark mode light-on-dark
-                    // NOTE Changing the scrollview scroller knob style has no effect
-                    self.renderTextView.backgroundColor = common.doShowLightBackground ? NSColor.init(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
-                    self.renderTextScrollView.scrollerKnobStyle = common.doShowLightBackground ? .dark : .light
+            if let jsonString: String = String(data: data, encoding: encoding) {
+                // Instantiate the common renderer
+                let common: Common = Common(forThumbnail: false)
 
-                    if let renderTextStorage: NSTextStorage = self.renderTextView.textStorage {
-                        /*
-                         * NSTextStorage subclasses that return true from the fixesAttributesLazily
-                         * method should avoid directly calling fixAttributes(in:) or else bracket
-                         * such calls with beginEditing() and endEditing() messages.
-                         */
-                        renderTextStorage.beginEditing()
-                        renderTextStorage.setAttributedString(jsonAttString)
-                        renderTextStorage.endEditing()
-                        
-                        // Add the subview to the instance's own view and draw
-                        self.view.display()
+                // FROM 2.0.0
+                // Set the parent window's size
+                setPreviewWindowSize(common.settings)
 
-                        // Call the QLPreviewingController indicating no error
-                        // (argument is nil)
-                        handler(nil)
-                        return
-                    }
-                    
-                    // We can't access the preview NSTextView's NSTextStorage
-                    reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
-                } else {
-                    // We couldn't convert to data to a valid encoding
-                    let errDesc: String = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) \(encoding)"
-                    reportError = NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,
-                                          code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING,
-                                          userInfo: [NSLocalizedDescriptionKey: errDesc])
+                // FROM 2.0.0
+                // The force-light-mode-preview-in-dark-mode setting is now a general
+                // preview-colours-should-be-opposite-the-mode setting.
+                var renderPreviewLight = common.isMacInLightMode()
+                if common.settings.doReverseMode {
+                    // Invert the colour scheme based on the current mode
+                    renderPreviewLight = !renderPreviewLight
                 }
-            } catch {
-                // We couldn't read the file so set an appropriate error to report back
-                reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
+
+                // Set the view's mode
+                self.view.appearance = renderPreviewLight ? NSAppearance(named: .aqua) : NSAppearance(named: .darkAqua)
+
+                // Update the NSTextView
+                self.renderTextView.backgroundColor = renderPreviewLight ? NSColor.white : NSColor.textBackgroundColor
+                self.renderTextScrollView.scrollerKnobStyle = renderPreviewLight ? .dark : .light
+                if renderPreviewLight {
+                    self.renderTextScrollView.scrollerKnobStyle = .dark
+                }
+
+                // FROM 2.0.0
+                // Add margin if required
+                if common.settings.previewMarginWidth > 0.0 {
+                    let previewSize = NSSize(width: common.settings.previewMarginWidth, height: common.settings.previewMarginWidth)
+                    self.renderTextView.textContainerInset = previewSize
+                }
+
+                let jsonAttString: NSAttributedString = common.getAttStr(fromJson: jsonString)
+                if let renderTextStorage: NSTextStorage = self.renderTextView.textStorage {
+                    /*
+                     * NSTextStorage subclasses that return true from the fixesAttributesLazily
+                     * method should avoid directly calling fixAttributes(in:) or else bracket
+                     * such calls with beginEditing() and endEditing() messages.
+                     */
+                    renderTextStorage.beginEditing()
+                    renderTextStorage.setAttributedString(jsonAttString)
+                    renderTextStorage.endEditing()
+
+                    // Add the subview to the instance's own view and draw
+                    self.view.display()
+
+                    // Call the QLPreviewingController indicating no error
+                    // (argument is nil)
+                    handler(nil)
+                    return
+                }
+
+                // We can't access the preview NSTextView's NSTextStorage
+                reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
+            } else {
+                // We couldn't convert to data to a valid encoding
+                let errDesc: String = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) \(encoding)"
+                reportError = NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,
+                                      code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING,
+                                      userInfo: [NSLocalizedDescriptionKey: errDesc])
             }
-        } else {
-            // We couldn't access the file so set an appropriate error to report back
-            reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE)
+        } catch {
+            // We couldn't read the file so set an appropriate error to report back
+            reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
         }
 
         // Display the error locally in the window
@@ -124,19 +119,6 @@ class PreviewViewController: NSViewController,
         // (argumnet is not nil)
         handler(reportError)
     }
-    
-
-    /*
-     * Implement this method and set QLSupportsSearchableItems to YES in the Info.plist of the extension if you support CoreSpotlight.
-     *
-    func preparePreviewOfSearchableItem(identifier: String, queryString: String?, completionHandler handler: @escaping (Error?) -> Void) {
-        // Perform any setup necessary in order to prepare the view.
-
-        // Call the completion handler so Quick Look knows that the preview is fully loaded.
-        // Quick Look will display a loading spinner while the completion handler is not called.
-        handler(nil)
-    }
-     */
 
 
     // MARK: - Utility Functions
@@ -153,8 +135,8 @@ class PreviewViewController: NSViewController,
         self.renderTextScrollView.isHidden = true
         self.view.display()
     }
-    
-    
+
+
     /**
      Generate an NSError for an internal error, specified by its code.
 
@@ -186,5 +168,25 @@ class PreviewViewController: NSViewController,
                        code: code,
                        userInfo: [NSLocalizedDescriptionKey: errDesc])
     }
-    
+
+
+    /**
+     Specify the content size of the parent view.
+    */
+    private func setPreviewWindowSize(_ settings: PJSettings) {
+
+        var screen: NSScreen = NSScreen.screens[0]
+
+        // We've set `screen` to the primary, ie. menubar-displaying,
+        // screen, but ideally we should pick the screen with user focus.
+        // They may be one and the same, of course...
+        if let mainScreen = NSScreen.main, mainScreen != screen {
+            screen = mainScreen
+        }
+
+        let height: CGFloat = screen.frame.size.height * settings.previewWindowScale
+        let width: CGFloat = screen.frame.size.width * settings.previewWindowScale
+        self.preferredContentSize = NSSize(width: width, height: height)
+    }
+
 }

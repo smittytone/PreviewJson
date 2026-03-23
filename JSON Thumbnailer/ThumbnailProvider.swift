@@ -37,14 +37,19 @@ class ThumbnailProvider: QLThumbnailProvider {
         do {
             // Get the file contents as a string, making sure it's not cached
             // as we're not going to read it again any time soon
-            let data: Data = try Data.init(contentsOf: request.fileURL, options: [.uncached])
+            let data: Data = try Data(contentsOf: request.fileURL, options: [.uncached])
+
+            let fh = try FileHandle(forReadingFrom: request.fileURL)
+            let data2 = try fh.read(upToCount: BUFFOON_CONSTANTS.MAX_FEEDBACK_SIZE)
+            try fh.close()
+
 
             // Get the string's encoding, or fail back to .utf8
             let encoding: String.Encoding = data.stringEncoding ?? .utf8
 
             // Check the string's encoding generates a valid string
             // NOTE This may not be necessary and so may be removed
-            guard let _: String = String.init(data: data, encoding: encoding) else {
+            guard let json: String = String(data: data2!, encoding: encoding) else {
                 handler(nil, ThumbnailerError.badFileLoad(request.fileURL.path))
                 return
             }
@@ -59,8 +64,8 @@ class ThumbnailProvider: QLThumbnailProvider {
                                                CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.HEIGHT))
 
             // Instantiate an NSTextField to display the NSAttributedString render of the JSON
-            let jsonTextField: NSTextField = NSTextField.init(frame: jsonFrame)
-            jsonTextField.attributedStringValue = common.getAttributedString(data)
+            let jsonTextField: NSTextField = NSTextField(frame: jsonFrame)
+            jsonTextField.attributedStringValue = common.getAttStr(fromJson: json)
 
             // FROM 2.0.0
             // From macOS 26.1, make sure thumbnail backgrounds remain white
@@ -94,7 +99,7 @@ class ThumbnailProvider: QLThumbnailProvider {
                                                     thumbnailFrame.height * request.scale)
 
                 // Pass a QLThumbnailReply and no error to the supplied handler
-                handler(QLThumbnailReply.init(contextSize: thumbnailFrame.size) { (context) -> Bool in
+                handler(QLThumbnailReply(contextSize: thumbnailFrame.size) { (context) -> Bool in
                     // `scaleFrame` and `cgImage` are immutable
                     context.draw(image, in: scaleFrame, byTiling: false)
                     return true
