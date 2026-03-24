@@ -2,8 +2,9 @@
 
 - 2.0.0 *Unreleased*
     - Bring UI into line with other PreviewApps.
-    - Rebuild rendering system from the ground up.
+    - Rebuild rendering engine from the ground up.
     - Preview and thumbnail respect the order of keys and values in the source file.
+    - Engine can make a stab at rendering bad JSON.
     - Support macOS Tahoe.
     - Migrate to Swift Concurrency.
     - **BREAKING** Minimum macOS version is now macOS 12 Monterey.
