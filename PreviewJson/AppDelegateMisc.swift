@@ -116,7 +116,7 @@ extension AppDelegate {
      */
     func windowShouldClose(_ sender: NSWindow) -> Bool {
 
-        if !checkFeedbackOnQuit() && !checkSettingsOnQuit() {
+        if !checkFeedbackOnQuit() && !checkSettings() {
             // No unsaved settings or unsent feedback, so we're good to close
             return true
         }

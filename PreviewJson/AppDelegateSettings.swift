@@ -25,8 +25,8 @@ extension AppDelegate {
             self.fontSizeSlider.tintProminence = .none
         }
 
-        // FROM 2.3.0
-        /* Disable this switch below 26.1
+        // FROM 2.0.0
+        // Disable this switch below 26.1
         if #available(macOS 26.1, *) {
             self.tintTumbnailsAdvancedLabel.isEnabled = true
             self.tintTumbnailsAdvancedSwitch.isEnabled = true
@@ -34,11 +34,10 @@ extension AppDelegate {
             self.tintTumbnailsAdvancedLabel.isEnabled = false
             self.tintTumbnailsAdvancedSwitch.isEnabled = false
         }
-         */
 
         // Disable the Feedback > Send button if we have sent a message.
         // It will be re-enabled by typing something
-        self.applyButton.isEnabled = checkSettingsOnQuit()
+        self.applyButton.isEnabled = checkSettings()
 
         // Applied to enable keyboard control of the slider
         self.window.makeFirstResponder(self)
@@ -57,7 +56,7 @@ extension AppDelegate {
 
         let index: Int = Int(self.fontSizeSlider.floatValue)
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.PREVIEW_SIZE.FONT_SIZE_OPTIONS[index]))pt"
-        self.applyButton.isEnabled = checkSettingsOnQuit()
+        self.applyButton.isEnabled = checkSettings()
     }
 
 
@@ -94,7 +93,7 @@ extension AppDelegate {
     @IBAction private func doUpdateFonts(sender: Any) {
 
         setStylePopup()
-        self.applyButton.isEnabled = checkSettingsOnQuit()
+        self.applyButton.isEnabled = checkSettings()
     }
 
 
@@ -110,7 +109,7 @@ extension AppDelegate {
         let keys: [String] = BUFFOON_CONSTANTS.COLOUR_OPTIONS
         let key: String = "new_" + keys[self.colourSelectionPopup.indexOfSelectedItem]
         self.currentSettings.displayColours[key] = self.colourWell.color.hexString
-        self.applyButton.isEnabled = checkSettingsOnQuit()
+        self.applyButton.isEnabled = checkSettings()
     }
 
 
@@ -131,7 +130,7 @@ extension AppDelegate {
             if colour.count != 0 {
                 // Set the colourwell with the updated colour and exit
                 self.colourWell.color = NSColor.hexToColour(colour)
-                self.applyButton.isEnabled = checkSettingsOnQuit()
+                self.applyButton.isEnabled = checkSettings()
                 return
             }
         }
@@ -141,7 +140,7 @@ extension AppDelegate {
             self.colourWell.color = NSColor.hexToColour(colour)
         }
 
-        self.applyButton.isEnabled = checkSettingsOnQuit()
+        self.applyButton.isEnabled = checkSettings()
     }
 
 
@@ -156,7 +155,7 @@ extension AppDelegate {
     @IBAction
     internal func doChangeValue(sender: Any) {
 
-        self.applyButton.isEnabled = checkSettingsOnQuit()
+        self.applyButton.isEnabled = checkSettings()
     }
 
 
@@ -172,7 +171,7 @@ extension AppDelegate {
     internal func doApplyCurrentSettings(sender: Any) {
 
          // First, make sure changes have been made
-         if checkSettingsOnQuit() {
+         if checkSettings() {
              // Changes are present, so save them.
              // NOTE This call updates the current settings values from the Settings tab UI.
              saveSettings()
@@ -196,10 +195,27 @@ extension AppDelegate {
 
         displaySettings(self.defaultSettings)
         applyDefaultColours()
-        self.applyButton.isEnabled = checkSettingsOnQuit()
+        self.applyButton.isEnabled = checkSettings()
      }
 
-    
+
+    // MARK: - Advanced Settings
+
+    @IBAction
+    internal func doShowAdvancedSettings(sender: Any) {
+
+        self.window.beginSheet(self.advancedSettingsSheet)
+    }
+
+
+    @IBAction
+    internal func doCloseAdvancedSettings(sender: Any) {
+
+        self.window.endSheet(self.advancedSettingsSheet)
+        willShowSettingsPage()
+    }
+
+
     // MARK: - Data Access/Storage Functions
 
     /**
@@ -248,6 +264,22 @@ extension AppDelegate {
 
         // The bool/null display style
         self.boolStyleSegment.selectedSegment = settings.boolStyle
+
+        // Tahoe match thumbnail style
+        self.tintTumbnailsAdvancedSwitch.state = settings.thumbnailMatchFinderMode ? .on : .off
+
+        // Preview window size
+        var idx = 2
+        if settings.previewWindowScale == BUFFOON_CONSTANTS.SCALERS.WINDOW_SIZE_S {
+            idx = 0
+        } else if settings.previewWindowScale == BUFFOON_CONSTANTS.SCALERS.WINDOW_SIZE_M {
+            idx = 1
+        }
+
+        self.previewSizeAdvancedPopup.selectItem(at: idx)
+
+        // Preview margin size
+        self.previewMarginSizeText.stringValue = String(format:"%.1f", settings.previewMarginWidth)
     }
 
 
@@ -268,11 +300,24 @@ extension AppDelegate {
         displayedSettings.doReverseMode = self.useLightSwitch.state == .on
         displayedSettings.showJsonMarks = self.showJsonMarksSwitch.state == .on
         displayedSettings.showRawJsonOnError = self.showbadJsonSwitch.state == .on
+        displayedSettings.thumbnailMatchFinderMode = self.tintTumbnailsAdvancedSwitch.state == .on
 
         let indents: [Int] = [1, 2, 4, 8, BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE]
         displayedSettings.indentSize = indents[self.indentPopup.indexOfSelectedItem]
 
         displayedSettings.boolStyle = self.boolStyleSegment.indexOfSelectedItem
+
+        let idx = self.previewSizeAdvancedPopup.indexOfSelectedItem
+        switch idx {
+            case 1:
+                displayedSettings.previewWindowScale = BUFFOON_CONSTANTS.SCALERS.WINDOW_SIZE_M
+            case 2:
+                displayedSettings.previewWindowScale = BUFFOON_CONSTANTS.SCALERS.WINDOW_SIZE_L
+            default:
+                displayedSettings.previewWindowScale = BUFFOON_CONSTANTS.SCALERS.WINDOW_SIZE_S
+        }
+
+        displayedSettings.previewMarginWidth = Double(self.previewMarginSizeText.stringValue) ?? BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH
 
         return displayedSettings
     }
@@ -321,7 +366,7 @@ extension AppDelegate {
      - Returns:
         `true` if one or more settings has changed, otherwise `false`.
      */
-    internal func checkSettingsOnQuit() -> Bool {
+    internal func checkSettings() -> Bool {
 
         let displayedSettings = settingsFromDisplay()
         var settingsHaveChanged = self.currentSettings.doReverseMode != displayedSettings.doReverseMode
@@ -364,6 +409,19 @@ extension AppDelegate {
 
         if !settingsHaveChanged {
             settingsHaveChanged = self.currentSettings.indentSize != displayedSettings.indentSize
+        }
+
+        if !settingsHaveChanged {
+            settingsHaveChanged = self.currentSettings.thumbnailMatchFinderMode != displayedSettings.thumbnailMatchFinderMode
+        }
+
+        if !settingsHaveChanged {
+            settingsHaveChanged = self.currentSettings.previewWindowScale != displayedSettings.previewWindowScale
+        }
+
+        if !settingsHaveChanged {
+            settingsHaveChanged = (self.currentSettings.previewMarginWidth != displayedSettings.previewMarginWidth) &&
+                                   !(displayedSettings.previewMarginWidth.isClose(to: self.currentSettings.previewMarginWidth))
         }
 
         return settingsHaveChanged

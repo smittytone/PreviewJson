@@ -70,6 +70,16 @@ final class AppDelegate: NSResponder,
     @IBOutlet weak var whatsNewWindow: NSWindow!
     @IBOutlet weak var whatsNewWebView: WKWebView!
 
+    // FROM 2.0.0
+    // Advanced Settings Sheet
+    @IBOutlet weak var advancedSettingsSheet: NSWindow!
+    @IBOutlet weak var applyAdvancedButton: NSButton!
+    @IBOutlet weak var previewSizeAdvancedPopup: NSPopUpButton!
+    @IBOutlet weak var tintTumbnailsAdvancedSwitch: NSSwitch!
+    @IBOutlet weak var tintTumbnailsAdvancedLabel: NSTextField!
+    @IBOutlet weak var previewMarginSizeText: NSTextField!
+    @IBOutlet weak var previewMarginRangeText: NSTextField!
+
 
     // MARK: - Private Properies
 
@@ -143,9 +153,10 @@ final class AppDelegate: NSResponder,
         //      It must happen after we've got a list of fonts
         initialiseFeedback()
 
-        // ADVANCED SETTIBGS
-        //self.previewMarginSizeText.delegate = self
-        //self.previewMarginRangeText.stringValue = "Valid range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MAX)"
+        // FROM 2.0.0
+        // Set up advanced settings
+        self.previewMarginSizeText.delegate = self
+        self.previewMarginRangeText.stringValue = "Valid range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MAX)"
 
         // Centre the main window and display
         setInfoText()
@@ -199,7 +210,7 @@ final class AppDelegate: NSResponder,
     internal func closeSettings() {
 
         // Are there any unsaved changes to the settings?
-        if checkSettingsOnQuit() {
+        if checkSettings() {
             let alert: NSAlert = makeAlert("You have unsaved settings",
                                            "Do you wish to cancel and save or change them, or quit the app anyway?",
                                            false)
