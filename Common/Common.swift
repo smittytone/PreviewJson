@@ -274,14 +274,6 @@ final class Common {
         return imageAsString
     }
 
-    /*
-
-     let iconImage = UIImage(named: "icon.png")!
-     var icon = NSTextAttachment()
-     icon.bounds = CGRect(x: 0, y: (titleFont.capHeight - iconImage.size.height).rounded() / 2, width: iconImage.size.width, height: iconImage.size.height)
-     icon.image = iconImage
-
-     */
 
     /**
      Assemble an ordered sequence of Paragraphs from a JSON entity.
@@ -407,7 +399,7 @@ final class Common {
                 }
             } else {
                 // Can't or won't show an image? Show text
-                prefix.append(NSAttributedString(string: json.boolValue!.description.uppercased(), attributes: self.specialAttributes))
+                prefix.append(NSAttributedString(string: json.boolValue!.description, attributes: self.specialAttributes))
             }
         } else if json.numberValue != nil {
             // Display the number as is
