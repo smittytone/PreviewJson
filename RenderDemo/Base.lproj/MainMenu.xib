@@ -20,6 +20,8 @@
                 <outlet property="modeButton" destination="cUv-yG-ROn" id="nRU-sE-vcW"/>
                 <outlet property="previewScrollView" destination="9tz-gF-DdE" id="fWy-88-plv"/>
                 <outlet property="previewTextView" destination="NAJ-g1-D1W" id="UaC-b0-EJw"/>
+                <outlet property="reloadButton" destination="xXF-zr-IHi" id="L11-it-rA5"/>
+                <outlet property="reloadMenuItem" destination="hgU-EM-IhT" id="7em-zg-5z0"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -72,7 +74,7 @@
                 </menuItem>
                 <menuItem title="File" id="dMs-cI-mzQ">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="File" id="bib-Uj-vzu">
+                    <menu key="submenu" title="File" autoenablesItems="NO" id="bib-Uj-vzu">
                         <items>
                             <menuItem title="Open…" keyEquivalent="o" id="IAo-SY-fd9">
                                 <connections>
@@ -91,6 +93,12 @@
                                         </menuItem>
                                     </items>
                                 </menu>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="mdE-Es-IKM"/>
+                            <menuItem title="Refresh" keyEquivalent="r" id="hgU-EM-IhT">
+                                <connections>
+                                    <action selector="doReloadFile:" target="Voe-Tx-rLC" id="Jgt-ge-mdT"/>
+                                </connections>
                             </menuItem>
                         </items>
                     </menu>
@@ -232,15 +240,31 @@
                             <action selector="doLoadFile:" target="Voe-Tx-rLC" id="cl2-82-I8J"/>
                         </connections>
                     </button>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="xXF-zr-IHi">
+                        <rect key="frame" x="451" y="18" width="83" height="24"/>
+                        <buttonCell key="cell" type="push" title="Reload" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dH6-Fu-yLg">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="24" id="TGt-He-Aac"/>
+                            <constraint firstAttribute="width" constant="83" id="tLx-sl-wEY"/>
+                        </constraints>
+                        <connections>
+                            <action selector="doReloadFile:" target="Voe-Tx-rLC" id="UgI-o3-rb7"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="f2a-59-pv7" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="PY0-yp-q30" secondAttribute="trailing" constant="8" symbolic="YES" id="6CR-xc-7sH"/>
                     <constraint firstItem="cUv-yG-ROn" firstAttribute="top" secondItem="9tz-gF-DdE" secondAttribute="bottom" constant="20" id="9Y8-v3-VfM"/>
                     <constraint firstAttribute="trailing" secondItem="f2a-59-pv7" secondAttribute="trailing" constant="20" symbolic="YES" id="CFz-ED-Zjx"/>
+                    <constraint firstItem="f2a-59-pv7" firstAttribute="leading" secondItem="xXF-zr-IHi" secondAttribute="trailing" constant="8" id="CuA-dy-EpB"/>
                     <constraint firstItem="9tz-gF-DdE" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="HqM-Sb-z31"/>
                     <constraint firstItem="9tz-gF-DdE" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="ICR-BW-byx"/>
                     <constraint firstItem="PY0-yp-q30" firstAttribute="top" secondItem="cUv-yG-ROn" secondAttribute="bottom" constant="6" symbolic="YES" id="Ju4-iW-DsC"/>
                     <constraint firstItem="PY0-yp-q30" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="SKt-Yq-a9G"/>
+                    <constraint firstAttribute="bottom" secondItem="xXF-zr-IHi" secondAttribute="bottom" constant="18" id="XRf-QO-Xpo"/>
                     <constraint firstAttribute="trailing" secondItem="9tz-gF-DdE" secondAttribute="trailing" id="dp6-mb-FmP"/>
                     <constraint firstItem="cUv-yG-ROn" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="p2F-wZ-QCI"/>
                     <constraint firstAttribute="bottom" secondItem="f2a-59-pv7" secondAttribute="bottom" constant="20" symbolic="YES" id="r8O-uD-U7X"/>
@@ -248,7 +272,7 @@
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="cUv-yG-ROn" secondAttribute="trailing" constant="20" symbolic="YES" id="uoj-4f-PSC"/>
                 </constraints>
             </view>
-            <point key="canvasLocation" x="290" y="458"/>
+            <point key="canvasLocation" x="304" y="680"/>
         </window>
     </objects>
 </document>

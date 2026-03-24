@@ -20,16 +20,29 @@ class AppDelegate:  NSObject,
     @IBOutlet weak var previewScrollView: NSScrollView!
     @IBOutlet weak var modeButton: NSButton!
     @IBOutlet weak var indentButton: NSButton!
+    @IBOutlet weak var reloadButton: NSButton!
+    @IBOutlet weak var reloadMenuItem: NSMenuItem!
 
 
     // MARK: - Private Properies
 
     private var openDialog: NSOpenPanel? = nil
-    private var currentURL: URL? = nil
+    private var _currentURL: URL? = nil
     private var currentDirURL: URL? = nil
     private var renderAsDark: Bool = true
     private var renderIndents: Bool = false
     private var common: Common? = nil
+
+    private var currentURL: URL? {
+        get {
+            return self._currentURL
+        }
+        set(new) {
+            self._currentURL = new
+            self.reloadButton.isEnabled = new != nil
+            self.reloadMenuItem.isEnabled = new != nil
+        }
+    }
 
     
     // MARK: - Class Lifecycle Functions
@@ -39,6 +52,8 @@ class AppDelegate:  NSObject,
         // Set the mode button
         self.modeButton.state = self.renderAsDark ? .on : .off
         self.indentButton.state = self.renderIndents ? .on : .off
+        self.reloadButton.isEnabled = false
+        self.reloadMenuItem.isEnabled = false
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.doRender),
@@ -84,8 +99,14 @@ class AppDelegate:  NSObject,
 
         self.openDialog = nil
     }
-    
-    
+
+
+    @IBAction
+    private func doReloadFile(_ sender: Any) {
+
+        doRender(Notification(name: Notification.Name(rawValue: "")))
+    }
+
     @IBAction
     private func doSwitchMode(_ sender: Any) {
 
