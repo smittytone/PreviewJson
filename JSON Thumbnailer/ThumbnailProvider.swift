@@ -37,19 +37,18 @@ class ThumbnailProvider: QLThumbnailProvider {
         do {
             // Get the file contents as a string, making sure it's not cached
             // as we're not going to read it again any time soon
-            let data: Data = try Data(contentsOf: request.fileURL, options: [.uncached])
-
-            let fh = try FileHandle(forReadingFrom: request.fileURL)
-            let data2 = try fh.read(upToCount: BUFFOON_CONSTANTS.MAX_FEEDBACK_SIZE)
-            try fh.close()
-
+            //let data: Data = try Data(contentsOf: request.fileURL, options: [.uncached])
+            let jsonFileHandle = try FileHandle(forReadingFrom: request.fileURL)
+            try jsonFileHandle.seek(toOffset: 0)
+            let data = try jsonFileHandle.read(upToCount: BUFFOON_CONSTANTS.MAX_THUMBNAIL_READ_SIZE)
+            try jsonFileHandle.close()
 
             // Get the string's encoding, or fail back to .utf8
-            let encoding: String.Encoding = data.stringEncoding ?? .utf8
+            let encoding: String.Encoding = data!.stringEncoding ?? .utf8
 
             // Check the string's encoding generates a valid string
             // NOTE This may not be necessary and so may be removed
-            guard let json: String = String(data: data2!, encoding: encoding) else {
+            guard let json: String = String(data: data!, encoding: encoding) else {
                 handler(nil, ThumbnailerError.badFileLoad(request.fileURL.path))
                 return
             }
