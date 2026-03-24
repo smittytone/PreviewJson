@@ -262,13 +262,26 @@ final class Common {
             return nil
         }
 
+        // Size the font to fit and shift it to the text cap height (ie. more centred)
         image.size = NSMakeSize(image.size.width * self.settings.fontSize / image.size.height, self.settings.fontSize)
+        let font = self.scalarAttributes[.font] as! NSFont
+        insetImage.bounds = CGRect(x: 0, y: (font.capHeight - image.size.height).rounded() / 2, width: image.size.width, height: image.size.height)
+
+        // Add the attachment and return the attributed string
         let imageAsString = NSMutableAttributedString(string: " ")
         imageAsString.append(NSMutableAttributedString(attachment: insetImage))
         imageAsString.addAttributes(self.scalarAttributes, range: NSRange(location: 0, length: imageAsString.length))
         return imageAsString
     }
 
+    /*
+
+     let iconImage = UIImage(named: "icon.png")!
+     var icon = NSTextAttachment()
+     icon.bounds = CGRect(x: 0, y: (titleFont.capHeight - iconImage.size.height).rounded() / 2, width: iconImage.size.width, height: iconImage.size.height)
+     icon.image = iconImage
+
+     */
 
     /**
      Assemble an ordered sequence of Paragraphs from a JSON entity.
