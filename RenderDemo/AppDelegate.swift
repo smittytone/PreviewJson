@@ -187,7 +187,7 @@ class AppDelegate:  NSObject,
                     let jsonDataCoded: Data = jsonStringFalse.data(using: encoding) ?? data
                     let jsonAttString: NSAttributedString = common.getAttributedString(jsonDataCoded)
                      */
-                    let jsonAttString: NSAttributedString = self.common!.getAttStr(fromJson: jsonString)
+                    let jsonAttString: NSAttributedString = self.common!.getAttributedString(fromJson: jsonString)
                     self.previewTextView.backgroundColor = self.common!.doShowLightBackground ? NSColor(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
                     self.previewScrollView.scrollerKnobStyle = self.common!.doShowLightBackground ? .dark : .light
 

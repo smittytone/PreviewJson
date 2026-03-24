@@ -164,8 +164,10 @@ struct BUFFOON_CONSTANTS {
     // FROM 2.0.0
     static let MAX_FEEDBACK_SIZE                = 512
     static let MAX_THUMBNAIL_READ_SIZE          = 2048
+    static let BASE_TAB_SIZE_PT                 = CGFloat(20.0)
+    static let BASE_PARA_SPACING_PT             = CGFloat(0.15)
 
-#if DEBUG
+#if DEBUG2
     static let CR                               = "↵\n"
     static let COLLECTION_SPACER                = "⟼\n"
 #else

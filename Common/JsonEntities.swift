@@ -10,7 +10,7 @@ import Foundation
 
 
 /*
- JSON Marker types.
+ JSON Marker types. TO REMOVE
  */
 public enum JSONMarkType {
 
@@ -46,14 +46,12 @@ public class Paragraph {
     var text: NSMutableAttributedString? = nil      // The paragraph's styled text
     var depth: Int = 0                              // The paragraph's inset level
     var keyLength: CGFloat = 0.0                    // If the paragraph is prefixed with a key, it's length in points
-    var marker: JSONMarkType = .none                // Should the paragraph be presented with a marker, and of what type
 
-    init(text: NSMutableAttributedString? = nil, depth: Int = 0, keyLength: CGFloat = 0.0, marker: JSONMarkType = .none) {
+    init(text: NSMutableAttributedString? = nil, depth: Int = 0, keyLength: CGFloat = 0.0) {
 
         self.text = text
         self.depth = depth
         self.keyLength = keyLength
-        self.marker = marker
     }
 }
 

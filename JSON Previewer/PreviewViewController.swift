@@ -78,7 +78,7 @@ class PreviewViewController: NSViewController,
                     self.renderTextView.textContainerInset = previewSize
                 }
 
-                let jsonAttString: NSAttributedString = common.getAttStr(fromJson: jsonString)
+                let jsonAttString: NSAttributedString = common.getAttributedString(fromJson: jsonString)
                 if let renderTextStorage: NSTextStorage = self.renderTextView.textStorage {
                     /*
                      * NSTextStorage subclasses that return true from the fixesAttributesLazily

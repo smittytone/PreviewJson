@@ -11,7 +11,6 @@
 		3B1FA41F28C1242E001DA63C /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B67EBA328BCB3610048F8AE /* Quartz.framework */; };
 		3B1FA42228C1242E001DA63C /* ThumbnailProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B1FA42128C1242E001DA63C /* ThumbnailProvider.swift */; };
 		3B1FA42728C1242E001DA63C /* JSON Thumbnailer.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3B1FA41C28C1242E001DA63C /* JSON Thumbnailer.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		3B1FA42B28C124A1001DA63C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9428BCB0A20048F8AE /* Constants.swift */; };
 		3B1FA42C28C124F4001DA63C /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBB828BCB5D70048F8AE /* Common.swift */; };
 		3B300AB32F6D6427000D70E7 /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC233892A969516005C3015 /* REPLACE_WITH_YOUR_CODES.swift */; };
 		3B300AB42F6D7916000D70E7 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E98962F6C620000477E96 /* Entities.swift */; };
@@ -41,7 +40,6 @@
 		3B67EB6528BCAEEA0048F8AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB6428BCAEEA0048F8AE /* AppDelegate.swift */; };
 		3B67EB6A28BCAEEB0048F8AE /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B67EB6828BCAEEB0048F8AE /* MainMenu.xib */; };
 		3B67EB7528BCAEEB0048F8AE /* PreviewJsonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB7428BCAEEB0048F8AE /* PreviewJsonTests.swift */; };
-		3B67EB9528BCB0A20048F8AE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9428BCB0A20048F8AE /* Constants.swift */; };
 		3B67EB9828BCB1DF0048F8AE /* PMFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9728BCB1DF0048F8AE /* PMFont.swift */; };
 		3B67EB9928BCB1DF0048F8AE /* PMFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9728BCB1DF0048F8AE /* PMFont.swift */; };
 		3B67EBA428BCB3610048F8AE /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B67EBA328BCB3610048F8AE /* Quartz.framework */; };
@@ -49,12 +47,11 @@
 		3B67EBAC28BCB3610048F8AE /* PreviewViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B67EBAA28BCB3610048F8AE /* PreviewViewController.xib */; };
 		3B67EBB128BCB3610048F8AE /* JSON Previewer.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3B67EBA128BCB3610048F8AE /* JSON Previewer.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3B67EBB928BCB5D70048F8AE /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBB828BCB5D70048F8AE /* Common.swift */; };
-		3B67EBBA28BCB61B0048F8AE /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9428BCB0A20048F8AE /* Constants.swift */; };
+		3B6F9B812F72969B001FC2D9 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 3B6F9B802F72969B001FC2D9 /* AppIcon.icon */; };
 		3BA7AC162A6ABF8700457247 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA7AC152A6ABF8700457247 /* AppDelegate.swift */; };
 		3BA7AC182A6ABF8800457247 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3BA7AC172A6ABF8800457247 /* Assets.xcassets */; };
 		3BA7AC1B2A6ABF8800457247 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3BA7AC192A6ABF8800457247 /* MainMenu.xib */; };
 		3BA7AC202A6ABFE300457247 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EBB828BCB5D70048F8AE /* Common.swift */; };
-		3BA7AC212A6AC00B00457247 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67EB9428BCB0A20048F8AE /* Constants.swift */; };
 		3BB324632F6D889500A2DB45 /* JsonEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E988E2F6C5ADC00477E96 /* JsonEntities.swift */; };
 		3BB324642F6D88E600A2DB45 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E98962F6C620000477E96 /* Entities.swift */; };
 		3BB324652F6D88E600A2DB45 /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5E98962F6C620000477E96 /* Entities.swift */; };
@@ -138,7 +135,6 @@
 		3B67EB7028BCAEEB0048F8AE /* PreviewJsonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PreviewJsonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B67EB7428BCAEEB0048F8AE /* PreviewJsonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewJsonTests.swift; sourceTree = "<group>"; };
 		3B67EB7A28BCAEEB0048F8AE /* PreviewJsonUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PreviewJsonUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		3B67EB9428BCB0A20048F8AE /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3B67EB9728BCB1DF0048F8AE /* PMFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PMFont.swift; sourceTree = "<group>"; };
 		3B67EBA128BCB3610048F8AE /* JSON Previewer.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "JSON Previewer.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B67EBA328BCB3610048F8AE /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
@@ -148,6 +144,7 @@
 		3B67EBAE28BCB3610048F8AE /* JSON_Previewer.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = JSON_Previewer.entitlements; sourceTree = "<group>"; };
 		3B67EBB828BCB5D70048F8AE /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		3B6F5688293625E900FE5189 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		3B6F9B802F72969B001FC2D9 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; name = AppIcon.icon; path = "../../Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewJson/AppIcon.icon"; sourceTree = "<group>"; };
 		3BA7AC132A6ABF8700457247 /* RenderDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RenderDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BA7AC152A6ABF8700457247 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3BA7AC172A6ABF8800457247 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -275,7 +272,6 @@
 				3BE355B928BCD07300523296 /* Info.plist */,
 				3B67EB6B28BCAEEB0048F8AE /* PreviewJson.entitlements */,
 				3BC233822A969464005C3015 /* YOU MUST SUPPLY */,
-				3B67EB9428BCB0A20048F8AE /* Constants.swift */,
 			);
 			path = PreviewJson;
 			sourceTree = "<group>";
@@ -332,6 +328,7 @@
 		3BC233822A969464005C3015 /* YOU MUST SUPPLY */ = {
 			isa = PBXGroup;
 			children = (
+				3B6F9B802F72969B001FC2D9 /* AppIcon.icon */,
 				3BC233872A9694E1005C3015 /* REPLACE_WITH_YOUR_FUNCTIONS.swift */,
 				3BC233892A969516005C3015 /* REPLACE_WITH_YOUR_CODES.swift */,
 				3BC233832A9694B8005C3015 /* Assets.xcassets */,
@@ -519,6 +516,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BC233862A9694BF005C3015 /* new in Resources */,
+				3B6F9B812F72969B001FC2D9 /* AppIcon.icon in Resources */,
 				3BC233842A9694B8005C3015 /* Assets.xcassets in Resources */,
 				3B67EB6A28BCAEEB0048F8AE /* MainMenu.xib in Resources */,
 			);
@@ -567,7 +565,6 @@
 				3B5E98922F6C5BD000477E96 /* JsonEntities.swift in Sources */,
 				3BC2338C2A969517005C3015 /* REPLACE_WITH_YOUR_CODES.swift in Sources */,
 				3B1FA42C28C124F4001DA63C /* Common.swift in Sources */,
-				3B1FA42B28C124A1001DA63C /* Constants.swift in Sources */,
 				3B5E98B02F6D4ADE00477E96 /* Extensions.swift in Sources */,
 				3B5E98A52F6C697800477E96 /* PJSettings.swift in Sources */,
 				3B1FA42228C1242E001DA63C /* ThumbnailProvider.swift in Sources */,
@@ -594,7 +591,6 @@
 				3B5E98972F6C620300477E96 /* Entities.swift in Sources */,
 				3B5E989B2F6C64E700477E96 /* PMTabManager.swift in Sources */,
 				3BB324632F6D889500A2DB45 /* JsonEntities.swift in Sources */,
-				3B67EB9528BCB0A20048F8AE /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -621,7 +617,6 @@
 				3BB324642F6D88E600A2DB45 /* Entities.swift in Sources */,
 				3B5E988F2F6C5AE600477E96 /* JsonEntities.swift in Sources */,
 				3BC2338B2A969517005C3015 /* REPLACE_WITH_YOUR_CODES.swift in Sources */,
-				3B67EBBA28BCB61B0048F8AE /* Constants.swift in Sources */,
 				3B67EBA728BCB3610048F8AE /* PreviewViewController.swift in Sources */,
 				3B5E98B12F6D4ADE00477E96 /* Extensions.swift in Sources */,
 				3B5E98A62F6C697800477E96 /* PJSettings.swift in Sources */,
@@ -641,7 +636,6 @@
 				3B300AB32F6D6427000D70E7 /* REPLACE_WITH_YOUR_CODES.swift in Sources */,
 				3B5E98A42F6C697800477E96 /* PJSettings.swift in Sources */,
 				3BA7AC162A6ABF8700457247 /* AppDelegate.swift in Sources */,
-				3BA7AC212A6AC00B00457247 /* Constants.swift in Sources */,
 				3B5E98AE2F6D415100477E96 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -706,7 +700,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 271;
+				CURRENT_PROJECT_VERSION = 272;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -737,7 +731,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 271;
+				CURRENT_PROJECT_VERSION = 272;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -895,7 +889,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 271;
+				CURRENT_PROJECT_VERSION = 272;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -932,7 +926,7 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 271;
+				CURRENT_PROJECT_VERSION = 272;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1041,7 +1035,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 271;
+				CURRENT_PROJECT_VERSION = 272;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1072,7 +1066,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 271;
+				CURRENT_PROJECT_VERSION = 272;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = Y5J3K52DNA;
 				ENABLE_HARDENED_RUNTIME = YES;

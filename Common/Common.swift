@@ -59,8 +59,7 @@ final class Common {
     // JSON string attributes...
     private var keyAttributes:          [NSAttributedString.Key: Any] = [:]
     private var scalarAttributes:       [NSAttributedString.Key: Any] = [:]
-    private var markStartAttributes:    [NSAttributedString.Key: Any] = [:]
-    private var markEndAttributes:      [NSAttributedString.Key: Any] = [:]
+    private var markAttributes:         [NSAttributedString.Key: Any] = [:]
     // FROM 1.1.0
     private var stringAttributes:       [NSAttributedString.Key: Any] = [:]
     private var specialAttributes:      [NSAttributedString.Key: Any] = [:]
@@ -120,12 +119,7 @@ final class Common {
             .font: font
         ]
 
-        self.markStartAttributes = [
-            .foregroundColor: NSColor.hexToColour(self.settings.displayColours[BUFFOON_CONSTANTS.COLOUR_IDS.MARKS] ?? BUFFOON_CONSTANTS.HEX_COLOUR.MARKS),
-            .font: font
-        ]
-
-        self.markEndAttributes = [
+        self.markAttributes = [
             .foregroundColor: NSColor.hexToColour(self.settings.displayColours[BUFFOON_CONSTANTS.COLOUR_IDS.MARKS] ?? BUFFOON_CONSTANTS.HEX_COLOUR.MARKS),
             .font: font
         ]
@@ -193,10 +187,18 @@ final class Common {
 
     // MARK: - The Primary Function
 
-    /*
+    /**
+     Entry point for preview and thumbnail generation. Converts a JSON string onto a
+     styled NSAttributedString.
 
+     REDESIGNED 2.0.0
+
+     - Parameters:
+        - fromJson: The JSON to render.
+
+     - Returns: A styled attributed string.
      */
-    public func getAttStr(fromJson json: String) -> NSAttributedString {
+    public func getAttributedString(fromJson json: String) -> NSAttributedString {
 
         // Convert the JSON string into JSON entities, then convert them
         // into a series of paragraph objects
@@ -206,6 +208,7 @@ final class Common {
         prettify(parser.parseValue()!, 0, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), previewParagraphs)
 
         // These are required for tabulation
+        /*
         var maxDepth = -1
         var maxKeyWidths: [Int: CGFloat] = [:]
         for i in 0..<previewParagraphs.count {
@@ -220,31 +223,21 @@ final class Common {
                 maxKeyWidths[paragraph.depth] = paragraph.keyLength
             }
         }
+         */
 
         // Assemble the final attributed string
         // NOTE Do with an autorelease pool?
         for i in 0..<previewParagraphs.count {
             let paragraph = previewParagraphs.object(at: i) as! Paragraph
             if var paragraphText = paragraph.text {
-                let inset: CGFloat = CGFloat(paragraph.depth) * 20.0 * CGFloat(self.settings.indentSize)
-
-                if self.settings.showJsonMarks && paragraph.marker != .none {
-                    let marker = paragraph.marker.string()
-                    let attrMarker = NSMutableAttributedString(string: marker, attributes: self.markStartAttributes)
-
-                    if i == 0 {
-                        attrMarker.append(paragraphText)
-                        paragraphText = attrMarker
-                    } else {
-                        paragraphText.append(attrMarker)
-                    }
-                }
+                let inset: CGFloat = CGFloat(paragraph.depth) * BUFFOON_CONSTANTS.BASE_TAB_SIZE_PT * CGFloat(self.settings.indentSize)
 
                 if paragraphText.length > 0 {
                     // Instantiate a generic paragraph style
                     let paragraphStyle = NSMutableParagraphStyle()
                     paragraphStyle.firstLineHeadIndent = inset
                     paragraphStyle.alignment = .left
+                    paragraphStyle.paragraphSpacing = self.settings.fontSize * BUFFOON_CONSTANTS.BASE_PARA_SPACING_PT
 
                     if paragraphText.string.hasPrefix("*") {
                         // Render an empty spacer line
@@ -309,20 +302,31 @@ final class Common {
         - depth:      The level at which the entity is nested.
         - prefix:     Any text to which the rendered JSON entity should be appended.
         - paragraphs: The array of paragraphs to which the generated one will be added.
-        - marker:     A key-assigned JSON marker type.
      */
 
-    private func prettify(_ json: JSONValue, _ depth: Int = 0, _ prefix: NSMutableAttributedString, _ paragraphs: NSMutableArray, _ marker: JSONMarkType = .none) {
+    private func prettify(_ json: JSONValue, _ depth: Int = 0, _ prefix: NSMutableAttributedString, _ paragraphs: NSMutableArray) {
 
         // Get the point size of the rendered key if there is one
         let keyLength = prefix.length > 0 ? prefix.width : 0.0
 
+        var inset = depth
+        let showMarks = self.settings.showJsonMarks
+
         // Match the JSON entity by type to generate paragraph styled text
         if json.objectValue != nil {
+            if showMarks {
+                // Start of an object, so mark open on a fresh line
+                let markString = NSMutableAttributedString(string: "{", attributes: self.markAttributes)
+                paragraphs.add(Paragraph(text: markString, depth: inset, keyLength: 0.0))
+
+                // And show collection's contents on next column
+                inset += 1
+            }
+
             // For an object (dictionary), enumerate the keys and their values
-            for (index, keyValuePair) in json.objectValue!.enumerated() {
-                let key = keyValuePair.0
-                let value = keyValuePair.1
+            for (key, value) in json.objectValue! {
+                //let key = keyValuePair.0
+                //let value = keyValuePair.1
 
                 // Is the value a collection?
                 let valueIsObject: Bool = value.objectValue != nil
@@ -332,31 +336,35 @@ final class Common {
                 let keyString = NSMutableAttributedString(string: key.description + " ", attributes: self.keyAttributes)
                 let keyLength = keyString.width
 
-                // Set the JSON marker type
-                var marker: JSONMarkType = .none
-                if index == 0 {
-                    // First value in the list
-                    marker = .objectOpen
-                } else if index == json.objectValue!.count - 1 {
-                    // Last value in the list
-                    marker = .objectClose
-                }
-
                 // Now render the value
                 if valueIsObject || valueIsArray {
                     // The value is a collection type
-                    marker = valueIsArray ? .arrayOpen : .objectOpen
-                    paragraphs.add(Paragraph(text: keyString, depth: depth, keyLength: keyLength, marker: marker))
-                    prettify(value, depth + 1, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs)
+                    paragraphs.add(Paragraph(text: keyString, depth: inset, keyLength: keyLength))
+                    prettify(value, (showMarks ? inset : inset + 1), NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs)
                 } else {
                     // The value is a scalar
                     // NOTE The key has a trailing space, so no extra indent is required for the scalar value
-                    prettify(value, depth, keyString, paragraphs, marker)
+                    prettify(value, inset, keyString, paragraphs)
                 }
+            }
+
+            if self.settings.showJsonMarks {
+                // Start of an object, so mark open on a fresh line
+                let markString = NSMutableAttributedString(string: "}", attributes: self.markAttributes)
+                paragraphs.add(Paragraph(text: markString, depth: inset - 1 , keyLength: 0.0))
             }
 
             return
         } else if json.arrayValue != nil {
+            if self.settings.showJsonMarks {
+                // Start of an object, so mark open on a fresh line
+                let markString = NSMutableAttributedString(string: "[", attributes: self.markAttributes)
+                paragraphs.add(Paragraph(text: markString, depth: inset, keyLength: 0.0))
+
+                // Show array contents on next column
+                inset += 1
+            }
+
             // For aan array, enumerate the values
             // NOTE Should be only one of each, but value may be an object or array
             for (index, value) in json.arrayValue!.enumerated() {
@@ -364,36 +372,29 @@ final class Common {
                 let valueIsObject: Bool = value.objectValue != nil
                 let valueIsArray: Bool = value.arrayValue != nil
 
-                // Set the JSON marker type
-                var marker: JSONMarkType = .none
-                if index == 0 {
-                    marker = .arrayOpen
-                } else if index == json.arrayValue!.count - 1 {
-                    marker = .arrayClose
-                }
-
                 // Render the value
                 if valueIsObject || valueIsArray {
                     // The value is a collection type
-                    marker = valueIsArray ? .arrayOpen : .objectOpen
                     if prefix.length > 0 {
-                        paragraphs.add(Paragraph(text: prefix, depth: depth, marker: marker))
+                        paragraphs.add(Paragraph(text: prefix, depth: inset))
                     }
 
-                    prettify(value, depth + 1, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs)
-
-                    // Grab the most tail-end paragraph and add a close marker
-                    let lastPara = paragraphs.lastObject as! Paragraph
-                    lastPara.marker = valueIsArray ? .arrayClose : .objectClose
+                    prettify(value, (showMarks ? inset : inset + 1), NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs)
                 } else {
                     // The value is a scalar
-                    prettify(value, depth, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs, marker)
+                    prettify(value, inset, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs)
                 }
 
                 // Add a narrow spacer line after all collections except the last one in the array
                 if index < json.arrayValue!.count - 1 && (valueIsArray || valueIsObject) {
-                    paragraphs.add(Paragraph(text: self.emptyString, depth: depth))
+                    paragraphs.add(Paragraph(text: self.emptyString, depth: inset))
                 }
+            }
+
+            if self.settings.showJsonMarks {
+                // Start of an object, so mark open on a fresh line
+                let markString = NSMutableAttributedString(string: "]", attributes: self.markAttributes)
+                paragraphs.add(Paragraph(text: markString, depth: inset - 1 , keyLength: 0.0))
             }
 
             return
@@ -431,7 +432,7 @@ final class Common {
         }
 
         // Stash the paragraph
-        paragraphs.add(Paragraph(text: prefix, depth: depth, keyLength: keyLength, marker: marker))
+        paragraphs.add(Paragraph(text: prefix, depth: depth, keyLength: keyLength))
     }
 
 

@@ -65,7 +65,7 @@ class ThumbnailProvider: QLThumbnailProvider {
 
             // Instantiate an NSTextField to display the NSAttributedString render of the JSON
             let jsonTextField: NSTextField = NSTextField(frame: jsonFrame)
-            jsonTextField.attributedStringValue = common.getAttStr(fromJson: json)
+            jsonTextField.attributedStringValue = common.getAttributedString(fromJson: json)
 
             // FROM 2.0.0
             // From macOS 26.1, make sure thumbnail backgrounds remain white
