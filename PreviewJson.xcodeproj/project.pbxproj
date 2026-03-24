@@ -897,7 +897,7 @@
 				INFOPLIST_FILE = PreviewJson/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = PreviewJson;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022, Tony Smith (@smittytone)";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026, Tony Smith (@smittytone)";
 				INFOPLIST_KEY_NSMainNibFile = MainMenu;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -934,7 +934,7 @@
 				INFOPLIST_FILE = PreviewJson/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = PreviewJson;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022, Tony Smith (@smittytone)";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026, Tony Smith (@smittytone)";
 				INFOPLIST_KEY_NSMainNibFile = MainMenu;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (

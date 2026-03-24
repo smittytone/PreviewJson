@@ -3,7 +3,7 @@
  *  PreviewJson
  *
  *  Created by Tony Smith on 29/08/2023.
- *  Copyright © 2025 Tony Smith. All rights reserved.
+ *  Copyright © 2026 Tony Smith. All rights reserved.
  */
 
 
@@ -113,7 +113,7 @@ class PreviewViewController: NSViewController,
         }
 
         // Display the error locally in the window
-        showError(reportError!.userInfo[NSLocalizedDescriptionKey] as! String)
+        //showError(reportError!.userInfo[NSLocalizedDescriptionKey] as! String)
 
         // Call the QLPreviewingController indicating an error
         // (argumnet is not nil)
@@ -128,14 +128,14 @@ class PreviewViewController: NSViewController,
      
      - parameters:
         - errString: The error message.
-     */
+     
     func showError(_ errString: String) {
 
         NSLog("BUFFOON \(errString)")
         self.renderTextScrollView.isHidden = true
         self.view.display()
     }
-
+    */
 
     /**
      Generate an NSError for an internal error, specified by its code.
