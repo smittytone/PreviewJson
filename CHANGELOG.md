@@ -4,6 +4,7 @@
     - Bring UI into line with other PreviewApps.
     - Rebuild rendering engine from the ground up.
     - Preview and thumbnail respect the order of keys and values in the source file.
+    - Preview text is now selectable, and can be copied.
     - Engine can make a stab at rendering bad JSON.
     - Support macOS Tahoe.
     - Migrate to Swift Concurrency.
