@@ -16,7 +16,9 @@ final class Common {
 
     // MARK: - Definitions
 
-    // String attribute categories
+    /* String attribute categories
+
+     UNUSED FROM 2.0.0
     enum AttributeType {
         case Key
         case Scalar
@@ -27,45 +29,42 @@ final class Common {
         case MarkEnd
         case Custom
     }
+     */
 
 
     // MARK: - Public Properties
 
-    var doShowLightBackground: Bool                 = false
-    // FROM 1.1.0
-    var doUseSpecialIndentChar: Bool                = false
+    public var doShowLightBackground: Bool          = false
     // FROM 2.0.0
-    var settings: PJSettings                        = PJSettings()
+    public var settings: PJSettings                 = PJSettings()
 
 
     // MARK: - Private Properties
     
-    private var isThumbnail:Bool                    = false
-    private var maxKeyLengths: [Int]                = [0,0,0,0,0,0,0,0,0,0,0,0]
+    private var isThumbnail: Bool                                   = false
+    private var maxKeyLengths: [Int]                                = [0,0,0,0,0,0,0,0,0,0,0,0]
     // String artifacts...
-    private var hr: NSMutableAttributedString       = NSMutableAttributedString(string: "")
-    private var cr: NSAttributedString              = NSAttributedString(string: "")
+    private var hr: NSMutableAttributedString                       = NSMutableAttributedString(string: "")
+    private var cr: NSMutableAttributedString                       = NSMutableAttributedString(string: "")
     // FROM 1.0.2
-    private var lineCount: Int                      = 0
+    private var lineCount: Int                                      = 0
     // FROM 1.1.0
-    private var sortKeys: Bool                      = true
-    private var spacer: String                      = " "
-    private var displayColours: [String:String]     = [:]
+    private var displayColours: [String:String]                     = [:]
     // FROM 1.1.1
-    private var debugSpacer: String                 = "."
+    private var debugSpacer: String                                 = "."
     // FROM 2.0.0
-    private var emptyString: NSMutableAttributedString = NSMutableAttributedString(string: "*")
+    private var emptyString: NSMutableAttributedString              = NSMutableAttributedString(string: "*")
 
     // JSON string attributes...
-    private var keyAttributes:          [NSAttributedString.Key: Any] = [:]
-    private var scalarAttributes:       [NSAttributedString.Key: Any] = [:]
-    private var markAttributes:         [NSAttributedString.Key: Any] = [:]
+    private var keyAttributes: [NSAttributedString.Key: Any]        = [:]
+    private var scalarAttributes: [NSAttributedString.Key: Any]     = [:]
+    private var markAttributes: [NSAttributedString.Key: Any]       = [:]
     // FROM 1.1.0
-    private var stringAttributes:       [NSAttributedString.Key: Any] = [:]
-    private var specialAttributes:      [NSAttributedString.Key: Any] = [:]
+    private var stringAttributes: [NSAttributedString.Key: Any]     = [:]
+    private var specialAttributes: [NSAttributedString.Key: Any]    = [:]
     // FROM 1.1.1
-    private var debugAttributes:        [NSAttributedString.Key: Any] = [:]
-    private var lineAttributes:         [NSAttributedString.Key: Any] = [:]
+    private var debugAttributes: [NSAttributedString.Key: Any]      = [:]
+    private var lineAttributes: [NSAttributedString.Key: Any]       = [:]
 
 
     /*
@@ -100,15 +99,6 @@ final class Common {
         let useLightMode: Bool = isThumbnail || self.settings.doReverseMode
 
         // Set up the attributed string components we may use during rendering
-        let endMarkParaStyle: NSMutableParagraphStyle = NSMutableParagraphStyle()
-        endMarkParaStyle.paragraphSpacing = self.settings.fontSize * 0.25
-        endMarkParaStyle.tabStops = []
-        for i in stride(from: 10.0, through: 120.0, by: 10.0) {
-            endMarkParaStyle.tabStops.append(NSTextTab(type: .leftTabStopType, location: i))
-        }
-
-        endMarkParaStyle.defaultTabInterval = CGFloat(self.settings.indentSize * 10) // ASSUME NO TABLULATION!!!!
-
         self.keyAttributes = [
             .foregroundColor: NSColor.hexToColour(self.settings.displayColours[BUFFOON_CONSTANTS.COLOUR_IDS.KEYS] ?? BUFFOON_CONSTANTS.HEX_COLOUR.KEYS),
             .font: font
@@ -124,22 +114,6 @@ final class Common {
             .font: font
         ]
 
-        // NOTE This no longer provides a full-width rule -- seek a fix
-
-        self.hr = NSMutableAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
-                                     attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
-                                                  .strikethroughColor: (useLightMode ? NSColor.black : NSColor.white)])
-
-        // FROM 2.0.0
-        // New, TextKit 2-friendly horizontal rule
-
-
-
-        self.cr = NSAttributedString(string: BUFFOON_CONSTANTS.CR, attributes: scalarAttributes)
-
-        // FRON 1.1.0
-        let stringParaStyle = endMarkParaStyle
-        stringParaStyle.headIndent = CGFloat(self.settings.indentSize) * 20.0
         self.stringAttributes = [
             .foregroundColor: NSColor.hexToColour(self.settings.displayColours[BUFFOON_CONSTANTS.COLOUR_IDS.STRINGS] ?? BUFFOON_CONSTANTS.HEX_COLOUR.STRINGS),
             .font: font
@@ -150,18 +124,29 @@ final class Common {
             .font: font
         ]
 
+#if DEBUG
+        self.debugAttributes = [
+            .foregroundColor: NSColor.hexToColour("444444FF"),
+            .font: font
+        ]
+#endif
+
+
+        // NOTE This no longer provides a full-width rule -- seek a fix
+
+        self.hr = NSMutableAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
+                                     attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
+                                                  .strikethroughColor: (useLightMode ? NSColor.black : NSColor.white)])
+
+        // FROM 2.0.0
+        // New, TextKit 2-friendly horizontal rule
+        self.cr = NSMutableAttributedString(string: BUFFOON_CONSTANTS.CR, attributes: scalarAttributes)
+
+        // FRON 1.1.0
         self.lineAttributes = [
             .foregroundColor: NSColor.labelColor,
             .font: NSFont.systemFont(ofSize: 6.0)
         ]
-
-#if DEBUG
-        self.debugAttributes = [
-            .foregroundColor: NSColor.hexToColour("444444FF"),
-            .font: font,
-            .paragraphStyle: endMarkParaStyle
-        ]
-#endif
     }
 
 
@@ -169,19 +154,12 @@ final class Common {
      Update certain style variables on a UI mode switch.
      FROM 1.1.0
 
-     This is used by render demo app.
+     THIS IS USED SOLELY BY THE RENDER DEMO APP.
      */
     func resetStylesOnModeChange() {
 
         // Set up the attributed string components we may use during rendering
-        /*
-        self.hr = NSAttributedString(string: "\n\u{00A0}\u{0009}\u{00A0}\n\n",
-                                     attributes: [.strikethroughStyle: NSUnderlineStyle.thick.rawValue,
-                                                  .strikethroughColor: self.doShowLightBackground ? NSColor.black : NSColor.white])
-         */
-
         self.scalarAttributes[.foregroundColor]  = self.doShowLightBackground ? NSColor.black : NSColor.labelColor
-        self.spacer = self.doUseSpecialIndentChar ? "-" : " "
     }
 
 
@@ -290,7 +268,7 @@ final class Common {
         imageAsString.addAttributes(self.scalarAttributes, range: NSRange(location: 0, length: imageAsString.length))
         return imageAsString
     }
-    
+
 
     /**
      Assemble an ordered sequence of Paragraphs from a JSON entity.
@@ -325,9 +303,6 @@ final class Common {
 
             // For an object (dictionary), enumerate the keys and their values
             for (key, value) in json.objectValue! {
-                //let key = keyValuePair.0
-                //let value = keyValuePair.1
-
                 // Is the value a collection?
                 let valueIsObject: Bool = value.objectValue != nil
                 let valueIsArray: Bool  = value.arrayValue != nil
@@ -714,25 +689,3 @@ final class Common {
     }
 
 }
-
-
-
-
-/**
-Get the encoding of the string formed from data.
-
-- Returns: The string's encoding or nil.
-*/
-
-extension Data {
-    
-    var stringEncoding: String.Encoding? {
-        guard case let rawValue = NSString.stringEncoding(for: self,
-                                                          encodingOptions: nil,
-                                                          convertedString: nil,
-                                                          usedLossyConversion: nil), rawValue != 0 else { return nil }
-        return .init(rawValue: rawValue)
-    }
-}
-
-
