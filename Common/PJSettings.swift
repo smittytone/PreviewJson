@@ -16,7 +16,7 @@ import Foundation
 
 class PJSettings {
 
-    var fontSize: CGFloat                   = CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE)
+    var fontSize: CGFloat                   = CGFloat(BUFFOON_CONSTANTS.PREVIEW_SIZE.FONT_SIZE)
     var fontName: String                    = BUFFOON_CONSTANTS.BODY_FONT_NAME
     var doReverseMode: Bool                 = false
     var showJsonMarks: Bool                 = true
@@ -134,7 +134,7 @@ class PJSettings {
             // Default: 16.0
             let bodyFontSizeDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_BODY_FONT_SIZE)
             if bodyFontSizeDefault == nil {
-                defaults.setValue(CGFloat(BUFFOON_CONSTANTS.BASE_PREVIEW_FONT_SIZE),
+                defaults.setValue(CGFloat(BUFFOON_CONSTANTS.PREVIEW_SIZE.FONT_SIZE),
                                   forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_BODY_FONT_SIZE)
             }
 
@@ -255,7 +255,7 @@ class PJSettings {
             // Default: 28.0
             let thumbFontSizeDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.THUMB_SIZE)
             if thumbFontSizeDefault == nil {
-                defaults.setValue(CGFloat(BUFFOON_CONSTANTS.BASE_THUMB_FONT_SIZE),
+                defaults.setValue(CGFloat(BUFFOON_CONSTANTS.THUMB_SIZE.FONT_SIZE),
                                   forKey: BUFFOON_CONSTANTS.PREFS_IDS.THUMB_SIZE)
             }
         }

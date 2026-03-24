@@ -58,26 +58,6 @@ struct BUFFOON_CONSTANTS {
         static let TEXT                         = 2
     }
 
-    static let BASE_PREVIEW_FONT_SIZE: Float    = 16.0
-    static let BASE_THUMB_FONT_SIZE: Float      = 22.0
-    static let THUMBNAIL_LINE_COUNT             = 33
-    
-    //static let FONT_SIZE_OPTIONS: [CGFloat]     = [10.0, 12.0, 14.0, 16.0, 18.0, 24.0, 28.0]
-
-    static let JSON_INDENT                      = 8     // Can change
-    static let BASE_INDENT                      = 2     // Fixed
-    static let TABBED_INDENT                    = 4     // Fixed
-
-    static let URL_MAIN                         = "https://smittytone.net/previewjson/index.html"
-    static let APP_STORE                        = "https://apps.apple.com/us/app/previewjson/id6443584377?ls"
-    static let SUITE_NAME                       = ".suite.preview-previewjson"
-    static let APP_CODE_PREVIEWER               = "com.bps.previewjson.JSON-Previewer"
-    
-    static let BODY_FONT_NAME                   = "Menlo-Regular"
-
-    static let RENDER_DEBUG                     = false
-    
-    // FROM 1.0.3
     struct APP_URLS {
         
         static let PM                           = "https://apps.apple.com/us/app/previewmarkdown/id1492280469?ls=1"
@@ -87,12 +67,6 @@ struct BUFFOON_CONSTANTS {
         static let PT                           = "https://apps.apple.com/us/app/previewtext/id1660037028?ls=1"
     }
     
-    static let WHATS_NEW_PREF                   = "com-bps-previewjson-do-show-whats-new-"
-
-    // FROM 1.1.0
-    //static let STRING_COLOUR_HEX                = "FC6A5DFF"
-    //static let SPECIAL_COLOUR_HEX               = "D0BF69FF"
-
     struct PREFS_IDS {
 
         static let WHATS_NEW                    = "com-bps-previewjson-do-show-whats-new-"
@@ -107,7 +81,6 @@ struct BUFFOON_CONSTANTS {
         static let PREVIEW_STRINGS_COLOUR       = "com-bps-previewjson-string-colour-hex"
         static let PREVIEW_SPECIALS_COLOUR      = "com-bps-previewjson-special-colour-hex"
         static let PREVIEW_MARKS_COLOUR         = "com-bps-previewjson-mark-colour-hex"
-        static let PREVIEW_SHOW_MARGIN          = "com-bps-previewjson-do-show-margin"
         static let PREVIEW_MARGIN_WIDTH         = "com-bps-previewjson-margin-width"
         static let PREVIEW_WINDOW_SCALE         = "com-bps-previewjson-window-scale"
         static let THUMB_MATCH_FINDER           = "com-bps-previewjson-thumb-match-finder"
@@ -143,7 +116,11 @@ struct BUFFOON_CONSTANTS {
         static let PREVIEW_MARGIN_WIDTH_MIN     = 0
         static let PREVIEW_MARGIN_WIDTH_MAX     = 256
         static let PREVIEW_MARGIN_SIZE          = NSSize(width: PREVIEW_MARGIN_WIDTH, height: PREVIEW_MARGIN_WIDTH)
+    }
 
+    struct THUMB_SIZE {
+
+        static let FONT_SIZE                    = 22.0
     }
 
     struct SCALERS {
@@ -158,8 +135,15 @@ struct BUFFOON_CONSTANTS {
                                                    BUFFOON_CONSTANTS.COLOUR_IDS.SPECIALS,
                                                    BUFFOON_CONSTANTS.COLOUR_IDS.MARKS]
 
-    // FROM 1.1.1
+    static let BODY_FONT_NAME                   = "Menlo-Regular"
+    static let JSON_INDENT                      = 8     // Can change
+    static let TABBED_INDENT                    = 4     // Fixed
     static let TABULATION_INDENT_VALUE          = 999
+
+    static let URL_MAIN                         = "https://smittytone.net/previewjson/index.html"
+    static let APP_STORE                        = "https://apps.apple.com/us/app/previewjson/id6443584377?ls"
+    static let SUITE_NAME                       = ".suite.preview-previewjson"
+    static let APP_CODE_PREVIEWER               = "com.bps.previewjson.JSON-Previewer"
 
     // FROM 2.0.0
     static let MAX_FEEDBACK_SIZE                = 512
