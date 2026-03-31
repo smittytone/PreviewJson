@@ -51,6 +51,7 @@ class PreviewViewController: NSViewController,
                 // FROM 2.0.0
                 // Set the parent window's size
                 setPreviewWindowSize(common.settings)
+                common.tableWidth = self.view.frame.width
 
                 // FROM 2.0.0
                 // The force-light-mode-preview-in-dark-mode setting is now a general
@@ -78,6 +79,11 @@ class PreviewViewController: NSViewController,
                     self.renderTextView.textContainerInset = previewSize
                 }
 
+                // // Rescale the text view to match the width of a tabluted view
+                if common.tableWidth > self.view.frame.width {
+                    self.view.setFrameSize(NSSize(width: common.tableWidth + 20.0, height: self.view.frame.size.height))
+                }
+
                 let jsonAttString: NSAttributedString = common.getAttributedString(fromJson: jsonString)
                 if let renderTextStorage: NSTextStorage = self.renderTextView.textStorage {
                     /*
@@ -90,7 +96,7 @@ class PreviewViewController: NSViewController,
                     renderTextStorage.endEditing()
 
                     // Add the subview to the instance's own view and draw
-                    self.view.display()
+                    // self.view.display()
 
                     // Call the QLPreviewingController indicating no error
                     // (argument is nil)

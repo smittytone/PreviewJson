@@ -37,6 +37,7 @@ final class Common {
     public var doShowLightBackground: Bool          = false
     // FROM 2.0.0
     public var settings: PJSettings                 = PJSettings()
+    public var tableWidth: CGFloat                  = 384.0
 
 
     // MARK: - Private Properties
@@ -54,6 +55,7 @@ final class Common {
     private var debugSpacer: String                                 = "."
     // FROM 2.0.0
     private var emptyString: NSMutableAttributedString              = NSMutableAttributedString(string: "*")
+    private var maxColumn: Int                                      = 0
 
     // JSON string attributes...
     private var keyAttributes: [NSAttributedString.Key: Any]        = [:]
@@ -178,64 +180,134 @@ final class Common {
      */
     public func getAttributedString(fromJson json: String) -> NSAttributedString {
 
-        // Convert the JSON string into JSON entities, then convert them
-        // into a series of paragraph objects
-        let previewParagraphs = NSMutableArray()
         let renderString = NSMutableAttributedString(string: "", attributes: self.scalarAttributes)
         var parser = JSONParser(json)
-        prettify(parser.parseValue()!, 0, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), previewParagraphs)
+        let json = parser.parseValue()!
+        var colWidths: [Int: CGFloat] = [:]
 
-        // These are required for tabulation
-        /*
-        var maxDepth = -1
-        var maxKeyWidths: [Int: CGFloat] = [:]
-        for i in 0..<previewParagraphs.count {
-            let paragraph = previewParagraphs.object(at: i) as! Paragraph
-            if paragraph.depth > maxDepth {
-                maxDepth = paragraph.depth
+        if (self.settings.indentSize == BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE && !self.isThumbnail) {
+            // Tabluation view path
+            // Get each column's max width
+            colWidths = measureColumns(json, 0, colWidths)
+
+            // Get the populated cells
+            let cells = NSMutableArray()
+            let maxRow = tabulate(json, 0, 0, colWidths, cells) - 1
+            let maxCol = self.maxColumn
+            /*
+            var maxRow = 0
+            for i in 0..<cells.count {
+                let cell = cells.object(at: i) as! Cell
+                if cell.row > maxRow { maxRow = cell.row }
+            }
+             */
+
+            print(colWidths)
+
+            // Calculate the width of the rendered table
+            self.tableWidth = 0.0
+            for i in 0...maxCol {
+                // Add the column width
+                self.tableWidth += ((colWidths[i] == nil || colWidths[i]! == 0.0) ? BUFFOON_CONSTANTS.MAX_TAB_COL_SIZE_PT : colWidths[i]!)
+
+                // Add padding
+                self.tableWidth += 10.0
             }
 
-            if maxKeyWidths[paragraph.depth] == nil {
-                maxKeyWidths[paragraph.depth] = paragraph.keyLength
-            } else if paragraph.keyLength > maxKeyWidths[paragraph.depth]! {
-                maxKeyWidths[paragraph.depth] = paragraph.keyLength
-            }
-        }
-         */
+            // Construct the table
+            let table = NSTextTable()
+            table.numberOfColumns = maxCol + 1
+            table.collapsesBorders = true
+            table.hidesEmptyCells = false
 
-        // Assemble the final attributed string
-        // NOTE Do with an autorelease pool?
-        for i in 0..<previewParagraphs.count {
-            let paragraph = previewParagraphs.object(at: i) as! Paragraph
-            if var paragraphText = paragraph.text {
-                let inset: CGFloat = CGFloat(paragraph.depth) * BUFFOON_CONSTANTS.BASE_TAB_SIZE_PT * CGFloat(self.settings.indentSize)
+            // Build the table
+            for r in 0...maxRow {
+                var lastCellSpans = false
+                for c in 0...maxCol {
+                    var gotCell = false
+                    let paraStyle: NSMutableParagraphStyle = NSMutableParagraphStyle()
+                    paraStyle.alignment = .left
+                    paraStyle.lineBreakMode = .byWordWrapping
 
-                if paragraphText.length > 0 {
-                    // Instantiate a generic paragraph style
-                    let paragraphStyle = NSMutableParagraphStyle()
-                    paragraphStyle.firstLineHeadIndent = inset
-                    paragraphStyle.alignment = .left
-                    paragraphStyle.paragraphSpacing = self.settings.fontSize * BUFFOON_CONSTANTS.BASE_PARA_SPACING_PT
+                    for i in 0..<cells.count {
+                        let cell = cells.object(at: i) as! Cell
+                        if cell.row == r && cell.col == c {
+                            let cellBlock: NSTextBlock
+                            let cellText: NSMutableAttributedString
 
-                    if paragraphText.string.hasPrefix("*") {
-                        // Render an empty spacer line
-                        // Set the spacer line paragraph style
-                        paragraphStyle.paragraphSpacing = 0.0
-                        paragraphStyle.headIndent = inset
+                            if cell.isVal, maxCol - c > 0 {
+                                cellBlock = makeBlock(table, r, c, colWidths[c]!, maxCol - c + 1)
+                                lastCellSpans = true
+                            } else {
+                                cellBlock = makeBlock(table, r, c, colWidths[c]!)
+                            }
 
-                        // Add a fixed-text paragraph, then apply the spacer paragraph style
-                        paragraphText = NSMutableAttributedString(string: BUFFOON_CONSTANTS.COLLECTION_SPACER, attributes: self.lineAttributes)
-                    } else {
-                        // Define a text paragraph style that's indented
-                        paragraphStyle.headIndent = inset + paragraph.keyLength
+                            paraStyle.textBlocks.append(cellBlock)
 
-                        // Add a paragraph terminator, then apply the text paragraph style
-                        paragraphText.append(self.cr)
+                            if cell.text != nil {
+                                // Load the text from the Cell record
+                                cellText = NSMutableAttributedString(attributedString: cell.text!)
+                                cellText.append(self.cr)
+                            } else {
+                                // Empty cell
+                                cellText = NSMutableAttributedString(string: "\n", attributes: self.scalarAttributes)
+                            }
+
+                            cellText.addAttributes([.paragraphStyle: paraStyle], range: NSRange(location: 0, length: cellText.length))
+                            renderString.append(cellText)
+                            gotCell = true
+                        }
                     }
 
-                    // Add the paragraph attributed string to the main store
-                    paragraphText.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: paragraphText.length))
-                    renderString.append(paragraphText)
+                    // No cell at current row,col, so add one if it's not hidden by a span
+                    if !gotCell && !lastCellSpans {
+                        let cellText = NSMutableAttributedString(string: "\n", attributes: self.scalarAttributes)
+                        paraStyle.textBlocks.append(makeBlock(table, r, c, colWidths[c]!))
+                        cellText.addAttributes([.paragraphStyle: paraStyle], range: NSRange(location: 0, length: cellText.length))
+                        renderString.append(cellText)
+                    }
+                }
+            }
+        } else {
+            // Convert the JSON string into JSON entities, then convert them
+            // into a series of paragraph objects
+            let previewParagraphs = NSMutableArray()
+            prettify(json, 0, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), previewParagraphs)
+
+            // Assemble the final attributed string
+            // NOTE Do with an autorelease pool?
+            for i in 0..<previewParagraphs.count {
+                let paragraph = previewParagraphs.object(at: i) as! Paragraph
+                if var paragraphText = paragraph.text {
+                    let inset: CGFloat = CGFloat(paragraph.depth) * BUFFOON_CONSTANTS.BASE_TAB_SIZE_PT * CGFloat(self.settings.indentSize)
+
+                    if paragraphText.length > 0 {
+                        // Instantiate a generic paragraph style
+                        let paragraphStyle = NSMutableParagraphStyle()
+                        paragraphStyle.firstLineHeadIndent = inset
+                        paragraphStyle.alignment = .left
+                        paragraphStyle.paragraphSpacing = self.settings.fontSize * BUFFOON_CONSTANTS.BASE_PARA_SPACING_PT
+
+                        if paragraphText.string.hasPrefix("*") {
+                            // Render an empty spacer line
+                            // Set the spacer line paragraph style
+                            paragraphStyle.paragraphSpacing = 0.0
+                            paragraphStyle.headIndent = inset
+
+                            // Add a fixed-text paragraph, then apply the spacer paragraph style
+                            paragraphText = NSMutableAttributedString(string: BUFFOON_CONSTANTS.COLLECTION_SPACER, attributes: self.lineAttributes)
+                        } else {
+                            // Define a text paragraph style that's indented
+                            paragraphStyle.headIndent = inset + paragraph.keyLength
+
+                            // Add a paragraph terminator, then apply the text paragraph style
+                            paragraphText.append(self.cr)
+                        }
+
+                        // Add the paragraph attributed string to the main store
+                        paragraphText.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: paragraphText.length))
+                        renderString.append(paragraphText)
+                    }
                 }
             }
         }
@@ -244,6 +316,19 @@ final class Common {
         return renderString as NSAttributedString
     }
 
+
+    func makeBlock(_ table: NSTextTable, _ row: Int, _ col: Int, _ minWidth: CGFloat, _ span: Int = 1) -> NSTextTableBlock {
+
+        let block: NSTextTableBlock = NSTextTableBlock(table: table, startingRow: row, rowSpan: 1, startingColumn: col, columnSpan: span)
+        block.setValue(minWidth, type: .absoluteValueType, for: .minimumWidth)
+        block.setValue(minWidth, type: .absoluteValueType, for: .width)
+        block.setValue(minWidth, type: .absoluteValueType, for: .maximumWidth)
+        block.setWidth(5.0, type: .absoluteValueType, for: .padding)
+
+        //block.setWidth(0.5, type: .absoluteValueType, for: .border)
+        //block.setBorderColor(.labelColor)
+        return block
+    }
 
     /**
      Return a space-prefix NSAttributedString formed from an image in the app Bundle
@@ -328,7 +413,7 @@ final class Common {
                 }
             }
 
-            if self.settings.showJsonMarks {
+            if showMarks {
                 // Start of an object, so mark open on a fresh line
                 let markString = NSMutableAttributedString(string: "}", attributes: self.markAttributes)
                 paragraphs.add(Paragraph(text: markString, depth: inset - 1 , keyLength: 0.0))
@@ -336,7 +421,7 @@ final class Common {
 
             return
         } else if json.arrayValue != nil {
-            if self.settings.showJsonMarks {
+            if showMarks {
                 // Start of an object, so mark open on a fresh line
                 let markString = NSMutableAttributedString(string: "[", attributes: self.markAttributes)
                 paragraphs.add(Paragraph(text: markString, depth: inset, keyLength: 0.0))
@@ -345,7 +430,7 @@ final class Common {
                 inset += 1
             }
 
-            // For aan array, enumerate the values
+            // For an array, enumerate the values
             // NOTE Should be only one of each, but value may be an object or array
             for (index, value) in json.arrayValue!.enumerated() {
                 // Is the value a collection?
@@ -371,7 +456,7 @@ final class Common {
                 }
             }
 
-            if self.settings.showJsonMarks {
+            if showMarks {
                 // Start of an object, so mark open on a fresh line
                 let markString = NSMutableAttributedString(string: "]", attributes: self.markAttributes)
                 paragraphs.add(Paragraph(text: markString, depth: inset - 1 , keyLength: 0.0))
@@ -407,7 +492,7 @@ final class Common {
         } else if json.stringValue != nil {
             // Display the string with quotemarks if the user wants to see markers
             let value: String = json.stringValue!.description
-            let valueString: String = self.settings.showJsonMarks ? "“" + value + "”" : value
+            let valueString: String = showMarks ? "“" + value + "”" : value
             prefix.append(NSAttributedString(string: valueString, attributes: self.stringAttributes))
         }
 
@@ -416,270 +501,162 @@ final class Common {
     }
 
 
+    // MARK: - Tabulation Functions
+
     /**
-     Render a unit of JSON as an NSAttributedString using Tabulation.
-     FROM 1.1.1
+     Determine the max. width of each column. We only measure key lengths, as values are expected to wrap to
+     the column width, or `MAX_TAB_COL_SIZE_PT` points, whichever is greater.
 
      - Parameters:
-        - json:           A unit of JSON, type Any.
-        - currentLevel:   The current element depth.
-        - currentIndent:  How much a subsequent value should be indented.
-        - parentIsObject: If and only if the parent is an object.
+        - json:  A JSON object, array or value.
+        - depth: The column inset of the JSON.
+        - length: A dictionary mapping column number to current max. column width.
 
-     - Returns: The indented string as an NSAttributedString.
+     - Returns: An updated `length` dictionary.
+     */
+    private func measureColumns(_ json: JSONValue, _ depth: Int, _ lengths: [Int: CGFloat]) -> [Int: CGFloat] {
 
-    private func tabulate(_ json: Any, _ currentLevel: Int = 0, _ currentIndent: Int = 0, _ parentIsObject: Bool = false) -> NSMutableAttributedString {
+        var maxLengths = lengths
 
-        // Prep an NSMutableAttributedString for this JSON segment
-        let renderedString: NSMutableAttributedString = NSMutableAttributedString(string: "", attributes: self.keyAttributes)
+        if depth > self.maxColumn {
+            self.maxColumn = depth
+        }
 
-        // Generate a string according to the JSON element's underlying type
-        // Booleans are 'Bool' and 'Int', so remove the old bool check
-        // and rely on the earlier string encoding in PreviewViewController
-        if json is NSNull {
-            // Attempt to load the null symbol, but use a text version as a fallback on error
-            if self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
-                // Display NULL as an image
-                let name: String = "null_\(self.settings.boolStyle)"
-                if !self.isThumbnail, let addString: NSAttributedString = getImageString(currentIndent, name) {
-                    renderedString.append(addString)
-                    return renderedString
+        // Match the JSON entity by type to generate paragraph styled text
+        if json.objectValue != nil {
+            for (key, value) in json.objectValue! {
+                let keyString = NSMutableAttributedString(string: key.description, attributes: self.keyAttributes)
+                let keyLength = keyString.width
+
+                if maxLengths[depth] == nil {
+                    maxLengths[depth] = keyLength
+                } else if keyLength > maxLengths[depth]! {
+                    maxLengths[depth] = keyLength
                 }
+
+                // Get interior value column widths
+                maxLengths = measureColumns(value, depth + 1, maxLengths)
+            }
+        } else if json.arrayValue != nil {
+            for value in json.arrayValue! {
+                maxLengths = measureColumns(value, depth, maxLengths)
+            }
+        } else {
+            // For scalar values, set zero as the base, so it widens to match the width
+            // of keys in the same column...
+            if maxLengths[depth] == nil {
+                maxLengths[depth] = 0
             }
 
-            // Can't or won't show an image? Show text
-#if DEBUG
-            renderedString.append(getIndentedAttributedString("NULL", currentIndent, .Special))
-            renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)\n", 1, .Debug))
-#else
-            renderedString.append(getIndentedAttributedString("NULL\n", currentIndent, .Special))
-#endif
-        } else if json is Int || json is Float || json is Double {
-            // Display the number as is
-#if DEBUG2
-            renderedString.append(getIndentedAttributedString("\(json)", currentIndent, .Scalar))
-            renderedString.append(getIndentedAttributedString(" \(currentLevel)/\(currentIndent)\n", 1, .Debug))
-#else
-            renderedString.append(getIndentedAttributedString("\(json)\n", currentIndent, .Scalar))
-#endif
-        } else if json is String {
-            let value: String = json as! String
-
-            // Is this a shimmed boolean?
-            if value == "PREVIEW-JSON-TRUE" || value == "PREVIEW-JSON-FALSE" {
-                if self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
-                    // Render the bool as an image
-                    let name: String = value == "PREVIEW-JSON-TRUE" ? "true_\(self.settings.boolStyle)" : "false_\(self.settings.boolStyle)"
-                    if !self.isThumbnail, let addString: NSAttributedString = getImageString(currentIndent, name) {
-                        renderedString.append(addString)
-                        return renderedString
-                    }
+            // ...unless the value is a string, in which case use a fixed width if it's
+            // long, or the pixel-width of the rendered string
+            if json.stringValue != nil {
+                let valString = NSMutableAttributedString(string: json.stringValue!.description, attributes: self.stringAttributes)
+                let valLength = valString.width
+                if valLength > BUFFOON_CONSTANTS.MAX_TAB_COL_SIZE_PT {
+                    maxLengths[depth] = BUFFOON_CONSTANTS.MAX_TAB_COL_SIZE_PT
+                } else if valLength > maxLengths[depth]! {
+                    maxLengths[depth] = valLength
                 }
+            } else if (json.boolValue != nil || json.isNull) && self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
+                if maxLengths[depth]! < BUFFOON_CONSTANTS.TAB_COL_IMAGE_WIDTH_PT {
+                    maxLengths[depth] = BUFFOON_CONSTANTS.TAB_COL_IMAGE_WIDTH_PT
+                }
+            }
+        }
 
-                // Can't or won't show an image? Show text
-#if DEBUG2
-                renderedString.append(getIndentedAttributedString(value == "PREVIEW-JSON-TRUE" ? "TRUE" : "FALSE", currentIndent, .Special))
-                renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)\n", 1, .Debug))
-#else
-                renderedString.append(getIndentedAttributedString(value == "PREVIEW-JSON-TRUE" ? "TRUE\n" : "FALSE\n", currentIndent, .Special))
-#endif
+        return maxLengths
+    }
+
+    /**
+     Generate a Cell object for a JSON entity at given row and column co-ordinates.
+
+     - Parameters:
+        - json:      A JSON object, array or scalar value.
+        - startRow:  The row on which the entity will appear.
+        - startCol:  The column at which the entity is indented.
+        - colWidths: A dictionary of column widths mapped to column numbers.
+        - cells:     Reference to an array of Cell objects we will populate.
+
+     - Returns: The number of rows created per call.
+     */
+    func tabulate(_ json: JSONValue, _ startRow: Int, _ startCol: Int, _ colWidths: [Int: CGFloat], _ cells: NSMutableArray) -> Int {
+
+        let colWidth = colWidths[startCol] ?? 0.0
+        var currentRow = startRow
+        var valueString: NSAttributedString? = nil
+
+        if json.objectValue != nil {
+            // Iterate over the object's key:value pairs
+            for (key, value) in json.objectValue! {
+                // Add the key as a cell
+                var cell = Cell()
+                cell.text = NSAttributedString(string: key.description, attributes: self.keyAttributes)
+                cell.row = currentRow
+                cell.col = startCol
+                cell.width = colWidth
+                cells.add(cell)
+
+                // Add the key's value
+                currentRow += tabulate(value, currentRow, startCol + 1, colWidths, cells)
+            }
+
+            return currentRow - startRow
+        } else if json.arrayValue != nil {
+            // Iterate over the array's values
+            for value in json.arrayValue! {
+                // Add the value
+                currentRow += tabulate(value, currentRow, startCol, colWidths, cells)
+            }
+
+            return currentRow - startRow
+        } else if json.isNull {
+            // Attempt to load the `NULL` symbol, but use a text version as a fallback on error
+            if !self.isThumbnail && self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
+                let imageName: String = "null_\(self.settings.boolStyle)"
+                if let image: NSAttributedString = getImageString(imageName) {
+                    valueString = image
+                }
             } else {
-                // Regular string value; add quotes if necessary
-#if DEBUG2
-                let stringText: String = self.doShowFurniture ? "“" + (json as! String) + "”" : (json as! String)
-                renderedString.append(getIndentedAttributedString(stringText[...], currentIndent, .String))
-                renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)\n", 1, .Debug))
-#else
-                let stringText: String = self.settings.showJsonMarks ? "“" + (json as! String) + "”\n" : (json as! String) //+ "\n"
-                renderedString.append(getIndentedAttributedString(stringText[...], currentIndent, .String))
-#endif
+                // Can't or won't show an image? Show text
+                valueString = NSAttributedString(string: "NULL", attributes: self.specialAttributes)
             }
-        } else if json is Dictionary<String, Any> {
-            // For a dictionary, enumerate the key and value
-            // NOTE Should be only one of each, but value may
-            //      be an object or array
-
-            if self.settings.showJsonMarks {
-                // Add JSON furniture
-                // If the parent is an object too, don't indent (we have already indented)
-                let initialIndent: Int = parentIsObject ? 0 : currentIndent
-#if DEBUG2
-                renderedString.append(getIndentedAttributedString("{", initialIndent, .MarkStart))
-                renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)/\(initialIndent)\n", 1, .Debug))
-#else
-                renderedString.append(getIndentedAttributedString("{\n", initialIndent, .MarkStart))
-#endif
-            }
-
-            let anyObject: [String: Any] = json as! [String: Any]
-
-            // FROM 1.1.0 -- sort dictionaries alphabetically by key
-            var keys: [String] = Array(anyObject.keys)
-            if self.sortKeys {
-                keys = keys.sorted(by: { (a, b) -> Bool in
-                    return (a.lowercased() < b.lowercased())
-                })
-            }
-
-            // Indent slightly
-            let keyIndent: Int = self.settings.showJsonMarks ? currentIndent + BUFFOON_CONSTANTS.TABBED_INDENT : currentIndent
-            for key in keys {
-                // Get important value types
-                let value: Any = anyObject[key]!
-                let valueIsObject: Bool = (value is Dictionary<String, Any>)
-                let valueIsArray: Bool  = (value is Array<Any>)
-
-                // Print the key
-                renderedString.append(getIndentedAttributedString(key[...], keyIndent, .Key))
-                // Space after
-                renderedString.append(NSAttributedString(string: String(repeating: self.spacer, count: self.maxKeyLengths[currentLevel] - key.count + 1), attributes: getAttributes(.Key)))
-
-                // Is the value non-scalar?
-                if valueIsObject || valueIsArray {
-                    // Render the element at the next level
-                    let nextIndent: Int = keyIndent + self.maxKeyLengths[currentLevel] + 1
-                    if !self.settings.showJsonMarks {
-                        renderedString.append(self.cr)
-                    }
-
-                    renderedString.append(tabulate(value,
-                                                   currentLevel + (valueIsObject ? 1 : 0),      // Next level
-                                                   nextIndent,                                  // This level's base indent
-                                                   true))
-                } else {
-                    renderedString.append(tabulate(value,
-                                                   currentLevel,                   // Same level
-                                                   0))
+        } else if json.boolValue != nil {
+            // Attempt to load the `TRUE`/`FALSE` symbol, but use a text version as a fallback on error
+            if !self.isThumbnail && self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
+                let boolType: String = json.boolValue! ? "true" : "false"
+                let imageName: String = "\(boolType)_\(self.settings.boolStyle)"
+                if let image: NSAttributedString = getImageString(imageName) {
+                    valueString = image
                 }
+            } else {
+                // Can't or won't show an image? Show text
+                valueString = NSAttributedString(string: json.boolValue!.description, attributes: self.specialAttributes)
             }
-
-            if self.settings.showJsonMarks {
-                // Bookend with JSON furniture
-#if DEBUG2
-                renderedString.append(getIndentedAttributedString("}", currentIndent, .MarkEnd))
-                renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)\n", 1, .Debug))
-#else
-                renderedString.append(getIndentedAttributedString("}\n", currentIndent, .MarkEnd))
-#endif
-            }
-        } else if json is Array<Any> {
-            if self.settings.showJsonMarks {
-                // Add JSON furniture
-                // NOTE Parent is an object, so add furniture after key
-                let initialIndent: Int = parentIsObject ? 0 : currentIndent
-
-#if DEBUG2
-                renderedString.append(getIndentedAttributedString("[", initialIndent, .MarkStart))
-                renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)/\(initialIndent)\n", 1, .Debug))
-#else
-                renderedString.append(getIndentedAttributedString("[\n", initialIndent, .MarkStart))
-#endif
-            }
-
-            // Iterate over the array's items
-            // Array items are always rendered at the same level
-            let anyArray: [Any] = json as! [Any]
-            var count: Int = 0
-            anyArray.forEach { value in
-                // Get important value types
-                let valueIsObject: Bool = (value is Dictionary<String, Any>)
-                let valueIsArray: Bool = (value is Array<Any>)
-                let nextIndent: Int = self.settings.showJsonMarks ? currentIndent + BUFFOON_CONSTANTS.TABBED_INDENT : currentIndent
-
-                // Is the value non-scalar?
-                if valueIsObject || valueIsArray {
-                    // Render the element on the next level
-                    renderedString.append(tabulate(value,
-                                                   currentLevel + (valueIsObject ? 1 : 0),
-                                                   nextIndent))
-
-                    // Separate all but the last item with a blank line
-                    if count < anyArray.count - 1 && !self.settings.showJsonMarks {
-                        renderedString.append(self.cr)
-                    }
-                } else {
-                    // Render the scalar value
-                    renderedString.append(tabulate(value,
-                                                   0,
-                                                   nextIndent))
-                }
-
-                count += 1
-            }
-
-            if self.settings.showJsonMarks {
-                // Bookend with JSON furniture
-#if DEBUG2
-                renderedString.append(getIndentedAttributedString("]", currentIndent, .MarkEnd))
-                renderedString.append(getIndentedAttributedString("\(currentLevel)/\(currentIndent)\n", 1, .Debug))
-#else
-                renderedString.append(getIndentedAttributedString("]\n", currentIndent, .MarkEnd))
-#endif
-            }
+        } else if json.numberValue != nil {
+            // Display the number as is
+            valueString = NSAttributedString(string: "\(json.numberValue!.description)", attributes: self.scalarAttributes)
+        } else if json.stringValue != nil {
+            // Display the string with quotemarks if the user wants to see markers
+            let value: String = json.stringValue!.description
+            valueString = NSAttributedString(string: value, attributes: self.stringAttributes)
         }
 
-        return renderedString
-    }
-     */
-    
+        // Add the value as a cell
+        var cell = Cell()
+        cell.text = valueString ?? NSAttributedString(string: "", attributes: self.scalarAttributes)
+        cell.row = startRow
+        cell.col = startCol
+        cell.width = colWidth
+        cell.isVal = true
+        cells.add(cell)
 
-    /**
-     Iterate through a JSON element to caclulate the current max. key length.
-     FROM 1.1.0
-
-     - Parameters:
-        - json:     The JSON element.
-        - level:    The current level.
-     */
-    private func assembleColumns(_ json: Any, _ level: Int = 0) {
-
-        // FROM 1.1.1
-        if level > (self.maxKeyLengths.count - 1) {
-            let count = level - self.maxKeyLengths.count + 1
-            for _ in 0...count {
-                self.maxKeyLengths.append(0)
-            }
-        }
-         
-        if json is Dictionary<String, Any> {
-            // For a dictionary, enumerate the key and value
-            let anyObject: [String: Any] = json as! [String: Any]
-            
-            // Get the max key length for the current level
-            let keys: [String] = Array(anyObject.keys)
-            for key in keys {
-                if key.count > self.maxKeyLengths[level] {
-                    self.maxKeyLengths[level] = key.count
-                }
-            }
-            
-            // Iterate through the keys to run this code for higher levels
-            anyObject.forEach { key, value in
-                // Check for non-scalar elements
-                let valueIsObject: Bool = (value is Dictionary<String, Any>)
-                let valueIsArray: Bool = (value is Array<Any>)
-                
-                if valueIsObject || valueIsArray {
-                    // Process object values on the next level,
-                    // but array values on the same level
-                    assembleColumns(value, level + (valueIsObject ? 1 : 0))
-                }
-            }
-        } else if json is Array<Any> {
-            // For an array, enumerate the elements
-            let anyArray: [Any] = json as! [Any]
-            anyArray.forEach { value in
-                let valueIsObject: Bool = value is Dictionary<String, Any>
-                let valueIsArray: Bool = value is Array<Any>
-                
-                if valueIsObject || valueIsArray {
-                    // Process container - objects or array - values on the next level
-                    assembleColumns(value, level + (valueIsObject ? 1 : 0))
-                }
-            }
-        }
+        // Value count as single rows added
+        return 1
     }
 
+
+    // MARK: - Utility Functions
 
     /**
      Determine whether the host Mac is in light mode.

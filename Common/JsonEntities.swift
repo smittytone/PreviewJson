@@ -6,7 +6,17 @@
  *  Copyright © 2026 Tony Smith. All rights reserved.
  */
 
-import Foundation
+import AppKit
+
+
+public struct Cell {
+
+    var text: NSAttributedString? = nil
+    var row: Int = 0
+    var col: Int = 0
+    var width: CGFloat = 0.0
+    var isVal: Bool = false
+}
 
 
 /*
