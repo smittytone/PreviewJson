@@ -259,7 +259,7 @@ extension AppDelegate {
         self.showbadJsonSwitch.state = settings.showRawJsonOnError ? .on : .off
 
         // Set the indent size popup
-        let indents: [Int] = [1, 2, 4, 8, BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE]
+        let indents: [Int] = [1, 2, 4, 8, 0, BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE]
         self.indentPopup.selectItem(at: indents.firstIndex(of: settings.indentSize) ?? 1)
 
         // The bool/null display style
@@ -302,7 +302,7 @@ extension AppDelegate {
         displayedSettings.showRawJsonOnError = self.showbadJsonSwitch.state == .on
         displayedSettings.thumbnailMatchFinderMode = self.tintTumbnailsAdvancedSwitch.state == .on
 
-        let indents: [Int] = [1, 2, 4, 8, BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE]
+        let indents: [Int] = [1, 2, 4, 8, 0, BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE]
         displayedSettings.indentSize = indents[self.indentPopup.indexOfSelectedItem]
 
         displayedSettings.boolStyle = self.boolStyleSegment.indexOfSelectedItem
