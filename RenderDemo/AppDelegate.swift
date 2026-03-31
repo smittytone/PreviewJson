@@ -191,11 +191,17 @@ class AppDelegate:  NSObject,
                     self.previewTextView.backgroundColor = self.common!.doShowLightBackground ? NSColor(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
                     self.previewScrollView.scrollerKnobStyle = self.common!.doShowLightBackground ? .dark : .light
 
-                    
+                    // Rescale the text view
+                    if common!.tableWidth > self.previewTextView.frame.width {
+                        self.previewTextView.setFrameSize(NSSize(width: self.common!.tableWidth + 20.0, height: self.previewTextView.frame.size.height))
+                    }
+
+                    // Render the attributed string
                     if let renderTextStorage: NSTextStorage = self.previewTextView.textStorage {
                         renderTextStorage.beginEditing()
                         renderTextStorage.setAttributedString(jsonAttString)
                         renderTextStorage.endEditing()
+
                         self.common = nil
                         return nil
                     }
