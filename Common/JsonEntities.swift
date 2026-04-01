@@ -3,6 +3,7 @@
  *  PreviewApps
  *
  *  Created by Tony Smith on 18/03/2026.
+ *  Early pre-release assistance on `JSONParser`  provided by Anthropic Claude.
  *  Copyright © 2026 Tony Smith. All rights reserved.
  */
 
