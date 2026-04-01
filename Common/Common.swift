@@ -181,28 +181,28 @@ final class Common {
     public func getAttributedString(fromJson json: String) -> NSAttributedString {
 
         let renderString = NSMutableAttributedString(string: "", attributes: self.scalarAttributes)
+
         var parser = JSONParser(json)
-        let json = parser.parseValue()!
+        var json = parser.parseValue()
+        guard json != nil else { return renderString }
+
         var colWidths: [Int: CGFloat] = [:]
 
         if (self.settings.indentSize == BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE && !self.isThumbnail) {
             // Tabluation view path
             // Get each column's max width
-            colWidths = measureColumns(json, 0, colWidths)
-
+            colWidths = measureColumns(json!, 0, colWidths)
+#if DEBUG
+            print("WIDTHS: \(colWidths)")
+#endif
             // Get the populated cells
             let cells = NSMutableArray()
-            let maxRow = tabulate(json, 0, 0, colWidths, cells) - 1
+            let maxRow = tabulate(json!, 0, 0, colWidths, cells) - 1
             let maxCol = self.maxColumn
-            /*
-            var maxRow = 0
-            for i in 0..<cells.count {
-                let cell = cells.object(at: i) as! Cell
-                if cell.row > maxRow { maxRow = cell.row }
-            }
-             */
-
-            print(colWidths)
+            json = nil
+#if DEBUG
+            print("MAX: \(maxRow + 1)x\(maxCol + 1)")
+#endif
 
             // Calculate the width of the rendered table
             self.tableWidth = 0.0
@@ -221,41 +221,51 @@ final class Common {
             table.hidesEmptyCells = false
 
             // Build the table
+            var startCell = 0
             for r in 0...maxRow {
                 var lastCellSpans = false
                 for c in 0...maxCol {
+                    print("\(r),\(c)")
                     var gotCell = false
                     let paraStyle: NSMutableParagraphStyle = NSMutableParagraphStyle()
                     paraStyle.alignment = .left
                     paraStyle.lineBreakMode = .byWordWrapping
 
-                    for i in 0..<cells.count {
+                    // Don't check cells that have already been processed. We can
+                    // do this because we are processing them in the order in
+                    // which we added cells to the array
+                    for i in startCell..<cells.count {
                         let cell = cells.object(at: i) as! Cell
                         if cell.row == r && cell.col == c {
-                            let cellBlock: NSTextBlock
-                            let cellText: NSMutableAttributedString
+                            autoreleasepool {
+                                let cellBlock: NSTextBlock
+                                let cellText: NSMutableAttributedString
 
-                            if cell.isVal, maxCol - c > 0 {
-                                cellBlock = makeBlock(table, r, c, colWidths[c]!, maxCol - c + 1)
-                                lastCellSpans = true
-                            } else {
-                                cellBlock = makeBlock(table, r, c, colWidths[c]!)
-                            }
+                                if cell.isVal, maxCol - c > 0 {
+                                    cellBlock = makeBlock(table, r, c, colWidths[c]!, maxCol - c + 1)
+                                    lastCellSpans = true
+                                } else {
+                                    cellBlock = makeBlock(table, r, c, colWidths[c]!)
+                                }
 
-                            paraStyle.textBlocks.append(cellBlock)
+                                paraStyle.textBlocks.append(cellBlock)
 
-                            if cell.text != nil {
-                                // Load the text from the Cell record
-                                cellText = NSMutableAttributedString(attributedString: cell.text!)
-                                cellText.append(self.cr)
-                            } else {
-                                // Empty cell
-                                cellText = NSMutableAttributedString(string: "\n", attributes: self.scalarAttributes)
-                            }
+                                if cell.text != nil {
+                                    // Load the text from the Cell record
+                                    cellText = NSMutableAttributedString(attributedString: cell.text!)
+                                    cellText.append(self.cr)
+                                } else {
+                                    // Empty cell
+                                    cellText = NSMutableAttributedString(string: "\n", attributes: self.scalarAttributes)
+                                }
 
-                            cellText.addAttributes([.paragraphStyle: paraStyle], range: NSRange(location: 0, length: cellText.length))
-                            renderString.append(cellText)
-                            gotCell = true
+                                cellText.addAttributes([.paragraphStyle: paraStyle], range: NSRange(location: 0, length: cellText.length))
+                                renderString.append(cellText)
+                                gotCell = true
+                            } // Autorelease
+
+                            startCell += 1
+                            break
                         }
                     }
 
@@ -272,7 +282,8 @@ final class Common {
             // Convert the JSON string into JSON entities, then convert them
             // into a series of paragraph objects
             let previewParagraphs = NSMutableArray()
-            prettify(json, 0, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), previewParagraphs)
+            prettify(json!, 0, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), previewParagraphs)
+            json = nil
 
             // Assemble the final attributed string
             // NOTE Do with an autorelease pool?

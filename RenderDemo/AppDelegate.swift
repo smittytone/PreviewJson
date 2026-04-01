@@ -202,6 +202,10 @@ class AppDelegate:  NSObject,
                         renderTextStorage.setAttributedString(jsonAttString)
                         renderTextStorage.endEditing()
 
+#if DEBUG
+                        print("********** END ************")
+#endif
+
                         self.common = nil
                         return nil
                     }
