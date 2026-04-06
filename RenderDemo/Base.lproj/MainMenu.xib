@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24506" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24765" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24765"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -20,6 +20,7 @@
                 <outlet property="modeButton" destination="cUv-yG-ROn" id="nRU-sE-vcW"/>
                 <outlet property="previewScrollView" destination="9tz-gF-DdE" id="fWy-88-plv"/>
                 <outlet property="previewTextView" destination="NAJ-g1-D1W" id="UaC-b0-EJw"/>
+                <outlet property="progress" destination="Wzq-xC-xkq" id="NO6-mA-IJ3"/>
                 <outlet property="reloadButton" destination="xXF-zr-IHi" id="L11-it-rA5"/>
                 <outlet property="reloadMenuItem" destination="hgU-EM-IhT" id="7em-zg-5z0"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
@@ -180,7 +181,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="660" height="400"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <textView wantsLayer="YES" editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" allowsCharacterPickerTouchBarItem="NO" usesRuler="YES" textCompletion="NO" layoutManager="textKit2" id="NAJ-g1-D1W">
+                                <textView wantsLayer="YES" editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" allowsCharacterPickerTouchBarItem="NO" usesRuler="YES" textCompletion="NO" layoutManager="textKit1" id="NAJ-g1-D1W">
                                     <rect key="frame" x="0.0" y="0.0" width="660" height="400"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -254,6 +255,13 @@
                             <action selector="doReloadFile:" target="Voe-Tx-rLC" id="UgI-o3-rb7"/>
                         </connections>
                     </button>
+                    <progressIndicator maxValue="100" displayedWhenStopped="NO" indeterminate="YES" style="spinning" translatesAutoresizingMaskIntoConstraints="NO" id="Wzq-xC-xkq">
+                        <rect key="frame" x="314" y="223" width="32" height="32"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="32" id="219-RT-Gjg"/>
+                            <constraint firstAttribute="width" constant="32" id="JR8-05-X7V"/>
+                        </constraints>
+                    </progressIndicator>
                 </subviews>
                 <constraints>
                     <constraint firstItem="f2a-59-pv7" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="PY0-yp-q30" secondAttribute="trailing" constant="8" symbolic="YES" id="6CR-xc-7sH"/>
@@ -263,9 +271,11 @@
                     <constraint firstItem="9tz-gF-DdE" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="HqM-Sb-z31"/>
                     <constraint firstItem="9tz-gF-DdE" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="ICR-BW-byx"/>
                     <constraint firstItem="PY0-yp-q30" firstAttribute="top" secondItem="cUv-yG-ROn" secondAttribute="bottom" constant="6" symbolic="YES" id="Ju4-iW-DsC"/>
+                    <constraint firstItem="Wzq-xC-xkq" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" id="N5z-Zx-eyb"/>
                     <constraint firstItem="PY0-yp-q30" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="SKt-Yq-a9G"/>
                     <constraint firstAttribute="bottom" secondItem="xXF-zr-IHi" secondAttribute="bottom" constant="18" id="XRf-QO-Xpo"/>
                     <constraint firstAttribute="trailing" secondItem="9tz-gF-DdE" secondAttribute="trailing" id="dp6-mb-FmP"/>
+                    <constraint firstItem="Wzq-xC-xkq" firstAttribute="centerY" secondItem="EiT-Mj-1SZ" secondAttribute="centerY" id="foa-kC-aa1"/>
                     <constraint firstItem="cUv-yG-ROn" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="p2F-wZ-QCI"/>
                     <constraint firstAttribute="bottom" secondItem="f2a-59-pv7" secondAttribute="bottom" constant="20" symbolic="YES" id="r8O-uD-U7X"/>
                     <constraint firstAttribute="bottom" secondItem="PY0-yp-q30" secondAttribute="bottom" constant="20" symbolic="YES" id="ssS-EH-JMo"/>

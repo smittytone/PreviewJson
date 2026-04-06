@@ -22,6 +22,7 @@ class AppDelegate:  NSObject,
     @IBOutlet weak var indentButton: NSButton!
     @IBOutlet weak var reloadButton: NSButton!
     @IBOutlet weak var reloadMenuItem: NSMenuItem!
+    @IBOutlet weak var progress: NSProgressIndicator!
 
 
     // MARK: - Private Properies
@@ -54,6 +55,7 @@ class AppDelegate:  NSObject,
         self.indentButton.state = self.renderIndents ? .on : .off
         self.reloadButton.isEnabled = false
         self.reloadMenuItem.isEnabled = false
+        self.progress.isHidden = true
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.doRender),
@@ -96,8 +98,6 @@ class AppDelegate:  NSObject,
                 NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: "com.bps.rd.load")))
             }
         }
-
-        self.openDialog = nil
     }
 
 
@@ -118,14 +118,28 @@ class AppDelegate:  NSObject,
     @IBAction
     private func doReRenderFile(_ sender: Any) {
 
-        let possibleError: NSError? = renderContent(self.currentURL)
-        if possibleError != nil {
-            // Pop up an alert
-            let errorAlert: NSAlert = NSAlert(error: possibleError!)
-            errorAlert.beginSheetModal(for: self.window)
-        }
+        wenderFile()
     }
-    
+
+
+    @objc
+    func wenderFile() {
+
+        Task { @MainActor in
+            self.progress.isHidden = false
+            self.progress.startAnimation(self)
+
+            let possibleError: NSError? = await renderContent(self.currentURL)
+            self.progress.stopAnimation(self)
+
+            if possibleError != nil {
+                // Pop up an alert
+                let errorAlert: NSAlert = NSAlert(error: possibleError!)
+                await errorAlert.beginSheetModal(for: self.window)
+            }
+        }
+   }
+
 
     @IBAction
     private func doSetIndentCharacter(_ sender: Any) {
@@ -140,15 +154,15 @@ class AppDelegate:  NSObject,
     @objc
     private func doRender(_ note: Notification) {
 
-        let possibleError: NSError? = renderContent(self.currentURL!)
-        if possibleError != nil {
-            let errorAlert: NSAlert = NSAlert(error: possibleError!)
-            errorAlert.beginSheetModal(for: self.window)
-        }
+        self.progress.isHidden = false
+        self.progress.startAnimation(self)
+        let _ = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(self.wenderFile), userInfo: nil, repeats: false)
+
     }
 
+    @MainActor
+    private func renderContent(_ fileToRender: URL?) async -> NSError? {
 
-    private func renderContent(_ fileToRender: URL?) -> NSError? {
 
         var reportError: NSError? = nil
 
@@ -187,7 +201,7 @@ class AppDelegate:  NSObject,
                     let jsonAttString: NSAttributedString = common.getAttributedString(jsonDataCoded)
                      */
 
-                    let jsonAttString: NSAttributedString = self.common!.getAttributedString(fromJson: jsonString)
+                    let jsonAttString: NSAttributedString = await self.common!.getPreviewString(fromJson: jsonString)
                     self.previewTextView.backgroundColor = self.common!.doShowLightBackground ? NSColor(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
                     self.previewScrollView.scrollerKnobStyle = self.common!.doShowLightBackground ? .dark : .light
 
@@ -205,7 +219,7 @@ class AppDelegate:  NSObject,
 #if DEBUG
                         print("********** END ************")
 #endif
-
+                        
                         self.common = nil
                         return nil
                     }
@@ -233,6 +247,7 @@ class AppDelegate:  NSObject,
 
         self.common = nil
         return reportError
+        
     }
     
     
