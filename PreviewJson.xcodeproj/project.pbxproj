@@ -61,9 +61,6 @@
 		3BC2338A2A969517005C3015 /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC233892A969516005C3015 /* REPLACE_WITH_YOUR_CODES.swift */; };
 		3BC2338B2A969517005C3015 /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC233892A969516005C3015 /* REPLACE_WITH_YOUR_CODES.swift */; };
 		3BC2338C2A969517005C3015 /* REPLACE_WITH_YOUR_CODES.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC233892A969516005C3015 /* REPLACE_WITH_YOUR_CODES.swift */; };
-		3BD414012F7E65F700096B0C /* ThreadSafeTableStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD414002F7E65EC00096B0C /* ThreadSafeTableStore.swift */; };
-		3BD414022F7E65F700096B0C /* ThreadSafeTableStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD414002F7E65EC00096B0C /* ThreadSafeTableStore.swift */; };
-		3BD414042F7E65F700096B0C /* ThreadSafeTableStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD414002F7E65EC00096B0C /* ThreadSafeTableStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -157,7 +154,6 @@
 		3BC233852A9694BF005C3015 /* new */ = {isa = PBXFileReference; lastKnownFileType = folder; name = new; path = "/Users/smitty/Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewJson/new"; sourceTree = "<absolute>"; };
 		3BC233872A9694E1005C3015 /* REPLACE_WITH_YOUR_FUNCTIONS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = REPLACE_WITH_YOUR_FUNCTIONS.swift; path = "/Users/smitty/Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewApps/REPLACE_WITH_YOUR_FUNCTIONS.swift"; sourceTree = "<absolute>"; };
 		3BC233892A969516005C3015 /* REPLACE_WITH_YOUR_CODES.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = REPLACE_WITH_YOUR_CODES.swift; path = "/Users/smitty/Library/Mobile Documents/com~apple~CloudDocs/Documents/Programming/PreviewApps/REPLACE_WITH_YOUR_CODES.swift"; sourceTree = "<absolute>"; };
-		3BD414002F7E65EC00096B0C /* ThreadSafeTableStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadSafeTableStore.swift; sourceTree = "<group>"; };
 		3BE355B928BCD07300523296 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -224,7 +220,6 @@
 			isa = PBXGroup;
 			children = (
 				3B67EBB828BCB5D70048F8AE /* Common.swift */,
-				3BD414002F7E65EC00096B0C /* ThreadSafeTableStore.swift */,
 				3B5E988E2F6C5ADC00477E96 /* JsonEntities.swift */,
 				3B5E98AF2F6D4ADA00477E96 /* Extensions.swift */,
 				3B5E98A32F6C697400477E96 /* PJSettings.swift */,
@@ -568,7 +563,6 @@
 			files = (
 				3BB324652F6D88E600A2DB45 /* Entities.swift in Sources */,
 				3B5E98922F6C5BD000477E96 /* JsonEntities.swift in Sources */,
-				3BD414042F7E65F700096B0C /* ThreadSafeTableStore.swift in Sources */,
 				3BC2338C2A969517005C3015 /* REPLACE_WITH_YOUR_CODES.swift in Sources */,
 				3B1FA42C28C124F4001DA63C /* Common.swift in Sources */,
 				3B5E98B02F6D4ADE00477E96 /* Extensions.swift in Sources */,
@@ -622,7 +616,6 @@
 			files = (
 				3BB324642F6D88E600A2DB45 /* Entities.swift in Sources */,
 				3B5E988F2F6C5AE600477E96 /* JsonEntities.swift in Sources */,
-				3BD414012F7E65F700096B0C /* ThreadSafeTableStore.swift in Sources */,
 				3BC2338B2A969517005C3015 /* REPLACE_WITH_YOUR_CODES.swift in Sources */,
 				3B67EBA728BCB3610048F8AE /* PreviewViewController.swift in Sources */,
 				3B5E98B12F6D4ADE00477E96 /* Extensions.swift in Sources */,
@@ -638,7 +631,6 @@
 			files = (
 				3B300AB42F6D7916000D70E7 /* Entities.swift in Sources */,
 				3B5E98952F6C5E1300477E96 /* JsonEntities.swift in Sources */,
-				3BD414022F7E65F700096B0C /* ThreadSafeTableStore.swift in Sources */,
 				3B5E98B22F6D4ADE00477E96 /* Extensions.swift in Sources */,
 				3BA7AC202A6ABFE300457247 /* Common.swift in Sources */,
 				3B300AB32F6D6427000D70E7 /* REPLACE_WITH_YOUR_CODES.swift in Sources */,
@@ -708,7 +700,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 274;
+				CURRENT_PROJECT_VERSION = 275;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -738,7 +730,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 274;
+				CURRENT_PROJECT_VERSION = 275;
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;

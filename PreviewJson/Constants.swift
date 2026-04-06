@@ -153,12 +153,14 @@ struct BUFFOON_CONSTANTS {
     static let MAX_TAB_COL_SIZE_PT              = CGFloat(400.0)
     static let TAB_COL_IMAGE_WIDTH_PT           = CGFloat(120.0)
 
-#if DEBUG2
+#if DEBUG
     static let CR                               = "↵\n"
     static let COLLECTION_SPACER                = "⟼\n"
+    static let TAB                              = "↦\t"
 #else
     static let CR                               = "\n"
     static let COLLECTION_SPACER                = "\n"
+    static let TAB                              = "\t"
 #endif
 }
 

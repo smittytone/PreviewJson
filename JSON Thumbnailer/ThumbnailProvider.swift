@@ -64,7 +64,7 @@ class ThumbnailProvider: QLThumbnailProvider {
 
             // Instantiate an NSTextField to display the NSAttributedString render of the JSON
             let jsonTextField: NSTextField = NSTextField(frame: jsonFrame)
-            jsonTextField.attributedStringValue = common.getAttributedString(fromJson: json)
+            jsonTextField.attributedStringValue = common.getThumbnailString(fromJson: json)
 
             // FROM 2.0.0
             // From macOS 26.1, make sure thumbnail backgrounds remain white
@@ -92,10 +92,10 @@ class ThumbnailProvider: QLThumbnailProvider {
                                                         0.0,
                                                         CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ASPECT) * request.maximumSize.height,
                                                         request.maximumSize.height)
-                let scaleFrame: CGRect = NSMakeRect(0.0,
-                                                    0.0,
-                                                    thumbnailFrame.width * request.scale,
-                                                    thumbnailFrame.height * request.scale)
+                let scaleFrame: CGRect = NSMakeRect(20.0,
+                                                    20.0,
+                                                    thumbnailFrame.width * request.scale - 20.0,
+                                                    thumbnailFrame.height * request.scale - 20.0)
 
                 // Pass a QLThumbnailReply and no error to the supplied handler
                 handler(QLThumbnailReply(contextSize: thumbnailFrame.size) { (context) -> Bool in

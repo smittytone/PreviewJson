@@ -19,24 +19,26 @@ class PreviewViewController: NSViewController,
 
     @IBOutlet weak var renderTextView: NSTextView!
     @IBOutlet weak var renderTextScrollView: NSScrollView!
-    
+
     override var nibName: NSNib.Name? {
         return NSNib.Name("PreviewViewController")
     }
 
 
-    func preparePreviewOfFile(at url: URL, completionHandler handler: @escaping (Error?) -> Void) {
-        
-       /*
+    //func preparePreviewOfFile(at url: URL, completionHandler handler: @escaping (Error?) -> Void) {
+    func preparePreviewOfFile(at url: URL) async throws {
+
+        /*
          * Main entry point for the macOS preview system
+         * FROM 2.0.0 -- Use the Swift Concurrency version
          */
         
         // Get an error message ready for use
         var reportError: NSError? = nil
         
-        // Hide the error message field
+        // Show the
         self.renderTextScrollView.isHidden = false
-        
+
         // Load the source file using a co-ordinator as we don't know what thread this function
         // will be executed in when it's called by macOS' QuickLook code
         do {
@@ -55,7 +57,7 @@ class PreviewViewController: NSViewController,
                 // FROM 2.0.0
                 // The force-light-mode-preview-in-dark-mode setting is now a general
                 // preview-colours-should-be-opposite-the-mode setting.
-                var renderPreviewLight = common.isMacInLightMode()
+                var renderPreviewLight = NSApplication.shared.inLightMode
                 if common.settings.doReverseMode {
                     // Invert the colour scheme based on the current mode
                     renderPreviewLight = !renderPreviewLight
@@ -78,7 +80,10 @@ class PreviewViewController: NSViewController,
                     self.renderTextView.textContainerInset = previewSize
                 }
 
-                let jsonAttString: NSAttributedString = common.getAttributedString(fromJson: jsonString)
+                var jsonAttString: NSAttributedString = await common.getPreviewString(fromJson: jsonString)
+                if jsonAttString.length == 0 && common.settings.showRawJsonOnError {
+                    jsonAttString = await common.getPreviewString(fromJson: "{\"Could not parse the JSON\":\"\(jsonString)\"}")
+                }
 
                 // Rescale the text view to match the width of a tabluted view
                 if common.tableWidth > self.renderTextView.frame.width {
@@ -98,14 +103,13 @@ class PreviewViewController: NSViewController,
                     // Add the subview to the instance's own view and draw
                     // self.view.display()
 
-                    // Call the QLPreviewingController indicating no error
-                    // (argument is nil)
-                    handler(nil)
+                    // Call the QLPreviewingController indicating no error (argument is nil)
+                    //handler(nil)
                     return
                 }
 
                 // We can't access the preview NSTextView's NSTextStorage
-                reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
+                reportError = makeError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
             } else {
                 // We couldn't convert to data to a valid encoding
                 let errDesc: String = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) \(encoding)"
@@ -115,15 +119,14 @@ class PreviewViewController: NSViewController,
             }
         } catch {
             // We couldn't read the file so set an appropriate error to report back
-            reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
+            reportError = makeError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
         }
 
         // Display the error locally in the window
         //showError(reportError!.userInfo[NSLocalizedDescriptionKey] as! String)
 
-        // Call the QLPreviewingController indicating an error
-        // (argumnet is not nil)
-        handler(reportError)
+        // Call the QLPreviewingController indicating an error (argumnet is not nil)
+        throw reportError!
     }
 
 
@@ -153,8 +156,8 @@ class PreviewViewController: NSViewController,
 
      - Returns: The described error as an NSError.
      */
-    func setError(_ code: Int) -> NSError {
-        
+    func makeError(_ code: Int) -> NSError {
+
         var errDesc: String
         
         switch(code) {

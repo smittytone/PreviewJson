@@ -38,7 +38,12 @@ class PJSettings {
     var previewWindowScale: CGFloat         = BUFFOON_CONSTANTS.SCALERS.WINDOW_SIZE_L
     var thumbnailMatchFinderMode: Bool      = false
 
+    /*
+     NON-SAVE SETTINGS, FOR CONVENIENCE
+     */
+    var isThumbnail: Bool                   = false
 
+    
     /**
      Populate the current settings value with those read from disk.
      */

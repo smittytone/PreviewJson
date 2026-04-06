@@ -160,3 +160,13 @@ extension Data {
         return .init(rawValue: rawValue)
     }
 }
+
+
+extension NSApplication {
+
+    var inLightMode: Bool {
+        get {
+            return (self.effectiveAppearance.name.rawValue == "NSAppearanceNameAqua")
+        }
+    }
+}
