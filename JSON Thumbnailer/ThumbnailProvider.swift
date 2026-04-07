@@ -14,7 +14,7 @@ import QuickLookThumbnailing
 
 class ThumbnailProvider: QLThumbnailProvider {
 
-    // MARK:- Private Properties
+    // MARK: - Private Properties
 
     private enum ThumbnailerError: Error {
         case badFileLoad(String)
@@ -26,7 +26,7 @@ class ThumbnailProvider: QLThumbnailProvider {
     }
 
 
-    // MARK:- QLThumbnailProvider Required Functions
+    // MARK: - QLThumbnailProvider Required Functions
 
     override func provideThumbnail(for request: QLFileThumbnailRequest, _ handler: @escaping (QLThumbnailReply?, Error?) -> Void) {
 

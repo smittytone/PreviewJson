@@ -25,6 +25,8 @@ class PreviewViewController: NSViewController,
     }
 
 
+    // MARK: - QLPreviewingController Required Functions
+
     // FROM 2.0.0
     // Update to use Swift Concurrency
     func preparePreviewOfFile(at url: URL) async throws {
