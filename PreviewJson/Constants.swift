@@ -39,18 +39,9 @@ struct BUFFOON_CONSTANTS {
         static let WIDTH                        = 768
         static let HEIGHT                       = 1024
         static let ASPECT                       = 0.75
-        static let TAG_HEIGHT                   = 204.8
-        static let FONT_SIZE                    = 130.0
+        static let FONT_SIZE                    = 22.0
     }
-    
-    struct ITEM_TYPE {
-        
-        static let KEY                          = 0
-        static let VALUE                        = 1
-        static let MARK_START                   = 2
-        static let MARK_END                     = 3
-    }
-    
+
     struct BOOL_STYLE {
         
         static let FULL                         = 0
@@ -116,11 +107,7 @@ struct BUFFOON_CONSTANTS {
         static let PREVIEW_MARGIN_WIDTH_MIN     = 0
         static let PREVIEW_MARGIN_WIDTH_MAX     = 256
         static let PREVIEW_MARGIN_SIZE          = NSSize(width: PREVIEW_MARGIN_WIDTH, height: PREVIEW_MARGIN_WIDTH)
-    }
-
-    struct THUMB_SIZE {
-
-        static let FONT_SIZE                    = 22.0
+        static let JSON_INDENT                  = 8
     }
 
     struct SCALERS {
@@ -136,8 +123,6 @@ struct BUFFOON_CONSTANTS {
                                                    BUFFOON_CONSTANTS.COLOUR_IDS.MARKS]
 
     static let BODY_FONT_NAME                   = "Menlo-Regular"
-    static let JSON_INDENT                      = 8     // Can change
-    static let TABBED_INDENT                    = 4     // Fixed
     static let TABULATION_INDENT_VALUE          = 999
 
     static let URL_MAIN                         = "https://smittytone.net/previewjson/index.html"

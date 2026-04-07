@@ -21,7 +21,7 @@ class PJSettings {
     var doReverseMode: Bool                 = false
     var showJsonMarks: Bool                 = true
     var showRawJsonOnError: Bool            = false
-    var indentSize: Int                     = BUFFOON_CONSTANTS.JSON_INDENT
+    var indentSize: Int                     = BUFFOON_CONSTANTS.PREVIEW_SIZE.JSON_INDENT
     var boolStyle: Int                      = BUFFOON_CONSTANTS.BOOL_STYLE.FULL
 
     var displayColours: [String: String]    = [
@@ -179,7 +179,7 @@ class PJSettings {
             // Default: 8
             let indentDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_JSON_INDENT)
             if indentDefault == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.JSON_INDENT,
+                defaults.setValue(BUFFOON_CONSTANTS.PREVIEW_SIZE.JSON_INDENT,
                                   forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_JSON_INDENT)
             }
 
@@ -260,7 +260,7 @@ class PJSettings {
             // Default: 28.0
             let thumbFontSizeDefault: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.THUMB_SIZE)
             if thumbFontSizeDefault == nil {
-                defaults.setValue(CGFloat(BUFFOON_CONSTANTS.THUMB_SIZE.FONT_SIZE),
+                defaults.setValue(CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.FONT_SIZE),
                                   forKey: BUFFOON_CONSTANTS.PREFS_IDS.THUMB_SIZE)
             }
         }

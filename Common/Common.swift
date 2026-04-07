@@ -12,30 +12,12 @@ import AppKit
 
 final class Common {
 
-    // MARK: - Definitions
-
-    /* String attribute categories
-
-     UNUSED FROM 2.0.0
-    enum AttributeType {
-        case Key
-        case Scalar
-        case String
-        case Special
-        case Debug
-        case MarkStart
-        case MarkEnd
-        case Custom
-    }
-     */
-
-
     // MARK: - Public Properties
 
-    public var doShowLightBackground: Bool          = false
+    public var doShowLightBackground: Bool                          = false
     // FROM 2.0.0
-    public var settings: PJSettings                 = PJSettings()
-    public var tableWidth: CGFloat                  = 384.0
+    public var settings: PJSettings                                 = PJSettings()
+    public var tableWidth: CGFloat                                  = 384.0
 
 
     // MARK: - Private Properties
@@ -716,7 +698,7 @@ final class Common {
         insetImage.bounds = CGRect(x: 0, y: (font.capHeight - image.size.height).rounded() / 2, width: image.size.width, height: image.size.height)
 
         // Add the attachment and return the attributed string
-        let imageAsString = NSMutableAttributedString(string: " ")
+        let imageAsString = NSMutableAttributedString(string: "")
         imageAsString.append(NSMutableAttributedString(attachment: insetImage))
         imageAsString.addAttributes(self.scalarAttributes, range: NSRange(location: 0, length: imageAsString.length))
         return imageAsString
@@ -728,7 +710,10 @@ final class Common {
     /**
      Convert the specified JSON string to a structured JSON entity.
 
+     - Parameters:
+        - string: The string containing JSON.
 
+     - Returns: A JSONValue, or `nil` on error/absence of JSON.
      */
     private func parse(string json: String) -> JSONValue? {
 
