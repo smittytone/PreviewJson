@@ -10,52 +10,13 @@
 import AppKit
 
 
-public struct Cell {
-
-    var text: NSAttributedString? = nil
-    var row: Int = 0
-    var col: Int = 0
-    var width: CGFloat = 0.0
-    var isVal: Bool = false
-}
-
-
-/*
- JSON Marker types. TO REMOVE
- */
-public enum JSONMarkType {
-
-    case objectOpen
-    case objectClose
-    case arrayOpen
-    case arrayClose
-    case none
-
-    func string() -> String {
-
-        switch self {
-            case .objectOpen:
-                return "{ "
-            case .objectClose:
-                return " }"
-            case .arrayOpen:
-                return "[ "
-            case .arrayClose:
-                return " ]"
-            default:
-                return  ""
-        }
-    }
-}
-
-
 /*
  A Paragraph as extracted from a line of JSON.
  */
 public class Paragraph {
 
     var text: NSMutableAttributedString? = nil      // The paragraph's styled text
-    var depth: Int = 0                              // The paragraph's inset level
+    var depth: Int = 0                              // The paragraph's column number
     var keyLength: CGFloat = 0.0                    // If the paragraph is prefixed with a key, it's length in points
 
     init(text: NSMutableAttributedString? = nil, depth: Int = 0, keyLength: CGFloat = 0.0) {
@@ -68,7 +29,8 @@ public class Paragraph {
 
 
 /*
- An order-preserving JSON entity.
+ A JSON entity which preserves the order of keys in objects,
+ and elements in arrays.
  */
 public enum JSONValue {
 
@@ -129,6 +91,7 @@ public enum JSONValue {
         return nil
     }
 
+    /* Not used ATM
     // Subscript objects by key (first match).
     public subscript(key: String) -> JSONValue? {
         objectValue?.first(where: { $0.key == key })?.value
@@ -142,6 +105,7 @@ public enum JSONValue {
 
         return arr[index]
     }
+     */
 }
 
 
