@@ -23,6 +23,7 @@ class AppDelegate:  NSObject,
     @IBOutlet weak var reloadButton: NSButton!
     @IBOutlet weak var reloadMenuItem: NSMenuItem!
     @IBOutlet weak var progress: NSProgressIndicator!
+    @IBOutlet weak var thumbButton: NSButton!
 
 
     // MARK: - Private Properies
@@ -201,7 +202,12 @@ class AppDelegate:  NSObject,
                     let jsonAttString: NSAttributedString = common.getAttributedString(jsonDataCoded)
                      */
 
-                    let jsonAttString: NSAttributedString = await self.common!.getPreviewString(fromJson: jsonString)
+                    let jsonAttString: NSAttributedString
+                    if self.thumbButton.state == .on {
+                        jsonAttString = self.common!.getThumbnailString(fromJson: jsonString)
+                    } else {
+                        jsonAttString = await self.common!.getPreviewString(fromJson: jsonString)
+                    }
                     self.previewTextView.backgroundColor = self.common!.doShowLightBackground ? NSColor(white: 1.0, alpha: 0.9) : NSColor.textBackgroundColor
                     self.previewScrollView.scrollerKnobStyle = self.common!.doShowLightBackground ? .dark : .light
 

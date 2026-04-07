@@ -23,6 +23,7 @@
                 <outlet property="progress" destination="Wzq-xC-xkq" id="NO6-mA-IJ3"/>
                 <outlet property="reloadButton" destination="xXF-zr-IHi" id="L11-it-rA5"/>
                 <outlet property="reloadMenuItem" destination="hgU-EM-IhT" id="7em-zg-5z0"/>
+                <outlet property="thumbButton" destination="mIm-wI-PGa" id="cY9-pK-RcH"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -176,16 +177,16 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView borderType="none" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" translatesAutoresizingMaskIntoConstraints="NO" id="9tz-gF-DdE">
-                        <rect key="frame" x="0.0" y="78" width="660" height="400"/>
+                        <rect key="frame" x="0.0" y="88" width="660" height="390"/>
                         <clipView key="contentView" drawsBackground="NO" id="BJy-MZ-98D">
-                            <rect key="frame" x="0.0" y="0.0" width="660" height="400"/>
+                            <rect key="frame" x="0.0" y="0.0" width="660" height="390"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView wantsLayer="YES" editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" allowsCharacterPickerTouchBarItem="NO" usesRuler="YES" textCompletion="NO" layoutManager="textKit1" id="NAJ-g1-D1W">
-                                    <rect key="frame" x="0.0" y="0.0" width="660" height="400"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="660" height="390"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="minSize" width="660" height="400"/>
+                                    <size key="minSize" width="660" height="390"/>
                                     <size key="maxSize" width="660" height="10000000"/>
                                     <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                 </textView>
@@ -196,7 +197,7 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="skS-h9-m4V">
-                            <rect key="frame" x="643" y="0.0" width="17" height="400"/>
+                            <rect key="frame" x="643" y="0.0" width="17" height="294"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
@@ -262,24 +263,42 @@
                             <constraint firstAttribute="width" constant="32" id="JR8-05-X7V"/>
                         </constraints>
                     </progressIndicator>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="mIm-wI-PGa">
+                        <rect key="frame" x="20" y="64" width="620" height="16"/>
+                        <buttonCell key="cell" type="check" title="Thumbnail" bezelStyle="regularSquare" imagePosition="left" inset="2" id="yj0-nX-zys">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="16" id="8cO-tc-h4o"/>
+                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="514" id="EF4-oS-4YG"/>
+                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="16" id="kUA-Qp-PoB"/>
+                        </constraints>
+                        <connections>
+                            <action selector="doReloadFile:" target="Voe-Tx-rLC" id="IVw-qq-khL"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
+                    <constraint firstAttribute="trailing" secondItem="9tz-gF-DdE" secondAttribute="trailing" id="1Cy-I4-BDP"/>
+                    <constraint firstItem="9tz-gF-DdE" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="1nO-d9-maJ"/>
                     <constraint firstItem="f2a-59-pv7" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="PY0-yp-q30" secondAttribute="trailing" constant="8" symbolic="YES" id="6CR-xc-7sH"/>
-                    <constraint firstItem="cUv-yG-ROn" firstAttribute="top" secondItem="9tz-gF-DdE" secondAttribute="bottom" constant="20" id="9Y8-v3-VfM"/>
                     <constraint firstAttribute="trailing" secondItem="f2a-59-pv7" secondAttribute="trailing" constant="20" symbolic="YES" id="CFz-ED-Zjx"/>
                     <constraint firstItem="f2a-59-pv7" firstAttribute="leading" secondItem="xXF-zr-IHi" secondAttribute="trailing" constant="8" id="CuA-dy-EpB"/>
-                    <constraint firstItem="9tz-gF-DdE" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" id="HqM-Sb-z31"/>
-                    <constraint firstItem="9tz-gF-DdE" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="ICR-BW-byx"/>
+                    <constraint firstAttribute="trailing" secondItem="mIm-wI-PGa" secondAttribute="trailing" constant="20" symbolic="YES" id="Fdv-Lb-tgb"/>
                     <constraint firstItem="PY0-yp-q30" firstAttribute="top" secondItem="cUv-yG-ROn" secondAttribute="bottom" constant="6" symbolic="YES" id="Ju4-iW-DsC"/>
                     <constraint firstItem="Wzq-xC-xkq" firstAttribute="centerX" secondItem="EiT-Mj-1SZ" secondAttribute="centerX" id="N5z-Zx-eyb"/>
                     <constraint firstItem="PY0-yp-q30" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="SKt-Yq-a9G"/>
                     <constraint firstAttribute="bottom" secondItem="xXF-zr-IHi" secondAttribute="bottom" constant="18" id="XRf-QO-Xpo"/>
-                    <constraint firstAttribute="trailing" secondItem="9tz-gF-DdE" secondAttribute="trailing" id="dp6-mb-FmP"/>
+                    <constraint firstItem="mIm-wI-PGa" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="Y1Z-Y0-iAP"/>
                     <constraint firstItem="Wzq-xC-xkq" firstAttribute="centerY" secondItem="EiT-Mj-1SZ" secondAttribute="centerY" id="foa-kC-aa1"/>
+                    <constraint firstItem="cUv-yG-ROn" firstAttribute="top" secondItem="mIm-wI-PGa" secondAttribute="bottom" constant="6" symbolic="YES" id="gPa-8d-22o"/>
                     <constraint firstItem="cUv-yG-ROn" firstAttribute="leading" secondItem="EiT-Mj-1SZ" secondAttribute="leading" constant="20" symbolic="YES" id="p2F-wZ-QCI"/>
                     <constraint firstAttribute="bottom" secondItem="f2a-59-pv7" secondAttribute="bottom" constant="20" symbolic="YES" id="r8O-uD-U7X"/>
                     <constraint firstAttribute="bottom" secondItem="PY0-yp-q30" secondAttribute="bottom" constant="20" symbolic="YES" id="ssS-EH-JMo"/>
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="cUv-yG-ROn" secondAttribute="trailing" constant="20" symbolic="YES" id="uoj-4f-PSC"/>
+                    <constraint firstItem="mIm-wI-PGa" firstAttribute="top" secondItem="9tz-gF-DdE" secondAttribute="bottom" constant="8" symbolic="YES" id="wnF-mP-byN"/>
+                    <constraint firstItem="9tz-gF-DdE" firstAttribute="top" secondItem="EiT-Mj-1SZ" secondAttribute="top" id="xOf-Lx-EmJ"/>
                 </constraints>
             </view>
             <point key="canvasLocation" x="304" y="680"/>
