@@ -179,7 +179,7 @@ final class Common {
         for i in 0..<thumbnailParagraphs.count {
             let paragraph = thumbnailParagraphs.object(at: i) as! Paragraph
             if var paragraphText = paragraph.text {
-                let inset: CGFloat = CGFloat(paragraph.depth) * BUFFOON_CONSTANTS.BASE_TAB_SIZE_PT * CGFloat(self.settings.indentSize)
+                let inset: CGFloat = CGFloat(paragraph.depth) * BUFFOON_CONSTANTS.BASE_TAB_SIZE_PT
 
                 if paragraphText.length > 0 {
                     // Instantiate a generic paragraph style

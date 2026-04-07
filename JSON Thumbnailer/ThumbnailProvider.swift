@@ -92,9 +92,9 @@ class ThumbnailProvider: QLThumbnailProvider {
                                                         0.0,
                                                         CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ASPECT) * request.maximumSize.height,
                                                         request.maximumSize.height)
-                let scaleFrame: CGRect = NSMakeRect(20.0,
+                let scaleFrame: CGRect = NSMakeRect(10.0,
                                                     20.0,
-                                                    thumbnailFrame.width * request.scale - 20.0,
+                                                    thumbnailFrame.width * request.scale - 10.0,
                                                     thumbnailFrame.height * request.scale - 20.0)
 
                 // Pass a QLThumbnailReply and no error to the supplied handler
