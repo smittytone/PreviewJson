@@ -25,7 +25,8 @@ class PreviewViewController: NSViewController,
     }
 
 
-    //func preparePreviewOfFile(at url: URL, completionHandler handler: @escaping (Error?) -> Void) {
+    // FROM 2.0.0
+    // Update to use Swift Concurrency
     func preparePreviewOfFile(at url: URL) async throws {
 
         /*
@@ -69,9 +70,6 @@ class PreviewViewController: NSViewController,
                 // Update the NSTextView
                 self.renderTextView.backgroundColor = renderPreviewLight ? NSColor.white : NSColor.textBackgroundColor
                 self.renderTextScrollView.scrollerKnobStyle = renderPreviewLight ? .dark : .light
-                if renderPreviewLight {
-                    self.renderTextScrollView.scrollerKnobStyle = .dark
-                }
 
                 // FROM 2.0.0
                 // Add margin if required
@@ -80,6 +78,7 @@ class PreviewViewController: NSViewController,
                     self.renderTextView.textContainerInset = previewSize
                 }
 
+                // Get the preview string
                 var jsonAttString: NSAttributedString = await common.getPreviewString(fromJson: jsonString)
                 if jsonAttString.length == 0 && common.settings.showRawJsonOnError {
                     jsonAttString = await common.getPreviewString(fromJson: "{\"Could not parse the JSON\":\"\(jsonString)\"}")
@@ -87,7 +86,7 @@ class PreviewViewController: NSViewController,
 
                 // Rescale the text view to match the width of a tabluted view
                 if common.tableWidth > self.renderTextView.frame.width {
-                    self.renderTextView.setFrameSize(NSSize(width: common.tableWidth + 20.0, height: self.renderTextView.frame.size.height))
+                    self.renderTextView.setFrameSize(NSSize(width: common.tableWidth, height: self.renderTextView.frame.size.height))
                 }
 
                 if let renderTextStorage: NSTextStorage = self.renderTextView.textStorage {
@@ -99,22 +98,16 @@ class PreviewViewController: NSViewController,
                     renderTextStorage.beginEditing()
                     renderTextStorage.setAttributedString(jsonAttString)
                     renderTextStorage.endEditing()
-
-                    // Add the subview to the instance's own view and draw
-                    // self.view.display()
-
-                    // Call the QLPreviewingController indicating no error (argument is nil)
-                    //handler(nil)
                     return
                 }
 
                 // We can't access the preview NSTextView's NSTextStorage
                 reportError = makeError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
             } else {
-                // We couldn't convert to data to a valid encoding
-                let errDesc: String = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) \(encoding)"
+                // We couldn't convert to data to a valid encoding (custom error message)
+                let errDesc: String = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) unexpected encoding: \(encoding)"
                 reportError = NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,
-                                      code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING,
+                                      code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING,
                                       userInfo: [NSLocalizedDescriptionKey: errDesc])
             }
         } catch {
@@ -122,30 +115,14 @@ class PreviewViewController: NSViewController,
             reportError = makeError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
         }
 
-        // Display the error locally in the window
-        //showError(reportError!.userInfo[NSLocalizedDescriptionKey] as! String)
-
-        // Call the QLPreviewingController indicating an error (argumnet is not nil)
+        // FROM 2.0.0
+        // Throw to indicate an error
         throw reportError!
     }
 
 
     // MARK: - Utility Functions
     
-    /**
-     Place an error message in its various outlets.
-     
-     - parameters:
-        - errString: The error message.
-     
-    func showError(_ errString: String) {
-
-        NSLog("BUFFOON \(errString)")
-        self.renderTextScrollView.isHidden = true
-        self.view.display()
-    }
-    */
-
     /**
      Generate an NSError for an internal error, specified by its code.
 
