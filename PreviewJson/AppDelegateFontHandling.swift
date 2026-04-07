@@ -31,7 +31,6 @@ extension AppDelegate {
     internal func asyncGetFonts() {
 
         var cf: [PMFont] = []
-        let monoTrait: UInt = NSFontTraitMask.fixedPitchFontMask.rawValue
         let fm = NSFontManager.shared
         let families: [String] = fm.availableFontFamilies
         for family in families {
@@ -48,20 +47,16 @@ extension AppDelegate {
                 familyRecord.displayName = family
 
                 for font: [Any] in fonts {
-                    let fontTraits: UInt = font[3] as! UInt
-                    //if monoTrait & fontTraits != 0 {
-                        // The font is good to use, so add it to the list
-                        var fontRecord: PMFont = PMFont()
-                        fontRecord.postScriptName = font[0] as! String
-                        fontRecord.styleName = font[1] as! String
-                        fontRecord.traits = fontTraits
+                    var fontRecord: PMFont = PMFont()
+                    fontRecord.postScriptName = font[0] as! String
+                    fontRecord.styleName = font[1] as! String
+                    fontRecord.traits = font[3] as! UInt
 
-                        if familyRecord.styles == nil {
-                            familyRecord.styles = []
-                        }
+                    if familyRecord.styles == nil {
+                        familyRecord.styles = []
+                    }
 
-                        familyRecord.styles!.append(fontRecord)
-                    //}
+                    familyRecord.styles!.append(fontRecord)
                 }
 
                 if familyRecord.styles != nil && familyRecord.styles!.count > 0 {
