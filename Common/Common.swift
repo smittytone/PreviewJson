@@ -63,9 +63,9 @@ final class Common {
 
 
     // MARK: - Lifecycle Functions
-    
+
     init(forThumbnail isThumbnail: Bool) {
-        
+
         self.settings.loadSettings(self.appSuiteName)
         self.settings.isThumbnail = isThumbnail
 
@@ -90,7 +90,7 @@ final class Common {
             .foregroundColor: NSColor.hexToColour(self.settings.displayColours[BUFFOON_CONSTANTS.COLOUR_IDS.KEYS] ?? BUFFOON_CONSTANTS.HEX_COLOUR.KEYS),
             .font: font
         ]
-        
+
         self.scalarAttributes = [
             .foregroundColor: (useLightMode ? NSColor.black : NSColor.labelColor),
             .font: font
@@ -166,18 +166,18 @@ final class Common {
     public func getThumbnailString(fromJson json: String) -> NSAttributedString {
 
         // Parse the JSON data, bailing if this fails
+        let renderedString = NSMutableAttributedString(string: "", attributes: self.scalarAttributes)
         guard let json = parse(string: json)else {
-            return NSMutableAttributedString(string: "", attributes: self.scalarAttributes)
+            return renderedString
         }
 
         // Assemble the paragraphs (rows) to be rendered
-        let previewParagraphs = NSMutableArray()
-        prettify(json, 0, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), previewParagraphs)
+        let thumbnailParagraphs = NSMutableArray()
+        prettify(json, 0, nil, thumbnailParagraphs)
 
         // Generate the attributed string from the paras
-        let renderString = NSMutableAttributedString(string: "", attributes: self.scalarAttributes)
-        for i in 0..<previewParagraphs.count {
-            let paragraph = previewParagraphs.object(at: i) as! Paragraph
+        for i in 0..<thumbnailParagraphs.count {
+            let paragraph = thumbnailParagraphs.object(at: i) as! Paragraph
             if var paragraphText = paragraph.text {
                 let inset: CGFloat = CGFloat(paragraph.depth) * BUFFOON_CONSTANTS.BASE_TAB_SIZE_PT * CGFloat(self.settings.indentSize)
 
@@ -189,30 +189,24 @@ final class Common {
                     paragraphStyle.paragraphSpacing = self.settings.fontSize * BUFFOON_CONSTANTS.BASE_PARA_SPACING_PT
 
                     if paragraphText.string.hasPrefix("*") {
-                        // Render an empty spacer line
-                        // Set the spacer line paragraph style
-                        paragraphStyle.paragraphSpacing = 0.0
-                        paragraphStyle.headIndent = inset
-
                         // Add a fixed-text paragraph, then apply the spacer paragraph style
                         paragraphText = NSMutableAttributedString(string: BUFFOON_CONSTANTS.COLLECTION_SPACER, attributes: self.lineAttributes)
+                        paragraphStyle.paragraphSpacing = 0.0
+                        paragraphStyle.headIndent = inset
                     } else {
-                        // Define a text paragraph style that's indented
-                        paragraphStyle.headIndent = inset + paragraph.keyLength
-
                         // Add a paragraph terminator, then apply the text paragraph style
                         paragraphText.append(self.cr)
+                        paragraphStyle.headIndent = inset + paragraph.keyLength
                     }
 
                     // Add the paragraph attributed string to the main store
                     paragraphText.addAttribute(.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: paragraphText.length))
-                    renderString.append(paragraphText)
+                    renderedString.append(paragraphText)
                 }
             }
         }
 
-        // Hand back the rendered JSON
-        return renderString as NSAttributedString
+        return renderedString as NSAttributedString
     }
 
 
@@ -237,12 +231,12 @@ final class Common {
         }
 
         // Parse the JSON data, bailing if this fails
-        guard let json = parse(string: json)else {
+        guard let json = parse(string: json) else {
             return NSMutableAttributedString(string: "", attributes: self.scalarAttributes)
         }
 
         // Render the preview by the chosen indentation/tabulation
-        if (self.settings.indentSize == BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE && !self.settings.isThumbnail) {
+        if (self.settings.indentSize == BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE) {
             return tabulate(json) as NSAttributedString
         } else {
             return indent(json) as NSAttributedString
@@ -278,24 +272,19 @@ final class Common {
                 if paragraphText.length > 0 {
                     // Instantiate a generic paragraph style
                     let paragraphStyle = NSMutableParagraphStyle()
-                    paragraphStyle.firstLineHeadIndent = inset
-                    paragraphStyle.alignment = .left
                     paragraphStyle.paragraphSpacing = self.settings.fontSize * BUFFOON_CONSTANTS.BASE_PARA_SPACING_PT
+                    paragraphStyle.firstLineHeadIndent = inset
+                    paragraphStyle.headIndent = inset
+                    paragraphStyle.alignment = .left
 
                     if paragraphText.string.hasPrefix("*") {
-                        // Render an empty spacer line
-                        // Set the spacer line paragraph style
-                        paragraphStyle.paragraphSpacing = 0.0
-                        paragraphStyle.headIndent = inset
-
                         // Add a fixed-text paragraph, then apply the spacer paragraph style
                         paragraphText = NSMutableAttributedString(string: BUFFOON_CONSTANTS.COLLECTION_SPACER, attributes: self.scalarAttributes)
+                        paragraphStyle.paragraphSpacing = 0.0
                     } else {
-                        // Define a text paragraph style that's indented
-                        paragraphStyle.headIndent = inset + paragraph.keyLength
-
                         // Add a paragraph terminator, then apply the text paragraph style
                         paragraphText.append(self.cr)
+                        paragraphStyle.headIndent += paragraph.keyLength
                     }
 
                     // Add the paragraph attributed string to the main store
@@ -312,7 +301,7 @@ final class Common {
     /**
      Assemble an ordered sequence of Paragraphs from a JSON entity.
 
-     FROM 2.0.0
+     UPDATED 2.0.0
 
      - Parameters
         - json:       A JSON entity, which may be incomplete.
@@ -320,12 +309,10 @@ final class Common {
         - prefix:     Any text to which the rendered JSON entity should be appended.
         - paragraphs: The array of paragraphs to which the generated one will be added.
      */
-
     private func prettify(_ json: JSONValue, _ depth: Int = 0, _ prefix: NSMutableAttributedString?, _ paragraphs: NSMutableArray) {
 
         // Get the point size of the rendered key if there is one
         let thePrefix = prefix ?? NSMutableAttributedString(string: "", attributes: self.markAttributes)
-        let keyLength = thePrefix.length > 0 ? thePrefix.width : 0.0
         let showMarks = self.settings.showJsonMarks
         var inset = depth
 
@@ -346,7 +333,7 @@ final class Common {
                 let valueIsObject: Bool = value.objectValue != nil
                 let valueIsArray: Bool  = value.arrayValue != nil
 
-                // First, render the key
+                // First, render the key plus a separator
                 let keyString = NSMutableAttributedString(string: key.description + " ", attributes: self.keyAttributes)
 
                 // Now render the value
@@ -411,46 +398,26 @@ final class Common {
             }
 
             return
-        } else if json.isNull {
-            // Attempt to load the `NULL` symbol, but use a text version as a fallback on error
-            if !self.settings.isThumbnail && self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
-                let imageName: String = "null_\(self.settings.boolStyle)"
-                if let image: NSAttributedString = getImageString(imageName) {
-                    thePrefix.append(image)
-                }
-            } else {
-                // Can't or won't show an image? Show text
-                thePrefix.append(NSAttributedString(string: "NULL", attributes: self.specialAttributes))
-            }
-        } else if json.boolValue != nil {
-            // Attempt to load the `TRUE`/`FALSE` symbol, but use a text version as a fallback on error
-            if !self.settings.isThumbnail && self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
-                let boolType: String = json.boolValue! ? "true" : "false"
-                let imageName: String = "\(boolType)_\(self.settings.boolStyle)"
-                if let image: NSAttributedString = getImageString(imageName) {
-                    thePrefix.append(image)
-                }
-            } else {
-                // Can't or won't show an image? Show text
-                thePrefix.append(NSAttributedString(string: json.boolValue!.description, attributes: self.specialAttributes))
-            }
-        } else if json.numberValue != nil {
-            // Display the number as is
-            thePrefix.append(NSAttributedString(string: "\(json.numberValue!.description)", attributes: self.scalarAttributes))
-        } else if json.stringValue != nil {
-            // Display the string with quotemarks if the user wants to see markers
-            let value: String = json.stringValue!.description
-            let valueString: String = showMarks ? "“" + value + "”" : value
-            thePrefix.append(NSAttributedString(string: valueString, attributes: self.stringAttributes))
+        } else {
+            // Process the scalar value
+            let keyLength = thePrefix.length > 0 ? thePrefix.width : 0.0
+            paragraphs.add(Paragraph(text: renderScalarValue(json, thePrefix), depth: depth, keyLength: keyLength))
         }
-
-        // Stash the paragraph
-        paragraphs.add(Paragraph(text: prefix, depth: depth, keyLength: keyLength))
     }
 
 
     // MARK: - Tabulation Functions
 
+    /**
+     Render a JSON entity as a tabulated attributed string.
+
+     FROM 2.0.0
+
+     - Parameters:
+        - json: The JSON entity.
+
+     - Returns: The attributed string.
+     */
     private func tabulate(_ json: JSONValue) -> NSMutableAttributedString {
 
         // Get each column's max width
@@ -458,7 +425,7 @@ final class Common {
 
         // Assemble the paragraphs (rows) to be rendered
         let previewParagraphs = NSMutableArray()
-        generateTabParagraphs(json, 0, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), previewParagraphs)
+        generateTabParagraphs(json, 0, nil, previewParagraphs)
 
         // Determine the tabulation settings and
         // estimate the full width of the table
@@ -468,7 +435,7 @@ final class Common {
 
         for i in 0...self.maxDepth {
             // Set the tabs
-            let colWidth = colWidths[i]!
+            let colWidth = colWidths[i] ?? 400.0
             tabLocation += (colWidth + 20.0) // Add a little extra for spacing (10.0pt either side, notionally)
             let tabStop = NSTextTab(type: .leftTabStopType, location: tabLocation)
             tabStops.append(tabStop)
@@ -500,10 +467,11 @@ final class Common {
                     // Add a paragraph terminator, then apply the text paragraph style
                     let initialTabs = NSMutableAttributedString(string: String(repeating: BUFFOON_CONSTANTS.TAB, count: paragraph.depth), attributes: self.scalarAttributes)
                     initialTabs.append(paragraphText)
+                    initialTabs.append(self.cr)
                     paragraphText = initialTabs
-                    paragraphText.append(self.cr)
 
-                    // Set the column indents
+                    // Set the column indents: the column's tab stop, and the textual
+                    // backstop (20.0 points less than the next tab)
                     paragraphStyle.headIndent = tabStops[paragraph.depth].location
                     if paragraph.depth < tabStops.count - 1 {
                         paragraphStyle.tailIndent = tabStops[paragraph.depth + 1].location - 20.0
@@ -534,7 +502,7 @@ final class Common {
      - Returns: An updated `length` dictionary.
      */
     private func measureColumns(_ json: JSONValue, _ depth: Int, _ lengths: [Int: CGFloat]) -> [Int: CGFloat] {
-        
+
         var maxLengths = lengths
         if maxLengths[depth] == nil {
             maxLengths[depth] = 0
@@ -568,17 +536,16 @@ final class Common {
             // long, or the pixel-width of the rendered string
             if json.stringValue != nil {
                 let value = json.stringValue!
-                //if value.description.count > 10 {
-                    let valString = NSMutableAttributedString(string: value.description, attributes: self.stringAttributes)
-                    print("** \(value.description.prefix(20)) @ \(depth)")
-                    let valWidth = valString.width
-                    if valWidth > BUFFOON_CONSTANTS.MAX_TAB_COL_SIZE_PT {
-                        // Set a max width for the column
-                        maxLengths[depth] = BUFFOON_CONSTANTS.MAX_TAB_COL_SIZE_PT
-                    } else if valWidth > maxLengths[depth]! {
-                        maxLengths[depth] = valWidth
-                    }
-                //}
+                let valString = NSMutableAttributedString(string: value.description, attributes: self.stringAttributes)
+
+                // Get the width of the the value string, including curly quotes if they're included
+                let valWidth = valString.width + (self.settings.showJsonMarks ? NSMutableAttributedString(string: "“”", attributes: self.stringAttributes).width : 0.0)
+                if valWidth > BUFFOON_CONSTANTS.MAX_TAB_COL_SIZE_PT {
+                    // Set a max width for the column
+                    maxLengths[depth] = BUFFOON_CONSTANTS.MAX_TAB_COL_SIZE_PT
+                } else if valWidth > maxLengths[depth]! {
+                    maxLengths[depth] = valWidth
+                }
             } else if (json.boolValue != nil || json.isNull) && self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
                 if maxLengths[depth]! < BUFFOON_CONSTANTS.TAB_COL_IMAGE_WIDTH_PT {
                     maxLengths[depth] = BUFFOON_CONSTANTS.TAB_COL_IMAGE_WIDTH_PT
@@ -598,13 +565,20 @@ final class Common {
 
 
     /**
+     Assemble an ordered sequence of Paragraphs from a JSON entity.
 
+     FROM 2.0.0
+
+     - Parameters
+        - json:       A JSON entity, which may be incomplete.
+        - depth:      The level at which the entity is nested.
+        - prefix:     Any (optional) text to which the rendered JSON entity should be appended.
+        - paragraphs: The array of paragraphs to which the generated one will be added.
      */
     private func generateTabParagraphs(_ json: JSONValue, _ depth: Int = 0, _ prefix: NSMutableAttributedString?, _ paragraphs: NSMutableArray) {
 
         // Get the point size of the rendered key if there is one
         let thePrefix = prefix ?? NSMutableAttributedString(string: "", attributes: self.scalarAttributes)
-        let keyLength = thePrefix.length > 0 ? thePrefix.width : 0.0
 
         // Match the JSON entity by type to generate paragraph styled text
         if json.objectValue != nil {
@@ -617,12 +591,11 @@ final class Common {
                 // First, render the key
                 let followingChar = !valueIsObject && !valueIsArray ? BUFFOON_CONSTANTS.TAB : " "
                 let keyString = NSMutableAttributedString(string: key.description + followingChar, attributes: self.keyAttributes)
-                let keyLength = keyString.width
 
                 // Now render the value
                 if valueIsObject || valueIsArray {
                     // The value is a collection type: start it on a new line, ie. in a new paragraph (so no prefix)
-                    paragraphs.add(Paragraph(text: keyString, depth: depth, keyLength: keyLength))
+                    paragraphs.add(Paragraph(text: keyString, depth: depth, keyLength: keyString.width))
                     generateTabParagraphs(value, depth + 1, nil, paragraphs)
                 } else {
                     // The value is a scalar
@@ -657,43 +630,67 @@ final class Common {
             }
 
             return
-        } else if json.isNull {
-            // Attempt to load the `NULL` symbol, but use a text version as a fallback on error
-            if !self.settings.isThumbnail && self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
-                let imageName: String = "null_\(self.settings.boolStyle)"
-                if let image: NSAttributedString = getImageString(imageName) {
-                    thePrefix.append(image)
-                }
-            } else {
-                // Can't or won't show an image? Show text
-                thePrefix.append(NSAttributedString(string: "NULL", attributes: self.specialAttributes))
-            }
-        } else if json.boolValue != nil {
-            // Attempt to load the `TRUE`/`FALSE` symbol, but use a text version as a fallback on error
-            if !self.settings.isThumbnail && self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
-                let boolType: String = json.boolValue! ? "true" : "false"
-                let imageName: String = "\(boolType)_\(self.settings.boolStyle)"
-                if let image: NSAttributedString = getImageString(imageName) {
-                    thePrefix.append(image)
-                }
-            } else {
-                // Can't or won't show an image? Show text
-                thePrefix.append(NSAttributedString(string: json.boolValue!.description, attributes: self.specialAttributes))
-            }
-        } else if json.numberValue != nil {
-            // Display the number as is
-            thePrefix.append(NSAttributedString(string: "\(json.numberValue!.description)", attributes: self.scalarAttributes))
-        } else if json.stringValue != nil {
-            // Display the string with quotemarks if the user wants to see markers
-            thePrefix.append(NSAttributedString(string: json.stringValue!.description, attributes: self.stringAttributes))
+        } else {
+            // Process the scalar value
+            let keyLength = thePrefix.length > 0 ? thePrefix.width : 0.0
+            paragraphs.add(Paragraph(text: renderScalarValue(json, thePrefix), depth: depth, keyLength: keyLength))
         }
-
-        // Stash the paragraph
-        paragraphs.add(Paragraph(text: thePrefix, depth: depth, keyLength: keyLength))
     }
 
 
     // MARK: - Common Functions
+
+    /**
+     Render a JSON scalar value as an attributed string.
+
+     FROM: 2.0.0
+
+     - Parameters:
+        - scalar: The scalar JSON value.
+        - prefix: Any existing string (eg. a rendered key) we need to include.
+
+     - Returns: Any prefix plus the scalar value as an attributed string.
+     */
+    private func renderScalarValue(_ scalar: JSONValue, _ prefix: NSMutableAttributedString? = nil) -> NSMutableAttributedString {
+
+        let renderedString = prefix ?? NSMutableAttributedString(string: "", attributes: self.scalarAttributes)
+
+        if scalar.isNull {
+            // Attempt to load the `NULL` symbol, but use a text version as a fallback on error
+            if !self.settings.isThumbnail && self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
+                let imageName: String = "null_\(self.settings.boolStyle)"
+                if let image: NSAttributedString = getImageString(imageName) {
+                    renderedString.append(image)
+                }
+            } else {
+                // Can't or won't show an image? Show text
+                renderedString.append(NSAttributedString(string: "NULL", attributes: self.specialAttributes))
+            }
+        } else if scalar.boolValue != nil {
+            // Attempt to load the `TRUE`/`FALSE` symbol, but use a text version as a fallback on error
+            if !self.settings.isThumbnail && self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
+                let boolType: String = scalar.boolValue! ? "true" : "false"
+                let imageName: String = "\(boolType)_\(self.settings.boolStyle)"
+                if let image: NSAttributedString = getImageString(imageName) {
+                    renderedString.append(image)
+                }
+            } else {
+                // Can't or won't show an image? Show text
+                renderedString.append(NSAttributedString(string: scalar.boolValue!.description, attributes: self.specialAttributes))
+            }
+        } else if scalar.numberValue != nil {
+            // Display the number as is
+            renderedString.append(NSAttributedString(string: "\(scalar.numberValue!.description)", attributes: self.scalarAttributes))
+        } else if scalar.stringValue != nil {
+            // Display the string with quotemarks if the user wants to see markers
+            let value: String = scalar.stringValue!.description
+            let valueString: String = self.settings.showJsonMarks ? "“" + value + "”" : value
+            renderedString.append(NSAttributedString(string: valueString, attributes: self.stringAttributes))
+        }
+
+        return renderedString
+    }
+
 
     /**
      Return a space-prefix NSAttributedString formed from an image in the app Bundle
@@ -731,7 +728,7 @@ final class Common {
     /**
      Convert the specified JSON string to a structured JSON entity.
 
-     
+
      */
     private func parse(string json: String) -> JSONValue? {
 
