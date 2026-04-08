@@ -73,7 +73,7 @@ final class AppDelegate: NSResponder,
     // FROM 2.0.0
     // Advanced Settings Sheet
     @IBOutlet weak var advancedSettingsSheet: NSWindow!
-    @IBOutlet weak var applyAdvancedButton: NSButton!
+    @IBOutlet weak var helpAdvancedButton: NSButton!
     @IBOutlet weak var previewSizeAdvancedPopup: NSPopUpButton!
     @IBOutlet weak var tintTumbnailsAdvancedSwitch: NSSwitch!
     @IBOutlet weak var tintTumbnailsAdvancedLabel: NSTextField!
@@ -293,7 +293,13 @@ final class AppDelegate: NSResponder,
     @IBAction
     private func doShowPrefsHelp(sender: Any) {
 
-        let path: String = BUFFOON_CONSTANTS.URL_MAIN + "#customise-the-preview"
+        let path: String
+        if sender as? NSButton == self.helpAdvancedButton {
+            path = BUFFOON_CONSTANTS.URL_MAIN + "#advanced-settings"
+        } else {
+            path = BUFFOON_CONSTANTS.URL_MAIN + "#customise-the-preview"
+        }
+        
         NSWorkspace.shared.open(URL(string:path)!)
     }
 
