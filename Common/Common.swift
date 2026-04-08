@@ -27,6 +27,9 @@ final class Common {
     // FROM 2.0.0
     private var emptyString: NSMutableAttributedString              = NSMutableAttributedString(string: "*")
     private var maxDepth: Int                                       = 0
+    private var markWidth: CGFloat                                  = 10.0
+    private var imageWidth: CGFloat                                 = 12.0
+    private var quotesWidth: CGFloat                                = 24.0
 
     // JSON string attributes...
     private var keyAttributes: [NSAttributedString.Key: Any]        = [:]
@@ -116,6 +119,13 @@ final class Common {
                                             attributes: [.foregroundColor: NSColor.labelColor,
                                                          .paragraphStyle: hrParaStyle,
                                                          .font: hrFont])
+
+        // FROM 2.0.0
+        // Record width of standard JSON mark -- saves generating multiple
+        // attributed strings in `makeTabParagraph()` later
+        self.markWidth = NSAttributedString(string: "{", attributes: self.markAttributes).width
+        self.imageWidth = 120.0 * self.settings.fontSize / 32.0
+        self.quotesWidth = NSAttributedString(string: "“”", attributes: self.stringAttributes).width
     }
 
 
@@ -155,7 +165,7 @@ final class Common {
 
         // Assemble the paragraphs (rows) to be rendered
         let thumbnailParagraphs = NSMutableArray()
-        prettify(json, 0, nil, thumbnailParagraphs)
+        makeIndentParagraph(json, 0, nil, thumbnailParagraphs)
 
         // Generate the attributed string from the paras
         for i in 0..<thumbnailParagraphs.count {
@@ -242,7 +252,7 @@ final class Common {
 
         // Assemble the paragraphs (rows) to be rendered
         let previewParagraphs = NSMutableArray()
-        prettify(json, 0, nil, previewParagraphs)
+        makeIndentParagraph(json, 0, nil, previewParagraphs)
 
         // Generate the attributed string from the para
         let renderedString = NSMutableAttributedString(string: "", attributes: self.scalarAttributes)
@@ -291,10 +301,10 @@ final class Common {
         - prefix:     Any text to which the rendered JSON entity should be appended.
         - paragraphs: The array of paragraphs to which the generated one will be added.
      */
-    private func prettify(_ json: JSONValue, _ depth: Int = 0, _ prefix: NSMutableAttributedString?, _ paragraphs: NSMutableArray) {
+    private func makeIndentParagraph(_ json: JSONValue, _ depth: Int = 0, _ prefix: NSMutableAttributedString?, _ paragraphs: NSMutableArray) {
 
         // Get the point size of the rendered key if there is one
-        let thePrefix = prefix ?? NSMutableAttributedString(string: "", attributes: self.markAttributes)
+        let thePrefix = prefix ?? NSMutableAttributedString(string: "", attributes: self.scalarAttributes)
         let showMarks = self.settings.showJsonMarks
         var inset = depth
 
@@ -303,7 +313,7 @@ final class Common {
             if showMarks {
                 // Start of an object, so mark open on a fresh line
                 let markString = NSMutableAttributedString(string: "{", attributes: self.markAttributes)
-                paragraphs.add(Paragraph(text: markString, depth: inset, keyLength: 0.0))
+                paragraphs.add(Paragraph(text: markString, depth: inset)) // MPT has keyLength: markString.width
 
                 // And show collection's contents on next column
                 inset += 1
@@ -313,7 +323,7 @@ final class Common {
             for (key, value) in json.objectValue! {
                 // Is the value a collection?
                 let valueIsObject: Bool = value.objectValue != nil
-                let valueIsArray: Bool  = value.arrayValue != nil
+                let valueIsArray: Bool = value.arrayValue != nil
 
                 // First, render the key plus a separator
                 let keyString = NSMutableAttributedString(string: key.description + " ", attributes: self.keyAttributes)
@@ -322,18 +332,18 @@ final class Common {
                 if valueIsObject || valueIsArray {
                     // The value is a collection type
                     paragraphs.add(Paragraph(text: keyString, depth: inset, keyLength: keyString.width))
-                    prettify(value, (showMarks ? inset : inset + 1), NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs)
+                    makeIndentParagraph(value, (showMarks ? inset : inset + 1), nil, paragraphs)
                 } else {
                     // The value is a scalar
                     // NOTE The key has a trailing space, so no extra indent is required for the scalar value
-                    prettify(value, inset, keyString, paragraphs)
+                    makeIndentParagraph(value, inset, keyString, paragraphs)
                 }
             }
 
             if showMarks {
                 // Start of an object, so mark open on a fresh line
                 let markString = NSMutableAttributedString(string: "}", attributes: self.markAttributes)
-                paragraphs.add(Paragraph(text: markString, depth: inset - 1 , keyLength: 0.0))
+                paragraphs.add(Paragraph(text: markString, depth: inset - 1))
             }
 
             return
@@ -341,7 +351,7 @@ final class Common {
             if showMarks {
                 // Start of an object, so mark open on a fresh line
                 let markString = NSMutableAttributedString(string: "[", attributes: self.markAttributes)
-                paragraphs.add(Paragraph(text: markString, depth: inset, keyLength: 0.0))
+                paragraphs.add(Paragraph(text: markString, depth: inset))
 
                 // Show array contents on next column
                 inset += 1
@@ -361,10 +371,10 @@ final class Common {
                         paragraphs.add(Paragraph(text: prefix, depth: inset))
                     }
 
-                    prettify(value, (showMarks ? inset + 1 : inset), NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs)
+                    makeIndentParagraph(value, (showMarks ? inset + 1 : inset), NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs)
                 } else {
                     // The value is a scalar
-                    prettify(value, inset, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs)
+                    makeIndentParagraph(value, inset, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs)
                 }
 
                 // Add a narrow spacer line after all collections except the last one in the array
@@ -376,7 +386,7 @@ final class Common {
             if showMarks {
                 // Start of an object, so mark open on a fresh line
                 let markString = NSMutableAttributedString(string: "]", attributes: self.markAttributes)
-                paragraphs.add(Paragraph(text: markString, depth: inset - 1 , keyLength: 0.0))
+                paragraphs.add(Paragraph(text: markString, depth: inset - 1))
             }
 
             return
@@ -407,7 +417,7 @@ final class Common {
 
         // Assemble the paragraphs (rows) to be rendered
         let previewParagraphs = NSMutableArray()
-        generateTabParagraphs(json, 0, nil, previewParagraphs)
+        makeTabParagraph(json, 0, nil, previewParagraphs)
 
         // Determine the tabulation settings and
         // estimate the full width of the table
@@ -423,11 +433,17 @@ final class Common {
             tabStops.append(tabStop)
 
             // Total the table width
-            self.tableWidth += (colWidths[i]! == 0.0 ? BUFFOON_CONSTANTS.MAX_TAB_COL_SIZE_PT : colWidths[i]!)
+            self.tableWidth += (colWidth == 0.0 ? BUFFOON_CONSTANTS.MAX_TAB_COL_SIZE_PT : colWidth)
 
         }
 #if DEBUG
-        print("WIDTHS: \(colWidths).\nTABLE: \(self.tableWidth)\nTABS: \(tabStops)")
+        var out = ""
+        for (index, _) in colWidths.keys.enumerated() {
+            out += "\(index): \(colWidths[index]!), "
+        }
+
+        let end = out.lastIndex(of: ",") ?? out.endIndex
+        print("WIDTHS: [\(out[..<end])]\nTABLE: \(self.tableWidth)\nTABS: \(tabStops)")
 #endif
 
         // Render the paragraphs
@@ -473,8 +489,7 @@ final class Common {
 
 
     /**
-     Determine the max. width of each column. We only measure key lengths, as values are expected to wrap to
-     the column width, or `MAX_TAB_COL_SIZE_PT` points, whichever is greater.
+     Determine the max. width of each column based. A column width is determined by what it contains.
 
      - Parameters:
         - json:  A JSON object, array or value.
@@ -485,58 +500,79 @@ final class Common {
      */
     private func measureColumns(_ json: JSONValue, _ depth: Int, _ lengths: [Int: CGFloat]) -> [Int: CGFloat] {
 
+        let showMarks = self.settings.showJsonMarks
         var maxLengths = lengths
-        if maxLengths[depth] == nil {
-            maxLengths[depth] = 0
-        }
+        var inset = depth
 
-        if depth > self.maxDepth {
-            self.maxDepth = depth
+        // Record the furthest column number
+        if inset > self.maxDepth {
+            self.maxDepth = inset
         }
 
         // Match the JSON entity by type to generate paragraph styled text
         if json.objectValue != nil {
+            // JSON entity is an OBJECT
+            if showMarks {
+                // Start of an object, so place an opening mark...
+                if maxLengths[inset] == nil || self.markWidth > maxLengths[inset]! {
+                    maxLengths[inset] = self.markWidth
+                }
+
+                // ...And show the collection's contents in the next column
+                inset += 1
+            }
+
+            // Iterate over the object's keys and values
             for (key, value) in json.objectValue! {
                 let keyString = NSMutableAttributedString(string: key.description, attributes: self.keyAttributes)
-                let keyLength = keyString.width
-
-                if keyLength > maxLengths[depth]! {
-                    maxLengths[depth] = keyLength
+                let keyWidth = keyString.width
+                if maxLengths[inset] == nil || keyWidth > maxLengths[inset]! {
+                    maxLengths[inset] = keyWidth
                 }
 
                 // Get interior value column widths
-                maxLengths = measureColumns(value, depth + 1, maxLengths)
+                maxLengths = measureColumns(value, inset + 1, maxLengths)
             }
         } else if json.arrayValue != nil {
+            // JSON entity is an ARRAY
+            if showMarks {
+                // Start of an array, so place an opening mark...
+                if maxLengths[inset] == nil || self.markWidth > maxLengths[inset]! {
+                    maxLengths[inset] = self.markWidth
+                }
+
+                // ...And show the collection's contents in the next column
+                inset += 1
+            }
+
             for value in json.arrayValue! {
-                //let nextDepth = depth == 0 ? 0 : depth + 1
-                maxLengths = measureColumns(value, depth, maxLengths)
+                maxLengths = measureColumns(value, inset, maxLengths)
             }
         } else {
-            // For scalar values, set zero as the base, so it widens to match the width
-            // of keys in the same column unless the value is a string, in which case use a fixed width if it's
-            // long, or the pixel-width of the rendered string
+            // JSON entity is a SCALAR
             if json.stringValue != nil {
+                // For strings, match column width to the width of wordless text (eg. a UUID) or,
+                // for worded text (ie. contains spaces) the max column with (400pt) or the text
+                // width, whichever is shorter
                 let value = json.stringValue!
                 let valString = NSMutableAttributedString(string: value.description, attributes: self.stringAttributes)
-
-                // Get the width of the the value string, including curly quotes if they're included
-                let valWidth = valString.width + (self.settings.showJsonMarks ? NSMutableAttributedString(string: "“”", attributes: self.stringAttributes).width : 0.0)
-                if valWidth > BUFFOON_CONSTANTS.MAX_TAB_COL_SIZE_PT {
-                    // Set a max width for the column
+                let valWidth = valString.width + (showMarks ? self.quotesWidth : 0.0)
+                if value.description.contains(" ") && valWidth > BUFFOON_CONSTANTS.MAX_TAB_COL_SIZE_PT {
                     maxLengths[depth] = BUFFOON_CONSTANTS.MAX_TAB_COL_SIZE_PT
-                } else if valWidth > maxLengths[depth]! {
+                } else if maxLengths[depth] == nil || valWidth > maxLengths[depth]! {
                     maxLengths[depth] = valWidth
                 }
             } else if (json.boolValue != nil || json.isNull) && self.settings.boolStyle != BUFFOON_CONSTANTS.BOOL_STYLE.TEXT {
-                if maxLengths[depth]! < BUFFOON_CONSTANTS.TAB_COL_IMAGE_WIDTH_PT {
-                    maxLengths[depth] = BUFFOON_CONSTANTS.TAB_COL_IMAGE_WIDTH_PT
+                // For bools and NULLs presented as images, match to the image width
+                if maxLengths[depth] == nil || maxLengths[depth]! < self.imageWidth {
+                    maxLengths[depth] = self.imageWidth
                 }
             } else if json.numberValue != nil {
+                // For integers, match to the width of the string-rendered value
                 let value = json.numberValue!.description
                 let valString = NSMutableAttributedString(string: value.description, attributes: self.stringAttributes)
                 let valWidth = valString.width
-                if valWidth > maxLengths[depth]! {
+                if maxLengths[depth] == nil || valWidth > maxLengths[depth]! {
                     maxLengths[depth] = valWidth
                 }
             }
@@ -557,37 +593,63 @@ final class Common {
         - prefix:     Any (optional) text to which the rendered JSON entity should be appended.
         - paragraphs: The array of paragraphs to which the generated one will be added.
      */
-    private func generateTabParagraphs(_ json: JSONValue, _ depth: Int = 0, _ prefix: NSMutableAttributedString?, _ paragraphs: NSMutableArray) {
+    private func makeTabParagraph(_ json: JSONValue, _ depth: Int = 0, _ prefix: NSMutableAttributedString?, _ paragraphs: NSMutableArray) {
 
         // Get the point size of the rendered key if there is one
         let thePrefix = prefix ?? NSMutableAttributedString(string: "", attributes: self.scalarAttributes)
+        let showMarks = self.settings.showJsonMarks
+        var inset = depth
 
         // Match the JSON entity by type to generate paragraph styled text
         if json.objectValue != nil {
+            if showMarks {
+                // Start of an object, so mark open on a fresh line
+                let markString = NSMutableAttributedString(string: "{", attributes: self.markAttributes)
+                paragraphs.add(Paragraph(text: markString, depth: inset, keyLength: markString.width))
+
+                // And show collection's contents on next column
+                inset += 1
+            }
+
             // For an object (dictionary), enumerate the keys and their values
             for (key, value) in json.objectValue! {
                 // Is the value a collection?
                 let valueIsObject: Bool = value.objectValue != nil
-                let valueIsArray: Bool  = value.arrayValue != nil
+                let valueIsArray: Bool = value.arrayValue != nil
 
-                // First, render the key
+                // First, render the key plus a separator
                 let followingChar = !valueIsObject && !valueIsArray ? BUFFOON_CONSTANTS.TAB : " "
                 let keyString = NSMutableAttributedString(string: key.description + followingChar, attributes: self.keyAttributes)
 
                 // Now render the value
                 if valueIsObject || valueIsArray {
                     // The value is a collection type: start it on a new line, ie. in a new paragraph (so no prefix)
-                    paragraphs.add(Paragraph(text: keyString, depth: depth, keyLength: keyString.width))
-                    generateTabParagraphs(value, depth + 1, nil, paragraphs)
+                    paragraphs.add(Paragraph(text: keyString, depth: inset, keyLength: keyString.width))
+                    makeTabParagraph(value, inset + 1, nil, paragraphs)
                 } else {
                     // The value is a scalar
                     // NOTE The key has a trailing space, so no extra indent is required for the scalar value
-                    generateTabParagraphs(value, depth, keyString, paragraphs)
+                    makeTabParagraph(value, inset, keyString, paragraphs)
                 }
+            }
+
+            if showMarks {
+                // Start of an object, so mark open on a fresh line
+                let markString = NSMutableAttributedString(string: "}", attributes: self.markAttributes)
+                paragraphs.add(Paragraph(text: markString, depth: inset - 1 , keyLength: markString.width))
             }
 
             return
         } else if json.arrayValue != nil {
+            if showMarks {
+                // Start of an object, so mark open on a fresh line
+                let markString = NSMutableAttributedString(string: "[", attributes: self.markAttributes)
+                paragraphs.add(Paragraph(text: markString, depth: inset, keyLength: markString.width))
+
+                // Show array contents on next column
+                inset += 1
+            }
+
             // For an array, enumerate the values
             // NOTE Should be only one of each, but value may be an object or array
             for (index, value) in json.arrayValue!.enumerated() {
@@ -599,16 +661,22 @@ final class Common {
                 if valueIsObject || valueIsArray {
                     // The value is a collection type
                     if thePrefix.length > 0 {
-                        paragraphs.add(Paragraph(text: prefix, depth: depth))
+                        paragraphs.add(Paragraph(text: prefix, depth: inset))
                     }
                 }
 
-                generateTabParagraphs(value, depth, nil, paragraphs)
+                makeTabParagraph(value, inset, nil, paragraphs)
 
                 // Add a narrow spacer line after all collections except the last one in the array
                 if index < json.arrayValue!.count - 1 && (valueIsArray || valueIsObject) {
-                    paragraphs.add(Paragraph(text: self.emptyString, depth: depth))
+                    paragraphs.add(Paragraph(text: self.emptyString, depth: inset))
                 }
+            }
+
+            if showMarks {
+                // Start of an object, so mark open on a fresh line
+                let markString = NSMutableAttributedString(string: "]", attributes: self.markAttributes)
+                paragraphs.add(Paragraph(text: markString, depth: inset - 1 , keyLength: markString.width))
             }
 
             return
