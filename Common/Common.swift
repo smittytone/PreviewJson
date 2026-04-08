@@ -30,6 +30,7 @@ final class Common {
     private var markWidth: CGFloat                                  = 10.0
     private var imageWidth: CGFloat                                 = 12.0
     private var quotesWidth: CGFloat                                = 24.0
+    private var baseIndentWidth: CGFloat                            = 10.0
 
     // JSON string attributes...
     private var keyAttributes: [NSAttributedString.Key: Any]        = [:]
@@ -126,6 +127,7 @@ final class Common {
         self.markWidth = NSAttributedString(string: "{", attributes: self.markAttributes).width
         self.imageWidth = 120.0 * self.settings.fontSize / 32.0
         self.quotesWidth = NSAttributedString(string: "“”", attributes: self.stringAttributes).width
+        self.baseIndentWidth = NSAttributedString(string: "T", attributes: self.keyAttributes).width
     }
 
 
@@ -259,7 +261,7 @@ final class Common {
         for i in 0..<previewParagraphs.count {
             let paragraph = previewParagraphs.object(at: i) as! Paragraph
             if var paragraphText = paragraph.text {
-                let inset: CGFloat = CGFloat(paragraph.depth) * BUFFOON_CONSTANTS.BASE_TAB_SIZE_PT * CGFloat(self.settings.indentSize)
+                let inset: CGFloat = CGFloat(paragraph.depth) * self.baseIndentWidth * CGFloat(self.settings.indentSize)
 
                 if paragraphText.length > 0 {
                     // Instantiate a generic paragraph style
