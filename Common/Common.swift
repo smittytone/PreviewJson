@@ -347,8 +347,6 @@ final class Common {
                 let markString = NSMutableAttributedString(string: "}", attributes: self.markAttributes)
                 paragraphs.add(Paragraph(text: markString, depth: inset - 1))
             }
-
-            return
         } else if json.arrayValue != nil {
             if showMarks {
                 // Start of an object, so mark open on a fresh line
@@ -373,10 +371,10 @@ final class Common {
                         paragraphs.add(Paragraph(text: prefix, depth: inset))
                     }
 
-                    makeIndentParagraph(value, (showMarks ? inset + 1 : inset), NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs)
+                    makeIndentParagraph(value, (showMarks ? inset + 1 : inset), nil, paragraphs)
                 } else {
                     // The value is a scalar
-                    makeIndentParagraph(value, inset, NSMutableAttributedString(string: "", attributes: self.scalarAttributes), paragraphs)
+                    makeIndentParagraph(value, inset, nil, paragraphs)
                 }
 
                 // Add a narrow spacer line after all collections except the last one in the array
@@ -390,8 +388,6 @@ final class Common {
                 let markString = NSMutableAttributedString(string: "]", attributes: self.markAttributes)
                 paragraphs.add(Paragraph(text: markString, depth: inset - 1))
             }
-
-            return
         } else {
             // Process the scalar value
             let keyLength = thePrefix.length > 0 ? thePrefix.width : 0.0
@@ -640,8 +636,6 @@ final class Common {
                 let markString = NSMutableAttributedString(string: "}", attributes: self.markAttributes)
                 paragraphs.add(Paragraph(text: markString, depth: inset - 1 , keyLength: markString.width))
             }
-
-            return
         } else if json.arrayValue != nil {
             if showMarks {
                 // Start of an object, so mark open on a fresh line
@@ -680,8 +674,6 @@ final class Common {
                 let markString = NSMutableAttributedString(string: "]", attributes: self.markAttributes)
                 paragraphs.add(Paragraph(text: markString, depth: inset - 1 , keyLength: markString.width))
             }
-
-            return
         } else {
             // Process the scalar value
             let keyLength = thePrefix.length > 0 ? thePrefix.width : 0.0
