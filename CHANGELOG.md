@@ -1,5 +1,7 @@
 ## Release Notes
 
+- 2.0.1 *Unreleased*
+    - Minor fixes.
 - 2.0.0 *10 April 2026*
     - Bring UI into line with other PreviewApps.
     - Rebuild rendering engine from the ground up.
