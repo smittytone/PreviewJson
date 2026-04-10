@@ -86,12 +86,11 @@ final class AppDelegate: NSResponder,
     internal var whatsNewNav: WKNavigation?     = nil
     internal var fonts: [PMFont]                = []
     // FROM 2.0.0
-    private  var tabManager: PMTabManager = PMTabManager()
+    private  var tabManager: PMTabManager       = PMTabManager()
     internal var hasSentFeedback: Bool          = false
     internal var timer: Timer?                  = nil
     internal let defaultSettings: PJSettings    = PJSettings()      // Standard values
     internal var currentSettings: PJSettings    = PJSettings()      // Loaded values - load takes place after fonts loaded asynchronously
-    //internal var initialLoadDone: Bool          = false
 
     
     /*
@@ -112,7 +111,6 @@ final class AppDelegate: NSResponder,
             asyncGetFonts()
         }
 
-        // Set application group-level defaults
         // Set application group-level defaults
         self.defaultSettings.registerSettings(self.appSuiteName, getVersion())
 
@@ -310,8 +308,10 @@ final class AppDelegate: NSResponder,
      - Parameters:
         - sender: The source of the action.
      */
-    @IBAction @objc private func doShowSites(sender: Any) {
-        
+    @IBAction
+    @objc
+    private func doShowSites(sender: Any) {
+
         // Open the websites for contributors, help and suc
         let item: NSMenuItem = sender as! NSMenuItem
         var path: String = BUFFOON_CONSTANTS.URL_MAIN
