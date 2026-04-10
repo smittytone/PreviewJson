@@ -46,4 +46,4 @@ See [CHANGELOG.md](./CHANGELOG.md)
 
 ## Copyright and Credits
 
-Primary app code and UI design &copy; 2025, Tony Smith.
+Primary app code and UI design &copy; 2026, Tony Smith (@smittytone).
