@@ -2,7 +2,7 @@
 
 QuickLook JSON preview and icon thumbnailing app extensions for macOS Catalina and beyond
 
-![PreviewJson App Store QR code](qr-code.jpg)
+[![PreviewJson App Store QR code](qr-code.jpg)](https://apps.apple.com/us/app/previewjson/id6443584377)
 
 ## Installation and Usage ##
 
