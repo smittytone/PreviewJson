@@ -1,6 +1,6 @@
 ## Release Notes
 
-- 2.0.0 *Unreleased*
+- 2.0.0 *10 April 2026*
     - Bring UI into line with other PreviewApps.
     - Rebuild rendering engine from the ground up.
     - Preview and thumbnail respect the order of keys and values in the source file.
@@ -9,7 +9,7 @@
     - Support macOS Tahoe.
     - Migrate to Swift Concurrency.
     - **BREAKING** Minimum macOS version is now macOS 12 Monterey.
-- 1.1.4 *April 2025*
+- 1.1.4 *12 April 2025*
     - Better Swift string and substring handling.
     - Correct outlet ownership to mitigate reference cycle formation.
     - Remove links to deprecated PreviewText and PreviewYaml.
