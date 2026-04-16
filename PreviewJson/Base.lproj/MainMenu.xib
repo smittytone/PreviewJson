@@ -994,7 +994,7 @@ running this app once more.</string>
                                                 <constraint firstAttribute="width" constant="140" id="CNc-ax-dnc"/>
                                                 <constraint firstAttribute="height" constant="16" id="tOs-Bx-UhT"/>
                                             </constraints>
-                                            <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="Preview body text size:" id="tUJ-11-sxc">
+                                            <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="Preview body text size" id="tUJ-11-sxc">
                                                 <font key="font" usesAppearanceFont="YES"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1048,7 +1048,7 @@ running this app once more.</string>
                                             </textFieldCell>
                                         </textField>
                                         <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rgd-En-1mQ">
-                                            <rect key="frame" x="302" y="231" width="228" height="25"/>
+                                            <rect key="frame" x="286" y="231" width="228" height="25"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <popUpButtonCell key="cell" type="push" title="Andale Mono" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingMiddle" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="7ai-JY-bWR" id="8vL-Xv-zQF">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1069,16 +1069,16 @@ running this app once more.</string>
                                             </popUpButtonCell>
                                         </popUpButton>
                                         <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Mz-8b-YN6">
-                                            <rect key="frame" x="18" y="236" width="278" height="16"/>
+                                            <rect key="frame" x="140" y="236" width="140" height="16"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Preview body text font:" id="auK-OC-oyD">
+                                            <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Preview body text font" id="auK-OC-oyD">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
                                         <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ph6-3a-Boc">
-                                            <rect key="frame" x="538" y="231" width="137" height="25"/>
+                                            <rect key="frame" x="522" y="231" width="137" height="25"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <popUpButtonCell key="cell" type="push" title="Regular" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingMiddle" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="vIR-BS-giK" id="q4X-TX-cdq">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1096,7 +1096,7 @@ running this app once more.</string>
                                             </connections>
                                         </popUpButton>
                                         <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KO9-sw-AsX">
-                                            <rect key="frame" x="18" y="109" width="512" height="16"/>
+                                            <rect key="frame" x="186" y="109" width="354" height="16"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Show previews that are opposite to macOS’ current mode" id="T13-5w-0A5">
                                                 <font key="font" metaFont="system"/>
@@ -1105,7 +1105,7 @@ running this app once more.</string>
                                             </textFieldCell>
                                         </textField>
                                         <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="snz-De-xiE">
-                                            <rect key="frame" x="188" y="85" width="342" height="16"/>
+                                            <rect key="frame" x="186" y="85" width="354" height="16"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Show JSON object and array markers" id="YnM-51-iaf">
                                                 <font key="font" metaFont="system"/>
@@ -1114,7 +1114,7 @@ running this app once more.</string>
                                             </textFieldCell>
                                         </textField>
                                         <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="so9-6y-gfk">
-                                            <rect key="frame" x="188" y="61" width="342" height="16"/>
+                                            <rect key="frame" x="186" y="61" width="354" height="16"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Display raw JSON if it cannot be rendered" id="JEV-mO-ScB">
                                                 <font key="font" metaFont="system"/>
@@ -1123,21 +1123,21 @@ running this app once more.</string>
                                             </textFieldCell>
                                         </textField>
                                         <switch horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" controlSize="small" baseWritingDirection="leftToRight" alignment="left" translatesAutoresizingMaskIntoConstraints="NO" id="Vj0-rk-AuO">
-                                            <rect key="frame" x="536" y="105" width="54" height="24"/>
+                                            <rect key="frame" x="546" y="105" width="54" height="24"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <connections>
                                                 <action selector="doChangeValueWithSender:" target="Voe-Tx-rLC" id="hvV-VY-Dsu"/>
                                             </connections>
                                         </switch>
                                         <switch horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" controlSize="small" baseWritingDirection="leftToRight" alignment="left" translatesAutoresizingMaskIntoConstraints="NO" id="mgk-qI-BMk">
-                                            <rect key="frame" x="536" y="81" width="54" height="24"/>
+                                            <rect key="frame" x="546" y="81" width="54" height="24"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <connections>
                                                 <action selector="doChangeValueWithSender:" target="Voe-Tx-rLC" id="tKR-op-QAF"/>
                                             </connections>
                                         </switch>
                                         <switch horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" controlSize="small" baseWritingDirection="leftToRight" alignment="left" translatesAutoresizingMaskIntoConstraints="NO" id="vtT-5i-xEC">
-                                            <rect key="frame" x="536" y="57" width="54" height="24"/>
+                                            <rect key="frame" x="546" y="57" width="54" height="24"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <connections>
                                                 <action selector="doChangeValueWithSender:" target="Voe-Tx-rLC" id="woz-qN-1Ok"/>
@@ -1158,16 +1158,16 @@ running this app once more.</string>
                                             </connections>
                                         </button>
                                         <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kwl-g0-OfS">
-                                            <rect key="frame" x="18" y="202" width="327" height="16"/>
+                                            <rect key="frame" x="280" y="202" width="61" height="16"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Colours:" id="WjZ-Vr-MZ6">
+                                            <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Colours" id="WjZ-Vr-MZ6">
                                                 <font key="font" usesAppearanceFont="YES"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
                                         <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fbB-rk-YLu">
-                                            <rect key="frame" x="351" y="198" width="121" height="25"/>
+                                            <rect key="frame" x="347" y="198" width="121" height="25"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <popUpButtonCell key="cell" type="push" title="Keys" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="HCz-Ig-Yer" id="hNI-TL-ump">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1203,7 +1203,7 @@ running this app once more.</string>
                                             </popUpButtonCell>
                                         </popUpButton>
                                         <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="If3-Rd-GWX">
-                                            <rect key="frame" x="400" y="165" width="100" height="25"/>
+                                            <rect key="frame" x="409" y="166" width="100" height="25"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <popUpButtonCell key="cell" type="push" title="SM" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="g7W-P0-935" id="oVP-Js-Xru">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -1228,16 +1228,16 @@ running this app once more.</string>
                                             </connections>
                                         </popUpButton>
                                         <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZGN-4Y-9Rq">
-                                            <rect key="frame" x="18" y="170" width="373" height="16"/>
+                                            <rect key="frame" x="289" y="171" width="111" height="16"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="JSON indent size:" id="IHD-lU-ovK">
+                                            <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="JSON indent size" id="IHD-lU-ovK">
                                                 <font key="font" usesAppearanceFont="YES"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                         </textField>
                                         <colorWell fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QKX-0M-Gl7">
-                                            <rect key="frame" x="478" y="199" width="44" height="23"/>
+                                            <rect key="frame" x="474" y="199" width="44" height="23"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <color key="color" red="0.05813049898" green="0.055541899059999997" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                             <connections>
@@ -1245,7 +1245,7 @@ running this app once more.</string>
                                             </connections>
                                         </colorWell>
                                         <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vs9-bj-4Gd">
-                                            <rect key="frame" x="400" y="135" width="260" height="24"/>
+                                            <rect key="frame" x="340" y="134" width="260" height="24"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                             <segmentedCell key="cell" borderStyle="border" alignment="left" segmentDistribution="fillEqually" style="separated" trackingMode="selectOne" id="45W-Rp-8ly">
                                                 <font key="font" metaFont="system"/>
@@ -1260,9 +1260,9 @@ running this app once more.</string>
                                             </connections>
                                         </segmentedControl>
                                         <textField focusRingType="none" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sLC-Ud-H8y">
-                                            <rect key="frame" x="18" y="139" width="373" height="16"/>
+                                            <rect key="frame" x="199" y="138" width="132" height="16"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" alignment="right" title="True/False/Null style:" id="C6b-H1-NUh">
+                                            <textFieldCell key="cell" lineBreakMode="clipping" enabled="NO" alignment="right" title="True/False/Null style" id="C6b-H1-NUh">
                                                 <font key="font" metaFont="system"/>
                                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1518,7 +1518,7 @@ running this app once more.</string>
                         <constraints>
                             <constraint firstAttribute="height" constant="16" id="OTh-rj-oY3"/>
                         </constraints>
-                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="Preview window size:" id="Jt8-Ea-uqV">
+                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="Preview window size" id="Jt8-Ea-uqV">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1572,7 +1572,7 @@ running this app once more.</string>
                         <constraints>
                             <constraint firstAttribute="height" constant="16" id="oI8-wx-WVX"/>
                         </constraints>
-                        <textFieldCell key="cell" lineBreakMode="clipping" title="Preview margin size:" id="RLN-cG-pB1">
+                        <textFieldCell key="cell" lineBreakMode="clipping" title="Preview margin size" id="RLN-cG-pB1">
                             <font key="font" usesAppearanceFont="YES"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -1607,7 +1607,7 @@ running this app once more.</string>
                         <constraints>
                             <constraint firstAttribute="height" constant="16" id="b8e-ah-T2f"/>
                         </constraints>
-                        <textFieldCell key="cell" lineBreakMode="clipping" title="Match thumnbail colour scheme to display mode (macOS 26.1 or above):" id="FGx-bQ-ffn">
+                        <textFieldCell key="cell" lineBreakMode="clipping" title="Match thumnbail colour scheme to display mode (macOS 26.1 or above)" id="FGx-bQ-ffn">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>

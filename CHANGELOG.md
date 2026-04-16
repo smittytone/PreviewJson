@@ -2,6 +2,7 @@
 
 - 2.0.2 *Unreleased*
     - Fix font-size slider control’s colouring.
+    - Sync UI with other PreviewApps.
 - 2.0.1 *16 April 2026*
     - Fix occasional thumbnailer crash when target file can’t be loaded.
 - 2.0.0 *10 April 2026*
