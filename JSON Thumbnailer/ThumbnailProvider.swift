@@ -93,6 +93,7 @@ class ThumbnailProvider: QLThumbnailProvider {
             jsonTextField.cacheDisplay(in: jsonFrame, to: bodyImageRep)
 
             if let image: CGImage = bodyImageRep.cgImage {
+                // Calculate image scaling, frame size, etc.
                 let thumbnailFrame: CGRect = NSMakeRect(0.0,
                                                         0.0,
                                                         CGFloat(BUFFOON_CONSTANTS.THUMBNAIL_SIZE.ASPECT) * request.maximumSize.height,

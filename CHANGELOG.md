@@ -1,7 +1,7 @@
 ## Release Notes
 
-- 2.0.1 *Unreleased*
-    - Fix thumbnailer crash when target fails to loaded.
+- 2.0.1 *16 April 2026*
+    - Fix occasional thumbnailer crash when target fails to loaded.
 - 2.0.0 *10 April 2026*
     - Bring UI into line with other PreviewApps.
     - Rebuild rendering engine from the ground up.
