@@ -7,18 +7,20 @@
  */
 
 
-import Cocoa
+import AppKit
 import Quartz
 
 
 class PreviewViewController: NSViewController,
                              QLPreviewingController {
-    
-    
+
     // MARK: - Class UI Properties
 
     @IBOutlet weak var renderTextView: NSTextView!
     @IBOutlet weak var renderTextScrollView: NSScrollView!
+
+
+    // MARK: - Public Properties
 
     override var nibName: NSNib.Name? {
         return NSNib.Name("PreviewViewController")
@@ -33,25 +35,36 @@ class PreviewViewController: NSViewController,
 
         /*
          * Main entry point for the macOS preview system
-         * FROM 2.0.0 -- Use the Swift Concurrency version
          */
-        
+
         // Get an error message ready for use
         var reportError: NSError? = nil
-        
-        // Show the
-        self.renderTextScrollView.isHidden = false
 
-        // Load the source file using a co-ordinator as we don't know what thread this function
-        // will be executed in when it's called by macOS' QuickLook code
+        // Load and process the source file
         do {
             // Get the file contents as a string
             let data: Data = try Data(contentsOf: url, options: [.uncached])
             let encoding: String.Encoding = data.stringEncoding ?? .utf8
 
             if let jsonString: String = String(data: data, encoding: encoding) {
-                // Instantiate the common renderer
+                /*
+                 Instantiate the common code within the closure
+                 */
                 let common: Common = Common(forThumbnail: false)
+
+                /*
+                 Attributed string acquisition
+                 */
+
+                // Get the preview string
+                var jsonAttString: NSAttributedString = await common.getPreviewString(fromJson: jsonString)
+                if jsonAttString.length == 0 && common.settings.showRawJsonOnError {
+                    jsonAttString = await common.getPreviewString(fromJson: "{\"Could not parse the JSON\":\"\(jsonString)\"}")
+                }
+
+                /*
+                 Window and mode configuration
+                 */
 
                 // FROM 2.0.0
                 // Set the parent window's size
@@ -66,30 +79,26 @@ class PreviewViewController: NSViewController,
                     renderPreviewLight = !renderPreviewLight
                 }
 
-                // Set the view's mode
-                self.view.appearance = renderPreviewLight ? NSAppearance(named: .aqua) : NSAppearance(named: .darkAqua)
-
-                // Update the NSTextView
+                // Update the view mode
                 self.renderTextView.backgroundColor = renderPreviewLight ? NSColor.white : NSColor.textBackgroundColor
                 self.renderTextScrollView.scrollerKnobStyle = renderPreviewLight ? .dark : .light
+                self.view.appearance = renderPreviewLight ? NSAppearance(named: .aqua) : NSAppearance(named: .darkAqua)
 
                 // FROM 2.0.0
                 // Add margin if required
                 if common.settings.previewMarginWidth > 0.0 {
-                    let previewSize = NSSize(width: common.settings.previewMarginWidth, height: common.settings.previewMarginWidth)
-                    self.renderTextView.textContainerInset = previewSize
-                }
-
-                // Get the preview string
-                var jsonAttString: NSAttributedString = await common.getPreviewString(fromJson: jsonString)
-                if jsonAttString.length == 0 && common.settings.showRawJsonOnError {
-                    jsonAttString = await common.getPreviewString(fromJson: "{\"Could not parse the JSON\":\"\(jsonString)\"}")
+                    self.renderTextView.textContainerInset = NSSize(width: common.settings.previewMarginWidth,
+                                                                    height: common.settings.previewMarginWidth)
                 }
 
                 // Rescale the text view to match the width of a tabluted view
                 if common.tableWidth > self.renderTextView.frame.width {
                     self.renderTextView.setFrameSize(NSSize(width: common.tableWidth, height: self.renderTextView.frame.size.height))
                 }
+
+                /*
+                 Attributed String Presentation
+                 */
 
                 if let renderTextStorage: NSTextStorage = self.renderTextView.textStorage {
                     /*
@@ -124,7 +133,7 @@ class PreviewViewController: NSViewController,
 
 
     // MARK: - Utility Functions
-    
+
     /**
      Generate an NSError for an internal error, specified by its code.
 
@@ -138,7 +147,7 @@ class PreviewViewController: NSViewController,
     func makeError(_ code: Int) -> NSError {
 
         var errDesc: String
-        
+
         switch(code) {
         case BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE:
             errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_INACCESSIBLE
