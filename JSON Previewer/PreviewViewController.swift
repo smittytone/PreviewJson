@@ -6,7 +6,6 @@
  *  Copyright © 2026 Tony Smith. All rights reserved.
  */
 
-
 import AppKit
 import Quartz
 
@@ -43,10 +42,10 @@ class PreviewViewController: NSViewController,
         // Load and process the source file
         do {
             // Get the file contents as a string
-            let data: Data = try Data(contentsOf: url, options: [.uncached])
-            let encoding: String.Encoding = data.stringEncoding ?? .utf8
+            let data = try Data(contentsOf: url, options: [.uncached])
+            let encoding = data.stringEncoding ?? .utf8
 
-            if let jsonString: String = String(data: data, encoding: encoding) {
+            if let json = String(data: data, encoding: encoding) {
                 /*
                  Instantiate the common code within the closure
                  */
@@ -57,9 +56,9 @@ class PreviewViewController: NSViewController,
                  */
 
                 // Get the preview string
-                var jsonAttString: NSAttributedString = await common.getPreviewString(fromJson: jsonString)
-                if jsonAttString.length == 0 && common.settings.showRawJsonOnError {
-                    jsonAttString = await common.getPreviewString(fromJson: "{\"Could not parse the JSON\":\"\(jsonString)\"}")
+                var attributedJson: NSAttributedString = await common.getPreviewString(fromJson: json)
+                if attributedJson.length == 0 && common.settings.showRawJsonOnError {
+                    attributedJson = await common.getPreviewString(fromJson: "{\"Could not parse the JSON\":\"\(json)\"}")
                 }
 
                 /*
@@ -93,21 +92,22 @@ class PreviewViewController: NSViewController,
 
                 // Rescale the text view to match the width of a tabluted view
                 if common.tableWidth > self.renderTextView.frame.width {
-                    self.renderTextView.setFrameSize(NSSize(width: common.tableWidth, height: self.renderTextView.frame.size.height))
+                    self.renderTextView.setFrameSize(NSSize(width: common.tableWidth,
+                                                            height: self.renderTextView.frame.size.height))
                 }
 
                 /*
                  Attributed String Presentation
                  */
 
-                if let renderTextStorage: NSTextStorage = self.renderTextView.textStorage {
+                if let renderTextStorage = self.renderTextView.textStorage {
                     /*
                      * NSTextStorage subclasses that return true from the fixesAttributesLazily
                      * method should avoid directly calling fixAttributes(in:) or else bracket
                      * such calls with beginEditing() and endEditing() messages.
                      */
                     renderTextStorage.beginEditing()
-                    renderTextStorage.setAttributedString(jsonAttString)
+                    renderTextStorage.setAttributedString(attributedJson)
                     renderTextStorage.endEditing()
                     return
                 }
