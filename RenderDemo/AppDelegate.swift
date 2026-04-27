@@ -46,7 +46,7 @@ class AppDelegate:  NSObject,
         }
     }
 
-    
+
     // MARK: - Class Lifecycle Functions
     
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -67,8 +67,8 @@ class AppDelegate:  NSObject,
         self.window.center()
         self.window.makeKeyAndOrderFront(self)
     }
-    
-    
+
+
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
 
         // When the main window closed, shut down the app
@@ -86,6 +86,7 @@ class AppDelegate:  NSObject,
         openPanel.canChooseFiles = true
         openPanel.allowsMultipleSelection = false
         openPanel.canChooseDirectories = false
+
         if self.currentDirURL != nil {
             openPanel.directoryURL = self.currentDirURL!
         } else {
@@ -107,6 +108,7 @@ class AppDelegate:  NSObject,
 
         doRender(Notification(name: Notification.Name(rawValue: "")))
     }
+
 
     @IBAction
     private func doSwitchMode(_ sender: Any) {
@@ -131,13 +133,13 @@ class AppDelegate:  NSObject,
             self.progress.startAnimation(self)
 
             let possibleError: NSError? = await renderContent(self.currentURL)
-            self.progress.stopAnimation(self)
-
             if possibleError != nil {
                 // Pop up an alert
                 let errorAlert: NSAlert = NSAlert(error: possibleError!)
                 await errorAlert.beginSheetModal(for: self.window)
             }
+
+            self.progress.stopAnimation(self)
         }
    }
 
@@ -161,20 +163,19 @@ class AppDelegate:  NSObject,
 
     }
 
+
     @MainActor
     private func renderContent(_ fileToRender: URL?) async -> NSError? {
 
-
         var reportError: NSError? = nil
-
         self.common = Common(forThumbnail: false)
 
         do {
-            if let yamlUrl: URL = fileToRender {
-                self.window.title = yamlUrl.absoluteString
+            if let url = fileToRender {
+                self.window.title = url.absoluteString
 
                 // Get the file contents as a string
-                let data: Data = try Data(contentsOf: yamlUrl, options: [.uncached])
+                let data: Data = try Data(contentsOf: url, options: [.uncached])
 
                 // Get the string's encoding, or fail back to .utf8
                 let encoding: String.Encoding = data.stringEncoding ?? .utf8
@@ -221,17 +222,13 @@ class AppDelegate:  NSObject,
                         renderTextStorage.beginEditing()
                         renderTextStorage.setAttributedString(jsonAttString)
                         renderTextStorage.endEditing()
-
-#if DEBUG
                         print("********** END ************")
-#endif
-                        
                         self.common = nil
                         return nil
                     }
 
                     // We can't access the preview NSTextView's NSTextStorage
-                    reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
+                    reportError = makeError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
                 } else {
                     // We couldn't convert to data to a valid encoding
                     let errDesc: String = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) \(encoding)"
@@ -248,7 +245,7 @@ class AppDelegate:  NSObject,
             }
         } catch {
             // We couldn't read the file so set an appropriate error to report back
-            reportError = setError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
+            reportError = makeError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
         }
 
         self.common = nil
@@ -267,7 +264,7 @@ class AppDelegate:  NSObject,
 
      - Returns: The described error as an NSError.
      */
-    func setError(_ code: Int) -> NSError {
+    func makeError(_ code: Int) -> NSError {
 
         var errDesc: String
 
