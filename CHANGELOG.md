@@ -1,5 +1,7 @@
 ## Release Notes
 
+- 2.0.3 *Unreleased*
+    - 
 - 2.0.2 *02 May 2026*
     - Fix font-size slider control’s colouring.
     - Sync UI with other PreviewApps.
