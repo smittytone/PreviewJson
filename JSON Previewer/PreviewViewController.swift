@@ -49,14 +49,14 @@ class PreviewViewController: NSViewController,
                 /*
                  Instantiate the common code within the closure
                  */
-                let common: Common = Common(forThumbnail: false)
+                let common = Common(forThumbnail: false)
 
                 /*
                  Attributed string acquisition
                  */
 
                 // Get the preview string
-                var attributedJson: NSAttributedString = await common.getPreviewString(fromJson: json)
+                var attributedJson = await common.getPreviewString(fromJson: json)
                 if attributedJson.length == 0 && common.settings.showRawJsonOnError {
                     attributedJson = await common.getPreviewString(fromJson: "{\"Could not parse the JSON\":\"\(json)\"}")
                 }
@@ -116,7 +116,7 @@ class PreviewViewController: NSViewController,
                 reportError = makeError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
             } else {
                 // We couldn't convert to data to a valid encoding (custom error message)
-                let errDesc: String = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) unexpected encoding: \(encoding)"
+                let errDesc = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) unexpected encoding: \(encoding)"
                 reportError = NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,
                                       code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING,
                                       userInfo: [NSLocalizedDescriptionKey: errDesc])
@@ -172,7 +172,7 @@ class PreviewViewController: NSViewController,
     */
     private func setPreviewWindowSize(_ settings: PJSettings) {
 
-        var screen: NSScreen = NSScreen.screens[0]
+        var screen = NSScreen.screens[0]
 
         // We've set `screen` to the primary, ie. menubar-displaying,
         // screen, but ideally we should pick the screen with user focus.
