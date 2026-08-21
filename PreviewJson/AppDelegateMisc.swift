@@ -175,7 +175,7 @@ extension AppDelegate {
     /**
       Catch when the user clicks on the window's red close button.
      */
-    func windowShouldClose(_ sender: NSWindow) -> Bool {
+    public func windowShouldClose(_ sender: NSWindow) -> Bool {
 
         if !checkFeedbackOnQuit() && !checkSettingsOnQuit() {
             // No unsaved settings or unsent feedback, so we're good to close
@@ -187,7 +187,9 @@ extension AppDelegate {
         //      unsent feedback, in which case the following calls will trigger
         //      alerts
         closeBasics()
-        closeSettings()
+        Task {
+            await closeSettings()
+        }
         return false
     }
 

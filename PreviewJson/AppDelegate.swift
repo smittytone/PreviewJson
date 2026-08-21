@@ -179,7 +179,9 @@ final class AppDelegate: NSResponder,
     private func doClose(_ sender: Any) {
 
         closeBasics()
-        closeSettings()
+        Task {
+            await closeSettings()
+        }
     }
 
 
@@ -203,7 +205,7 @@ final class AppDelegate: NSResponder,
 
      FROM 2.0.0
      */
-    internal func closeSettings() {
+    internal func closeSettings() async {
 
         // Are there any unsaved changes to the settings?
         if checkSettingsOnQuit() {
@@ -212,19 +214,16 @@ final class AppDelegate: NSResponder,
                                   false)
             alert.addButton(withTitle: "Quit")
             alert.addButton(withTitle: "Cancel")
-            alert.beginSheetModal(for: self.window) { (response) in
-                if response == .alertFirstButtonReturn {
-                    // The user clicked 'Quit': now check for feedback changes
-                    self.closeFeedback()
-                }
-            }
 
-            // Exit the close process to allow the user to save their changed settings
-            return
+            let response = await alert.beginSheetModal(for: self.window)
+            if response != .alertFirstButtonReturn {
+                // The user clicked 'Cancel'
+                return
+            }
         }
 
         // Move on to the next phase: the feedback check
-        closeFeedback()
+        await closeFeedback()
     }
 
 
@@ -234,7 +233,7 @@ final class AppDelegate: NSResponder,
 
      FROM 2.0.0
      */
-    internal func closeFeedback() {
+    internal func closeFeedback() async {
 
         // Does the feeback page contain text? If so let the user know
         if self.feedbackText.stringValue.count > 0 && !self.hasSentFeedback {
@@ -243,15 +242,12 @@ final class AppDelegate: NSResponder,
                                   false)
             alert.addButton(withTitle: "Quit")
             alert.addButton(withTitle: "Cancel")
-            alert.beginSheetModal(for: self.window) { (response) in
-                if response == .alertFirstButtonReturn {
-                    // The user clicked 'Quit'
-                    self.window.close()
-                }
-            }
 
-            // Exit the close process to allow the user to send their entered feedback
-            return
+            let response = await alert.beginSheetModal(for: self.window)
+            if response != .alertFirstButtonReturn {
+                // The user clicked 'Cancel'
+                return
+            }
         }
 
         // No feedback text to send/ignore so close the window which will trigger an app closure
