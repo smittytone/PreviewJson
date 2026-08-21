@@ -22,12 +22,12 @@ extension NSColor {
             return BUFFOON_CONSTANTS.HEX_COLOUR.KEYS
         }
 
-        let red: Int = Int(round(rgbColour.redComponent * 0xFF))
-        let green: Int = Int(round(rgbColour.greenComponent * 0xFF))
-        let blue: Int = Int(round(rgbColour.blueComponent * 0xFF))
-        let alpha: Int = Int(round(rgbColour.alphaComponent * 0xFF))
+        let red = Int(round(rgbColour.redComponent * 0xFF))
+        let green = Int(round(rgbColour.greenComponent * 0xFF))
+        let blue = Int(round(rgbColour.blueComponent * 0xFF))
+        let alpha = Int(round(rgbColour.alphaComponent * 0xFF))
 
-        let hexString: NSString = NSString(format: "%02X%02X%02X%02X", red, green, blue, alpha)
+        let hexString = NSString(format: "%02X%02X%02X%02X", red, green, blue, alpha)
         return hexString as String
     }
 
@@ -51,10 +51,10 @@ extension NSColor {
         }
 
         let hexns: NSString = hex as NSString
-        let red: CGFloat = hexToFloat(hexns.substring(with: NSRange(location: 0, length: 2))) / 255
-        let green: CGFloat = hexToFloat(hexns.substring(with: NSRange(location: 2, length: 2))) / 255
-        let blue: CGFloat = hexToFloat(hexns.substring(with: NSRange(location: 4, length: 2))) / 255
-        let alpha: CGFloat = hexToFloat(hexns.substring(with: NSRange(location: 6, length: 2))) / 255
+        let red = hexToFloat(hexns.substring(with: NSRange(location: 0, length: 2))) / 255
+        let green = hexToFloat(hexns.substring(with: NSRange(location: 2, length: 2))) / 255
+        let blue = hexToFloat(hexns.substring(with: NSRange(location: 4, length: 2))) / 255
+        let alpha = hexToFloat(hexns.substring(with: NSRange(location: 6, length: 2))) / 255
         return NSColor(srgbRed: red, green: green, blue: blue, alpha: alpha)
     }
 }
@@ -137,9 +137,9 @@ extension Double {
             return true
         }
 
-        let absA: CGFloat = abs(self)
-        let absB: CGFloat = abs(value)
-        let diff: CGFloat = abs(self - value)
+        let absA: Double = abs(self)
+        let absB: Double = abs(value)
+        let diff: Double = abs(self - value)
 
         if self == .zero || value == .zero || (absA + absB) < Self.leastNormalMagnitude {
             return diff < Self.ulpOfOne * Self.leastNormalMagnitude
@@ -165,8 +165,7 @@ extension Data {
 extension NSApplication {
 
     var inLightMode: Bool {
-        get {
-            return (self.effectiveAppearance.name.rawValue == "NSAppearanceNameAqua")
-        }
+        // FROM 2.0.3 -- use a better check than string values
+        return effectiveAppearance.bestMatch(from: [.aqua, .darkAqua]) == .aqua
     }
 }

@@ -28,16 +28,16 @@ extension AppDelegate {
         // FROM 2.0.0
         // Disable this switch below 26.1
         if #available(macOS 26.1, *) {
-            self.tintTumbnailsAdvancedLabel.isEnabled = true
-            self.tintTumbnailsAdvancedSwitch.isEnabled = true
+            self.tintThumbnailsAdvancedLabel.isEnabled = true
+            self.tintThumbnailsAdvancedSwitch.isEnabled = true
         } else {
-            self.tintTumbnailsAdvancedLabel.isEnabled = false
-            self.tintTumbnailsAdvancedSwitch.isEnabled = false
+            self.tintThumbnailsAdvancedLabel.isEnabled = false
+            self.tintThumbnailsAdvancedSwitch.isEnabled = false
         }
 
         // Disable the Feedback > Send button if we have sent a message.
         // It will be re-enabled by typing something
-        self.applyButton.isEnabled = checkSettings()
+        self.applyButton.isEnabled = checkSettingsOnQuit()
 
         // Applied to enable keyboard control of the slider
         self.window.makeFirstResponder(self)
@@ -52,11 +52,12 @@ extension AppDelegate {
      - Parameters:
         - sender: The source of the action.
      */
-    @IBAction private func doMoveSlider(sender: Any) {
+    @IBAction
+    private func doMoveSlider(sender: Any) {
 
-        let index: Int = Int(self.fontSizeSlider.floatValue)
+        let index = Int(self.fontSizeSlider.floatValue)
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.PREVIEW_SIZE.FONT_SIZE_OPTIONS[index]))pt"
-        self.applyButton.isEnabled = checkSettings()
+        self.applyButton.isEnabled = checkSettingsOnQuit()
     }
 
 
@@ -90,10 +91,11 @@ extension AppDelegate {
      - Parameters:
         - sender: The source of the action.
      */
-    @IBAction private func doUpdateFonts(sender: Any) {
+    @IBAction
+    private func doUpdateFonts(sender: Any) {
 
         setStylePopup()
-        self.applyButton.isEnabled = checkSettings()
+        self.applyButton.isEnabled = checkSettingsOnQuit()
     }
 
 
@@ -104,12 +106,14 @@ extension AppDelegate {
      - Parameters:
         - sender: The source of the action.
      */
-    @objc @IBAction private func colourSelected(sender: Any) {
+    @objc
+    @IBAction
+    private func colourSelected(sender: Any) {
 
-        let keys: [String] = BUFFOON_CONSTANTS.COLOUR_OPTIONS
-        let key: String = "new_" + keys[self.colourSelectionPopup.indexOfSelectedItem]
+        let keys = BUFFOON_CONSTANTS.COLOUR_OPTIONS
+        let key = "new_" + keys[self.colourSelectionPopup.indexOfSelectedItem]
         self.currentSettings.displayColours[key] = self.colourWell.color.hexString
-        self.applyButton.isEnabled = checkSettings()
+        self.applyButton.isEnabled = checkSettingsOnQuit()
     }
 
 
@@ -120,27 +124,28 @@ extension AppDelegate {
      - Parameters:
         - sender: The source of the action.
      */
-    @IBAction private func doChooseColourType(sender: Any) {
+    @IBAction
+    private func doChooseColourType(sender: Any) {
 
-        let keys: [String] = BUFFOON_CONSTANTS.COLOUR_OPTIONS
-        let key: String = keys[self.colourSelectionPopup.indexOfSelectedItem]
+        let keys = BUFFOON_CONSTANTS.COLOUR_OPTIONS
+        let key = keys[self.colourSelectionPopup.indexOfSelectedItem]
 
         // If there's no `new_xxx` key, the next line will evaluate to false
-        if let colour: String = self.currentSettings.displayColours["new_" + key] {
+        if let colour = self.currentSettings.displayColours["new_" + key] {
             if colour.count != 0 {
                 // Set the colourwell with the updated colour and exit
                 self.colourWell.color = NSColor.hexToColour(colour)
-                self.applyButton.isEnabled = checkSettings()
+                self.applyButton.isEnabled = checkSettingsOnQuit()
                 return
             }
         }
 
         // Set the colourwell with the stored colour
-        if let colour: String = self.currentSettings.displayColours[key] {
+        if let colour = self.currentSettings.displayColours[key] {
             self.colourWell.color = NSColor.hexToColour(colour)
         }
 
-        self.applyButton.isEnabled = checkSettings()
+        self.applyButton.isEnabled = checkSettingsOnQuit()
     }
 
 
@@ -155,7 +160,7 @@ extension AppDelegate {
     @IBAction
     internal func doChangeValue(sender: Any) {
 
-        self.applyButton.isEnabled = checkSettings()
+        self.applyButton.isEnabled = checkSettingsOnQuit()
     }
 
 
@@ -171,7 +176,7 @@ extension AppDelegate {
     internal func doApplyCurrentSettings(sender: Any) {
 
          // First, make sure changes have been made
-         if checkSettings() {
+         if checkSettingsOnQuit() {
              // Changes are present, so save them.
              // NOTE This call updates the current settings values from the Settings tab UI.
              saveSettings()
@@ -195,7 +200,7 @@ extension AppDelegate {
 
         displaySettings(self.defaultSettings)
         applyDefaultColours()
-        self.applyButton.isEnabled = checkSettings()
+        self.applyButton.isEnabled = checkSettingsOnQuit()
      }
 
 
@@ -230,7 +235,7 @@ extension AppDelegate {
 
         // Get the menu item index from the stored value
         // NOTE The other values are currently stored as indexes -- should this be the same?
-        let index: Int = BUFFOON_CONSTANTS.PREVIEW_SIZE.FONT_SIZE_OPTIONS.lastIndex(of: settings.fontSize) ?? 3
+        let index = BUFFOON_CONSTANTS.PREVIEW_SIZE.FONT_SIZE_OPTIONS.lastIndex(of: settings.fontSize) ?? 3
         self.fontSizeSlider.floatValue = Float(index)
         self.fontSizeLabel.stringValue = "\(Int(BUFFOON_CONSTANTS.PREVIEW_SIZE.FONT_SIZE_OPTIONS[index]))pt"
 
@@ -239,8 +244,8 @@ extension AppDelegate {
         self.fontPopup.removeAllItems()
         self.stylePopup.isEnabled = false
 
-        for i: Int in 0..<self.fonts.count {
-            let font: PMFont = self.fonts[i]
+        for i in 0..<self.fonts.count {
+            let font = self.fonts[i]
             self.fontPopup.addItem(withTitle: font.displayName)
         }
 
@@ -259,14 +264,14 @@ extension AppDelegate {
         self.showbadJsonSwitch.state = settings.showRawJsonOnError ? .on : .off
 
         // Set the indent size popup
-        let indents: [Int] = [1, 2, 4, 8, 0, BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE]
+        let indents = [1, 2, 4, 8, 0, BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE]
         self.indentPopup.selectItem(at: indents.firstIndex(of: settings.indentSize) ?? 1)
 
         // The bool/null display style
         self.boolStyleSegment.selectedSegment = settings.boolStyle
 
         // Tahoe match thumbnail style
-        self.tintTumbnailsAdvancedSwitch.state = settings.thumbnailMatchFinderMode ? .on : .off
+        self.tintThumbnailsAdvancedSwitch.state = settings.thumbnailMatchFinderMode ? .on : .off
 
         // Preview window size
         var idx = 2
@@ -300,9 +305,9 @@ extension AppDelegate {
         displayedSettings.doReverseMode = self.useLightSwitch.state == .on
         displayedSettings.showJsonMarks = self.showJsonMarksSwitch.state == .on
         displayedSettings.showRawJsonOnError = self.showbadJsonSwitch.state == .on
-        displayedSettings.thumbnailMatchFinderMode = self.tintTumbnailsAdvancedSwitch.state == .on
+        displayedSettings.thumbnailMatchFinderMode = self.tintThumbnailsAdvancedSwitch.state == .on
 
-        let indents: [Int] = [1, 2, 4, 8, 0, BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE]
+        let indents = [1, 2, 4, 8, 0, BUFFOON_CONSTANTS.TABULATION_INDENT_VALUE]
         displayedSettings.indentSize = indents[self.indentPopup.indexOfSelectedItem]
 
         displayedSettings.boolStyle = self.boolStyleSegment.indexOfSelectedItem
@@ -332,12 +337,6 @@ extension AppDelegate {
 
         // Use the loaded settings to update the Settings tab UI
         displaySettings(self.currentSettings)
-
-        //if !self.initialLoadDone {
-            // Settings page elements have been set to reflect the current settings,
-            // either default values at the start, or custom values subsequently.
-            //self.initialLoadDone = true
-        //}
     }
 
 
@@ -366,7 +365,7 @@ extension AppDelegate {
      - Returns:
         `true` if one or more settings has changed, otherwise `false`.
      */
-    internal func checkSettings() -> Bool {
+    internal func checkSettingsOnQuit() -> Bool {
 
         let displayedSettings = settingsFromDisplay()
         var settingsHaveChanged = self.currentSettings.doReverseMode != displayedSettings.doReverseMode
@@ -435,9 +434,9 @@ extension AppDelegate {
      */
     internal func clearNewColours() {
 
-        let keys: [String] = BUFFOON_CONSTANTS.COLOUR_OPTIONS
+        let keys = BUFFOON_CONSTANTS.COLOUR_OPTIONS
         for key in keys {
-            if let _: String = self.currentSettings.displayColours["new_" + key] {
+            if let _ = self.currentSettings.displayColours["new_" + key] {
                 self.currentSettings.displayColours["new_" + key] = nil
             }
         }
@@ -451,7 +450,7 @@ extension AppDelegate {
      */
     internal func applyDefaultColours() {
 
-        let keys: [String] = BUFFOON_CONSTANTS.COLOUR_OPTIONS
+        let keys = BUFFOON_CONSTANTS.COLOUR_OPTIONS
         for key in keys {
             // Only apply the default as a new colour, if the current colour is different
             if self.defaultSettings.displayColours[key] != self.currentSettings.displayColours[key] {

@@ -197,7 +197,7 @@ class PJSettings {
             // this will persist, but with each new major and/or minor version, we make a
             // new preference that will be read by 'doShowWhatsNew()' to see if the sheet
             // should be shown this run
-            let key: String = BUFFOON_CONSTANTS.PREFS_IDS.WHATS_NEW + version
+            let key: String = BUFFOON_CONSTANTS.PREFS_IDS.MAIN_WHATS_NEW + version
             let showNewDefault: Any? = defaults.object(forKey: key)
             if showNewDefault == nil {
                 defaults.setValue(true, forKey: key)

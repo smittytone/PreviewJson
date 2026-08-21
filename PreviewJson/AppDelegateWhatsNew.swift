@@ -1,6 +1,6 @@
 /*
  *  AppDelegateWhatsNew.swift
- *  PreviewJson
+ *  PreviewApps
  *  Extension for AppDelegate providing What's New sheet functionality.
  *
  *  Created by Tony Smith on 10/10/2024.
@@ -14,43 +14,40 @@ import AppKit
 extension AppDelegate {
 
     /**
-        Show the **What's New** sheet.
+     Show the **What's New** sheet.
 
-        If we're on a new, non-patch version, of the user has explicitly
-        asked to see it with a menu click See if we're coming from a menu click
-        (`sender != self`) or directly in code from *appDidFinishLoading()*
-        (`sender == self`)
+     See if we're coming from a menu click (`sender != self`) or directly
+     in code from *appDidFinishLoading()* (`sender == nil`)
 
-        - Parameters:
-            - sender: The source of the action.
+     - Parameters:
+        - sender: The source of the action.
      */
     @IBAction
-    internal func doShowWhatsNew(_ sender: Any) {
+    internal func doShowWhatsNew(_ sender: Any?) {
 
-        // See if we're coming from a menu click (sender != self) or
-        // directly in code from 'appDidFinishLoading()' (sender == self)
-        var doShowSheet: Bool = type(of: self) != type(of: sender)
+        // Check how we got here: programmatically (`nil` passed in) or
+        // from menu click (menu reference passed in)
+        var doShowSheet = sender != nil
 
         if !doShowSheet {
             // We are coming from the 'appDidFinishLoading()' so check
             // if we need to show the sheet by the checking the prefs
             if let defaults = UserDefaults(suiteName: self.appSuiteName) {
                 // Get the version-specific preference key
-                let key: String = BUFFOON_CONSTANTS.PREFS_IDS.WHATS_NEW + getVersion()
+                let key = BUFFOON_CONSTANTS.PREFS_IDS.MAIN_WHATS_NEW + getVersion()
                 doShowSheet = defaults.bool(forKey: key)
             }
         }
 
         // Configure and show the sheet
         if doShowSheet {
-            // FROM 1.0.3
             // Hide menus we don't want used while panel is open
             hidePanelGenerators()
 
             // First, get the folder path
             let htmlFolderPath = Bundle.main.resourcePath! + "/new"
 
-            // Set up the WKWebBiew: no elasticity, horizontal scroller
+            // Set WebView properties: limit scrollers and elasticity
             self.whatsNewWebView.enclosingScrollView?.hasHorizontalScroller = false
             self.whatsNewWebView.enclosingScrollView?.horizontalScrollElasticity = .none
             self.whatsNewWebView.enclosingScrollView?.verticalScrollElasticity = .none
@@ -87,7 +84,7 @@ extension AppDelegate {
 
         // Set this version's preference
         if let defaults = UserDefaults(suiteName: self.appSuiteName) {
-            let key: String = BUFFOON_CONSTANTS.PREFS_IDS.WHATS_NEW + getVersion()
+            let key = BUFFOON_CONSTANTS.PREFS_IDS.MAIN_WHATS_NEW + getVersion()
 #if DEBUG
             print("\(key) reset back to true")
             defaults.setValue(true, forKey: key)
@@ -96,7 +93,6 @@ extension AppDelegate {
 #endif
         }
 
-        // FROM 1.0.3
         // Restore menus
         showPanelGenerators()
     }

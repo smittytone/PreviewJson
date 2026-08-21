@@ -20,5 +20,5 @@ struct PAFont {
     var displayName: String = ""
     var styleName: String = ""
     var traits: UInt = 0
-    var styles: [PMFont]? = nil
+    var styles: [PAFont]? = nil
 }

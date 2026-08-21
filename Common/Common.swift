@@ -50,10 +50,10 @@ final class Common {
 
     // MARK: - Lifecycle Functions
 
-    init(forThumbnail isThumbnail: Bool) {
+    init(forThumbnail: Bool) {
 
         self.settings.loadSettings(self.appSuiteName)
-        self.settings.isThumbnail = isThumbnail
+        self.settings.isThumbnail = forThumbnail
 
         if self.settings.fontSize < BUFFOON_CONSTANTS.PREVIEW_SIZE.FONT_SIZE_OPTIONS[0] ||
             self.settings.fontSize > BUFFOON_CONSTANTS.PREVIEW_SIZE.FONT_SIZE_OPTIONS[BUFFOON_CONSTANTS.PREVIEW_SIZE.FONT_SIZE_OPTIONS.count - 1] {
@@ -62,14 +62,14 @@ final class Common {
 
         // Set the JSON key:value fonts and sizes
         var font: NSFont
-        if let chosenFont: NSFont = NSFont(name: self.settings.fontName, size: self.settings.fontSize) {
+        if let chosenFont = NSFont(name: self.settings.fontName, size: self.settings.fontSize) {
             font = chosenFont
         } else {
             font = NSFont.systemFont(ofSize: self.settings.fontSize)
         }
 
         // Use a light theme?
-        let useLightMode: Bool = isThumbnail || self.settings.doReverseMode
+        let useLightMode = forThumbnail || self.settings.doReverseMode
 
         // Set up the attributed string components we may use during rendering
         self.keyAttributes = [
@@ -111,7 +111,7 @@ final class Common {
         hrTable.numberOfColumns = 1
         let hrBlock = NSTextTableBlock(table: hrTable, startingRow: 0, rowSpan: 1, startingColumn: 0, columnSpan: 1)
         hrBlock.setWidth(1.0, type: .absoluteValueType, for: .border, edge: .maxY)
-        hrBlock.setBorderColor(NSApplication.shared.inLightMode ? NSColor.hexToColour("eeeeeeff") : NSColor.hexToColour("222222ff"))
+        hrBlock.setBorderColor(useLightMode ? NSColor.hexToColour("eeeeeeff") : NSColor.hexToColour("222222ff"))
         let hrParaStyle = NSMutableParagraphStyle()
         hrParaStyle.alignment = .center
         hrParaStyle.textBlocks = [hrBlock]
@@ -173,7 +173,7 @@ final class Common {
         for i in 0..<thumbnailParagraphs.count {
             let paragraph = thumbnailParagraphs.object(at: i) as! Paragraph
             if var paragraphText = paragraph.text {
-                let inset: CGFloat = CGFloat(paragraph.depth) * BUFFOON_CONSTANTS.BASE_TAB_SIZE_PT
+                let inset = CGFloat(paragraph.depth) * BUFFOON_CONSTANTS.BASE_TAB_SIZE_PT
 
                 if paragraphText.length > 0 {
                     // Instantiate a generic paragraph style
@@ -261,7 +261,7 @@ final class Common {
         for i in 0..<previewParagraphs.count {
             let paragraph = previewParagraphs.object(at: i) as! Paragraph
             if var paragraphText = paragraph.text {
-                let inset: CGFloat = CGFloat(paragraph.depth) * self.baseIndentWidth * CGFloat(self.settings.indentSize)
+                let inset = CGFloat(paragraph.depth) * self.baseIndentWidth * CGFloat(self.settings.indentSize)
 
                 if paragraphText.length > 0 {
                     // Instantiate a generic paragraph style
@@ -324,8 +324,8 @@ final class Common {
             // For an object (dictionary), enumerate the keys and their values
             for (key, value) in json.objectValue! {
                 // Is the value a collection?
-                let valueIsObject: Bool = value.objectValue != nil
-                let valueIsArray: Bool = value.arrayValue != nil
+                let valueIsObject = value.objectValue != nil
+                let valueIsArray = value.arrayValue != nil
 
                 // First, render the key plus a separator
                 let keyString = NSMutableAttributedString(string: key.description + " ", attributes: self.keyAttributes)
@@ -361,8 +361,8 @@ final class Common {
             // NOTE Should be only one of each, but value may be an object or array
             for (index, value) in json.arrayValue!.enumerated() {
                 // Is the value a collection?
-                let valueIsObject: Bool = value.objectValue != nil
-                let valueIsArray: Bool = value.arrayValue != nil
+                let valueIsObject = value.objectValue != nil
+                let valueIsArray = value.arrayValue != nil
 
                 // Render the value
                 if valueIsObject || valueIsArray {
@@ -748,7 +748,7 @@ final class Common {
     private func getImageString(_ imageName: String) -> NSAttributedString? {
 
         // Get the image
-        let insetImage: NSTextAttachment = NSTextAttachment()
+        let insetImage = NSTextAttachment()
         insetImage.image = NSImage(named: imageName)
         guard let image = insetImage.image else {
             return nil

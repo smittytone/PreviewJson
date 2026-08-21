@@ -28,7 +28,7 @@ extension AppDelegate {
      */
     internal func asyncGetFonts() {
 
-        var cf: [PMFont] = []
+        var cf: [PAFont] = []
 
         let fm = NSFontManager.shared
         let families = fm.availableFontFamilies
@@ -42,11 +42,11 @@ extension AppDelegate {
             if let fonts = fm.availableMembers(ofFontFamily: family) {
                 // This will hold a font family: individual fonts will be added to
                 // the 'styles' array
-                var familyRecord = PMFont()
+                var familyRecord = PAFont()
                 familyRecord.displayName = family
 
                 for font in fonts {
-                    var fontRecord = PMFont()
+                    var fontRecord = PAFont()
                     fontRecord.postScriptName = font[0] as? String ?? "error"
                     fontRecord.styleName = font[1] as? String ?? "error"
                     fontRecord.traits = font[3] as? UInt ?? 0

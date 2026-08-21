@@ -8,7 +8,6 @@
  */
 
 import AppKit
-import UniformTypeIdentifiers
 
 
 extension AppDelegate {
@@ -54,11 +53,11 @@ extension AppDelegate {
      The user clicked the Feedback > Send button, so get the message (if there is one)
      from the text field and send it off.
      */
-    @IBAction
     @objc
+    @IBAction
     private func doSendFeedback(sender: Any) {
 
-        let feedback: String = self.feedbackText.stringValue
+        let feedback = self.feedbackText.stringValue
         if !feedback.isEmpty  && !self.hasSentFeedback {
             // FROM 2.0.0 -- Use Swift Concurrency
             // NOTE Use of Task and closure required because @IBAction functions
@@ -70,14 +69,14 @@ extension AppDelegate {
                 hidePanelGenerators()
 
                 // Post the feedback asynchronously
-                let error: FeedbackError = await self.nuSendFeedback(feedback)
+                let error = await self.nuSendFeedback(feedback)
                 self.connectionProgress.stopAnimation(self)
                 if error.code != .noError {
                     // Error - inform the user
-                    presentFeedbackError(error)
+                    await presentFeedbackError(error)
                 } else {
                     // No error - feedback sent successfully
-                    presentFeedbackSuccess()
+                    await presentFeedbackSuccess()
                 }
             }
         }
@@ -92,14 +91,15 @@ extension AppDelegate {
      This is called from multiple locations: if the initial request can't be created,
      there was a send failure, or a server error.
      */
-    internal func presentFeedbackError(_ error: FeedbackError) {
+    internal func presentFeedbackError(_ error: FeedbackError) async {
 
         hidePanelGenerators()
-        let alert: NSAlert = makeAlert("Feedback Could Not Be Sent",
-                                       "Unfortunately, your comments could not be send at this time. Please try again later.\n\nReason: \(error.localizedDescription)")
-        alert.beginSheetModal(for: self.window) { (resp) in
-            self.showPanelGenerators()
-        }
+        let alert = makeAlert("Feedback Could Not Be Sent",
+                              "Unfortunately, your comments could not be send at this time. Please try again later.\n\nReason: \(error.localizedDescription)")
+
+        // FROM 2.0.3 -- convert to Swift Concurrency
+        let _ = await alert.beginSheetModal(for: self.window)
+        self.showPanelGenerators()
     }
 
 
@@ -108,82 +108,16 @@ extension AppDelegate {
 
      FROM 2.0.0
      */
-    internal func presentFeedbackSuccess() {
+    internal func presentFeedbackSuccess() async {
 
-        let alert: NSAlert = makeAlert("Thanks For Your Feedback!",
-                                       "Your comments have been received and we’ll take a look at them shortly.")
-        alert.beginSheetModal(for: self.window) { (resp) in
-            self.showPanelGenerators()
-            self.hasSentFeedback = true
-            self.messageSendButton.isEnabled = false
-        }
-    }
+        let alert = makeAlert("Thanks For Your Feedback!",
+                              "Your comments have been received and we’ll take a look at them shortly.")
 
-
-    // MARK: - Support Functions
-
-    /**
-     Build a date string string for feedback usage.
-
-     - Returns: The date string.
-     */
-    internal func getFeedbackDate() -> String {
-
-        let date: Date = Date()
-        let dateFormatter: DateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        return dateFormatter.string(from: date)
-    }
-
-
-    /**
-     Build a user-agent string string for feedback usage.
-
-     - Returns: The user-agent string.
-     */
-    internal func getUserAgent() -> String {
-
-        let sysVer: OperatingSystemVersion = ProcessInfo.processInfo.operatingSystemVersion
-        let bundle: Bundle = Bundle.main
-        let app: String = bundle.object(forInfoDictionaryKey: "CFBundleExecutable") as! String
-        let version: String = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-        let build: String = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as! String
-        return "\(app)/\(version)-\(build) (macOS/\(sysVer.majorVersion).\(sysVer.minorVersion).\(sysVer.patchVersion))"
-    }
-
-
-    /**
-     Read back the host system's registered UTI for the specified file.
-
-     This is not PII. It used solely for debugging purposes
-
-     - Parameters:
-        - filename: The file we'll use to get the UTI.
-
-     - Returns: The file's UTI.
-     */
-    internal func getLocalFileUTI(_ filename: String) -> String {
-
-        var localUTI: String = "NONE"
-        let samplePath = Bundle.main.resourcePath! + "/" + filename
-
-        if FileManager.default.fileExists(atPath: samplePath) {
-            // Create a URL reference to the sample file
-            let sampleURL = URL(fileURLWithPath: samplePath)
-
-            do {
-                // Read back the UTI from the URL
-                if let uti: UTType = try sampleURL.resourceValues(forKeys: [.contentTypeKey]).contentType {
-                    localUTI = uti.identifier
-                }
-            } catch {
-                // NOP
-            }
-        }
-
-        return localUTI
+        // FROM 2.0.3 -- convert to Swift Concurrency
+        let _ = await alert.beginSheetModal(for: self.window)
+        self.showPanelGenerators()
+        self.hasSentFeedback = true
+        self.messageSendButton.isEnabled = false
     }
 
 
@@ -228,14 +162,12 @@ extension AppDelegate {
         guard self.timer == nil else { return }
 
         // Set the background to colour red
-        // Must run on `MainActor` and we set `.high` so it's done immediately
-        Task(priority: .high) {
-            await MainActor.run {
-                self.feedbackText.isEnabled = false
-                self.feedbackText.backgroundColor = .red
-                self.feedbackText.textColor = .white
-            }
-        }
+        // Will run on `MainActor` as function is called by an NSTextFieldDelegate method
+        // NOTE Already being run on `MainActor` as this function is called by an
+        //      NSTextFieldDelegate method, `controlTextDidChange()`
+        self.feedbackText.isEnabled = false
+        self.feedbackText.backgroundColor = .red
+        self.feedbackText.textColor = .white
 
         // Switch the background back in 0.25 of a second
         self.timer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false, block: { (timer) in

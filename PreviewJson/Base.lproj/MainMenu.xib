@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24765" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24765"/>
         <plugIn identifier="com.apple.WebKit2IBPlugin" version="24765"/>
         <capability name="Image references" minToolsVersion="12.0"/>
@@ -152,8 +151,8 @@ Gw
                 <outlet property="showJsonMarksSwitch" destination="mgk-qI-BMk" id="vhi-aB-wI2"/>
                 <outlet property="showbadJsonSwitch" destination="vtT-5i-xEC" id="vGM-hk-By2"/>
                 <outlet property="stylePopup" destination="ph6-3a-Boc" id="xoc-Ui-lYP"/>
-                <outlet property="tintTumbnailsAdvancedLabel" destination="nFS-gs-qip" id="YBM-gV-0B8"/>
-                <outlet property="tintTumbnailsAdvancedSwitch" destination="PD2-GE-kPM" id="cNl-kZ-XN5"/>
+                <outlet property="tintThumbnailsAdvancedLabel" destination="nFS-gs-qip" id="YBM-gV-0B8"/>
+                <outlet property="tintThumbnailsAdvancedSwitch" destination="PD2-GE-kPM" id="cNl-kZ-XN5"/>
                 <outlet property="useLightSwitch" destination="Vj0-rk-AuO" id="dAy-zG-aTo"/>
                 <outlet property="versionLabel" destination="Nu7-qm-Ogl" id="zcJ-ND-4Qj"/>
                 <outlet property="whatsNewWebView" destination="JhS-5O-6sp" id="hrq-0G-CPr"/>

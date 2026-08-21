@@ -60,7 +60,7 @@ struct BUFFOON_CONSTANTS {
     
     struct PREFS_IDS {
 
-        static let WHATS_NEW                    = "com-bps-previewjson-do-show-whats-new-"
+        static let MAIN_WHATS_NEW               = "com-bps-previewjson-do-show-whats-new-"
         static let PREVIEW_BODY_FONT_NAME       = "com-bps-previewjson-base-font-name"
         static let PREVIEW_BODY_FONT_SIZE       = "com-bps-previewjson-base-font-size"
         static let PREVIEW_USE_LIGHT            = "com-bps-previewjson-do-use-light"
@@ -146,5 +146,8 @@ struct BUFFOON_CONSTANTS {
     static let COLLECTION_SPACER                = "\n"
     static let TAB                              = "\t"
 #endif
+
+    // FROM 2.0.3
+    static let APP_NAME                         = "PreviewJson"
 }
 

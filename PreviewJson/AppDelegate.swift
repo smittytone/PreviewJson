@@ -75,8 +75,8 @@ final class AppDelegate: NSResponder,
     @IBOutlet weak var advancedSettingsSheet: NSWindow!
     @IBOutlet weak var helpAdvancedButton: NSButton!
     @IBOutlet weak var previewSizeAdvancedPopup: NSPopUpButton!
-    @IBOutlet weak var tintTumbnailsAdvancedSwitch: NSSwitch!
-    @IBOutlet weak var tintTumbnailsAdvancedLabel: NSTextField!
+    @IBOutlet weak var tintThumbnailsAdvancedSwitch: NSSwitch!
+    @IBOutlet weak var tintThumbnailsAdvancedLabel: NSTextField!
     @IBOutlet weak var previewMarginSizeText: NSTextField!
     @IBOutlet weak var previewMarginRangeText: NSTextField!
 
@@ -84,9 +84,9 @@ final class AppDelegate: NSResponder,
     // MARK: - Private Properies
 
     internal var whatsNewNav: WKNavigation?     = nil
-    internal var fonts: [PMFont]                = []
+    internal var fonts: [PAFont]                = []
     // FROM 2.0.0
-    private  var tabManager: PMTabManager       = PMTabManager()
+    private  var tabManager: PATabManager       = PATabManager()
     internal var hasSentFeedback: Bool          = false
     internal var timer: Timer?                  = nil
     internal let defaultSettings: PJSettings    = PJSettings()      // Standard values
@@ -98,7 +98,7 @@ final class AppDelegate: NSResponder,
      identify the app suite and so share preferences set by the main app with
      the previewer and thumbnailer extensions.
      */
-    internal var appSuiteName: String = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
+    internal var appSuiteName = MNU_SECRETS.PID + BUFFOON_CONSTANTS.SUITE_NAME
 
 
     // MARK: - Class Lifecycle Functions
@@ -115,15 +115,13 @@ final class AppDelegate: NSResponder,
         self.defaultSettings.registerSettings(self.appSuiteName, getVersion())
 
         // Add the app's version number to the UI
-        let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-        let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
+        let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown"
+        let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown"
         versionLabel.stringValue = "Version \(version) (\(build))"
 
         // Disable the Help menu Spotlight features
-        let dummyHelpMenu: NSMenu = NSMenu(title: "Dummy")
-        let theApp = NSApplication.shared
-        theApp.helpMenu = dummyHelpMenu
-        
+        NSApplication.shared.helpMenu = NSMenu(title: "Dummy")
+
         // FROM 2.0.0
         // Configure the tab manager
         self.tabManager.parent = self
@@ -156,15 +154,15 @@ final class AppDelegate: NSResponder,
         self.previewMarginSizeText.delegate = self
         self.previewMarginRangeText.stringValue = "Valid range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MAX)"
 
+        // Show the 'What's New' panel if we need to
+        // NOTE Has to take place at the end of the function
+        doShowWhatsNew(nil)
+
         // Centre the main window and display
         setInfoText()
         self.window.delegate = self
         self.window.center()
         self.window.makeKeyAndOrderFront(self)
-
-        // Show the 'What's New' panel if we need to
-        // NOTE Has to take place at the end of the function
-        doShowWhatsNew(self)
     }
 
 
@@ -208,10 +206,10 @@ final class AppDelegate: NSResponder,
     internal func closeSettings() {
 
         // Are there any unsaved changes to the settings?
-        if checkSettings() {
-            let alert: NSAlert = makeAlert("You have unsaved settings",
-                                           "Do you wish to cancel and save or change them, or quit the app anyway?",
-                                           false)
+        if checkSettingsOnQuit() {
+            let alert = makeAlert("You have unsaved settings",
+                                  "Do you wish to cancel and save or change them, or quit the app anyway?",
+                                  false)
             alert.addButton(withTitle: "Quit")
             alert.addButton(withTitle: "Cancel")
             alert.beginSheetModal(for: self.window) { (response) in
@@ -240,9 +238,9 @@ final class AppDelegate: NSResponder,
 
         // Does the feeback page contain text? If so let the user know
         if self.feedbackText.stringValue.count > 0 && !self.hasSentFeedback {
-            let alert: NSAlert = makeAlert("You have unsent feedback",
-                                           "Do you wish to cancel and send it, or quit the app anyway?",
-                                           false)
+            let alert = makeAlert("You have unsent feedback",
+                                  "Do you wish to cancel and send it, or quit the app anyway?",
+                                  false)
             alert.addButton(withTitle: "Quit")
             alert.addButton(withTitle: "Cancel")
             alert.beginSheetModal(for: self.window) { (response) in
@@ -286,23 +284,6 @@ final class AppDelegate: NSResponder,
 
 
     /**
-     Alternative route to help.
-     */
-    @IBAction
-    private func doShowPrefsHelp(sender: Any) {
-
-        let path: String
-        if sender as? NSButton == self.helpAdvancedButton {
-            path = BUFFOON_CONSTANTS.URL_MAIN + "#advanced-settings"
-        } else {
-            path = BUFFOON_CONSTANTS.URL_MAIN + "#customise-the-preview"
-        }
-        
-        NSWorkspace.shared.open(URL(string:path)!)
-    }
-
-
-    /**
      Called from various **Help** items to open various websites.
 
      - Parameters:
@@ -313,9 +294,9 @@ final class AppDelegate: NSResponder,
     private func doShowSites(sender: Any) {
 
         // Open the websites for contributors, help and suc
-        let item: NSMenuItem = sender as! NSMenuItem
-        var path: String = BUFFOON_CONSTANTS.URL_MAIN
-        
+        guard let item = sender as? NSMenuItem else { return }
+        var path = BUFFOON_CONSTANTS.URL_MAIN
+
         // Depending on the menu selected, set the load path
         if item == self.helpMenuAppStoreRating {
             path = BUFFOON_CONSTANTS.APP_STORE + "?action=write-review"
@@ -328,7 +309,31 @@ final class AppDelegate: NSResponder,
         }
         
         // Open the selected website
-        NSWorkspace.shared.open(URL(string:path)!)
+        // FROM 2.0.3 -- more safely
+        if let url = URL(string: path) {
+            NSWorkspace.shared.open(url)
+        }
+    }
+
+
+    /**
+     Alternative route to help.
+     */
+    @IBAction
+    private func doShowPrefsHelp(sender: Any) {
+
+        let path: String
+        if sender as? NSButton == self.helpAdvancedButton {
+            path = BUFFOON_CONSTANTS.URL_MAIN + "#advanced-settings"
+        } else {
+            path = BUFFOON_CONSTANTS.URL_MAIN + "#customise-the-preview"
+        }
+
+        // Open the selected website
+        // FROM 2.0.3 -- more safely
+        if let url = URL(string: path) {
+            NSWorkspace.shared.open(url)
+        }
     }
 
 
@@ -351,12 +356,10 @@ final class AppDelegate: NSResponder,
             .foregroundColor: NSColor.labelColor
         ]
 
-        let infoText: NSMutableAttributedString = NSMutableAttributedString(string: "You need only run this app once, to register its JSON Previewer and JSON Thumbnailer application extensions with macOS. You can then manage these extensions in ", attributes: bodyAtts)
-        let boldText: NSAttributedString = NSAttributedString(string: "System Settings > Extensions > Quick Look", attributes: boldAtts)
+        let infoText = NSMutableAttributedString(string: "You need only run this app once, to register its JSON Previewer and JSON Thumbnailer application extensions with macOS. You can then manage these extensions in ", attributes: bodyAtts)
+        let boldText = NSAttributedString(string: "System Settings > Extensions > Quick Look", attributes: boldAtts)
         infoText.append(boldText)
         infoText.append(NSAttributedString(string: ".\n\nCases where previews cannot be rendered can usually be resolved by logging out of your Mac, logging in again and running this app once more.", attributes: bodyAtts))
         self.infoLabel.attributedStringValue = infoText
     }
 }
-
-
