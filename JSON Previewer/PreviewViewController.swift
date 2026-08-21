@@ -36,7 +36,7 @@ class PreviewViewController: NSViewController,
          * Main entry point for the macOS preview system
          */
 
-        // Get an error message ready for use
+        // Get an error ready for use
         var reportError: NSError? = nil
 
         // Load and process the source file
@@ -72,7 +72,7 @@ class PreviewViewController: NSViewController,
                 // FROM 2.0.0
                 // The force-light-mode-preview-in-dark-mode setting is now a general
                 // preview-colours-should-be-opposite-the-mode setting.
-                var renderPreviewLight = NSApplication.shared.inLightMode
+                var renderPreviewLight = NSApp.inLightMode
                 if common.settings.doReverseMode {
                     // Invert the colour scheme based on the current mode
                     renderPreviewLight = !renderPreviewLight
@@ -149,16 +149,16 @@ class PreviewViewController: NSViewController,
         var errDesc: String
 
         switch(code) {
-        case BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE:
-            errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_INACCESSIBLE
-        case BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN:
-            errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_WONT_OPEN
-        case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING:
-            errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING
-        case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING:
-            errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_MD_STRING
-        default:
-            errDesc = "UNKNOWN ERROR"
+            case BUFFOON_CONSTANTS.ERRORS.CODES.FILE_INACCESSIBLE:
+                errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_INACCESSIBLE
+            case BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN:
+                errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_WONT_OPEN
+            case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING:
+                errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING
+            case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING:
+                errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_MD_STRING
+            default:
+                errDesc = "UNKNOWN ERROR"
         }
 
         return NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,
@@ -172,18 +172,21 @@ class PreviewViewController: NSViewController,
     */
     private func setPreviewWindowSize(_ settings: PJSettings) {
 
-        var screen = NSScreen.screens[0]
+        // This app will never be run headless, so this should not really be necessary
+        if NSScreen.screens.count > 0 {
+            var screen = NSScreen.screens[0]
 
-        // We've set `screen` to the primary, ie. menubar-displaying,
-        // screen, but ideally we should pick the screen with user focus.
-        // They may be one and the same, of course...
-        if let mainScreen = NSScreen.main, mainScreen != screen {
-            screen = mainScreen
+            // We've set `screen` to the primary, ie. menubar-displaying,
+            // screen, but ideally we should pick the screen with user focus.
+            // They may be one and the same, of course...
+            if let mainScreen = NSScreen.main, mainScreen != screen {
+                screen = mainScreen
+            }
+
+            let height = screen.frame.size.height * settings.previewWindowScale
+            let width = screen.frame.size.width * settings.previewWindowScale
+            self.preferredContentSize = NSSize(width: width, height: height)
         }
-
-        let height: CGFloat = screen.frame.size.height * settings.previewWindowScale
-        let width: CGFloat = screen.frame.size.width * settings.previewWindowScale
-        self.preferredContentSize = NSSize(width: width, height: height)
     }
 
 }
