@@ -33,29 +33,62 @@ extension NSColor {
 
 
     /**
-     Generate a new NSColor from an RGB+A hex string..
+     Class function to return an NSColor object that matches the colour supplied as a RGBA hex value.
 
      - Parameters:
-        - hex: The RGB+A hex string, eg.`AABBCCFF`.
+        - colourValue: The colour as a hex string `RRGGBBAA`, eg `FF00AA88`.
 
-     - Returns: An NSColor instance.
+     - Returns An NSColor object.
      */
-    static func hexToColour(_ hex: String) -> NSColor {
+    static func hexToColour(_ colourValue: String) -> NSColor {
 
-        if hex.count != 8 {
-            return NSColor.red
+        var colourString: String = colourValue.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+
+        if (colourString.hasPrefix("#")) {
+            // The colour is defined by a hex value
+            colourString = String(colourString.dropFirst())
         }
 
-        func hexToFloat(_ hs: String) -> CGFloat {
-            return CGFloat(UInt8(hs, radix: 16) ?? 0)
+        // Colours in hex strings have 3, 6 or 8 (6 + alpha) values
+        if ![8, 6, 3].contains(colourString.count) {
+            return NSColor.gray
         }
 
-        let hexns: NSString = hex as NSString
-        let red = hexToFloat(hexns.substring(with: NSRange(location: 0, length: 2))) / 255
-        let green = hexToFloat(hexns.substring(with: NSRange(location: 2, length: 2))) / 255
-        let blue = hexToFloat(hexns.substring(with: NSRange(location: 4, length: 2))) / 255
-        let alpha = hexToFloat(hexns.substring(with: NSRange(location: 6, length: 2))) / 255
-        return NSColor(srgbRed: red, green: green, blue: blue, alpha: alpha)
+        var r: UInt64 = 0, g: UInt64 = 0, b: UInt64 = 0, a: UInt64 = 0
+        var divisor: CGFloat
+        var alpha: CGFloat = 1.0
+
+        if colourString.count == 6 || colourString.count == 8 {
+            // Decode a six/eight-character hex string
+            let rString = colourString[0..<2]   //(colourString as NSString).substring(to: 2)
+            let gString = colourString[2..<4]   //((colourString as NSString).substring(from: 2) as NSString).substring(to: 2)
+            let bString = colourString[4..<6]   //((colourString as NSString).substring(from: 4) as NSString).substring(to: 2)
+
+            Scanner(string: rString).scanHexInt64(&r)
+            Scanner(string: gString).scanHexInt64(&g)
+            Scanner(string: bString).scanHexInt64(&b)
+
+            divisor = 255.0
+
+            if colourString.count == 8 {
+                // Decode the eight-character hex string's alpha value
+                let aString = colourString[6..<8]   // ((colourString as NSString).substring(from: 6) as NSString).substring(to: 2)
+                Scanner(string: aString).scanHexInt64(&a)
+                alpha = CGFloat(a) / divisor
+            }
+        } else {
+            // Decode a three-character hex string
+            let rString = colourString[0..<1]   //(colourString as NSString).substring(to: 1)
+            let gString = colourString[1..<2]   //((colourString as NSString).substring(from: 1) as NSString).substring(to: 1)
+            let bString = colourString[2..<3]   //((colourString as NSString).substring(from: 2) as NSString).substring(to: 1)
+
+            Scanner(string: rString).scanHexInt64(&r)
+            Scanner(string: gString).scanHexInt64(&g)
+            Scanner(string: bString).scanHexInt64(&b)
+            divisor = 15.0
+        }
+
+        return NSColor(red: CGFloat(r) / divisor, green: CGFloat(g) / divisor, blue: CGFloat(b) / divisor, alpha: alpha)
     }
 }
 
@@ -169,3 +202,23 @@ extension NSApplication {
         return effectiveAppearance.bestMatch(from: [.aqua, .darkAqua]) == .aqua
     }
 }
+
+
+extension String {
+
+        func substring(fromIndex: Int) -> String {
+            return self[min(fromIndex, self.count)..<self.count]
+        }
+
+        func substring(toIndex: Int) -> String {
+            return self[0..<max(0, toIndex)]
+        }
+
+        subscript(r: Range<Int>) -> String {
+            let bounds = (lower: max(0, min(self.count, r.lowerBound)), upper: min(self.count, max(0, r.upperBound)))
+            let range = Range(uncheckedBounds:bounds)
+            let start = index(self.startIndex, offsetBy: range.lowerBound)
+            let end = index(start, offsetBy: range.upperBound - range.lowerBound)
+            return String(self[start ..< end])
+        }
+    }
