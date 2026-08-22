@@ -13,26 +13,7 @@ import Cocoa
 
 extension NSColor {
 
-    /**
-     Convert a colour's internal representation into an RGB+A hex string.
-     */
-    var hexString: String {
-
-        guard let rgbColour = usingColorSpace(.sRGB) else {
-            return BUFFOON_CONSTANTS.HEX_COLOUR.KEYS
-        }
-
-        let red = Int(round(rgbColour.redComponent * 0xFF))
-        let green = Int(round(rgbColour.greenComponent * 0xFF))
-        let blue = Int(round(rgbColour.blueComponent * 0xFF))
-        let alpha = Int(round(rgbColour.alphaComponent * 0xFF))
-
-        let hexString = NSString(format: "%02X%02X%02X%02X", red, green, blue, alpha)
-        return hexString as String
-    }
-
-
-    /**
+   /**
      Class function to return an NSColor object that matches the colour supplied as a RGBA hex value.
 
      - Parameters:
@@ -42,7 +23,7 @@ extension NSColor {
      */
     static func hexToColour(_ colourValue: String) -> NSColor {
 
-        var colourString: String = colourValue.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        var colourString = colourValue.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
 
         if (colourString.hasPrefix("#")) {
             // The colour is defined by a hex value
@@ -60,9 +41,9 @@ extension NSColor {
 
         if colourString.count == 6 || colourString.count == 8 {
             // Decode a six/eight-character hex string
-            let rString = colourString[0..<2]   //(colourString as NSString).substring(to: 2)
-            let gString = colourString[2..<4]   //((colourString as NSString).substring(from: 2) as NSString).substring(to: 2)
-            let bString = colourString[4..<6]   //((colourString as NSString).substring(from: 4) as NSString).substring(to: 2)
+            let rString = colourString[0..<2]
+            let gString = colourString[2..<4]
+            let bString = colourString[4..<6]
 
             Scanner(string: rString).scanHexInt64(&r)
             Scanner(string: gString).scanHexInt64(&g)
@@ -72,15 +53,15 @@ extension NSColor {
 
             if colourString.count == 8 {
                 // Decode the eight-character hex string's alpha value
-                let aString = colourString[6..<8]   // ((colourString as NSString).substring(from: 6) as NSString).substring(to: 2)
+                let aString = colourString[6..<8]
                 Scanner(string: aString).scanHexInt64(&a)
                 alpha = CGFloat(a) / divisor
             }
         } else {
             // Decode a three-character hex string
-            let rString = colourString[0..<1]   //(colourString as NSString).substring(to: 1)
-            let gString = colourString[1..<2]   //((colourString as NSString).substring(from: 1) as NSString).substring(to: 1)
-            let bString = colourString[2..<3]   //((colourString as NSString).substring(from: 2) as NSString).substring(to: 1)
+            let rString = colourString[0..<1]
+            let gString = colourString[1..<2]
+            let bString = colourString[2..<3]
 
             Scanner(string: rString).scanHexInt64(&r)
             Scanner(string: gString).scanHexInt64(&g)
@@ -89,6 +70,25 @@ extension NSColor {
         }
 
         return NSColor(red: CGFloat(r) / divisor, green: CGFloat(g) / divisor, blue: CGFloat(b) / divisor, alpha: alpha)
+    }
+
+
+    /**
+     Convert a colour's internal representation into an RGB+A hex string.
+     */
+    var hexString: String {
+
+        guard let rgbColour = usingColorSpace(.sRGB) else {
+            return "FF0000FF"
+        }
+
+        let red = Int(round(rgbColour.redComponent * 0xFF))
+        let green = Int(round(rgbColour.greenComponent * 0xFF))
+        let blue = Int(round(rgbColour.blueComponent * 0xFF))
+        let alpha = Int(round(rgbColour.alphaComponent * 0xFF))
+
+        let hexString = NSString(format: "%02X%02X%02X%02X", red, green, blue, alpha)
+        return hexString as String
     }
 }
 
@@ -206,19 +206,19 @@ extension NSApplication {
 
 extension String {
 
-        func substring(fromIndex: Int) -> String {
-            return self[min(fromIndex, self.count)..<self.count]
-        }
-
-        func substring(toIndex: Int) -> String {
-            return self[0..<max(0, toIndex)]
-        }
-
-        subscript(r: Range<Int>) -> String {
-            let bounds = (lower: max(0, min(self.count, r.lowerBound)), upper: min(self.count, max(0, r.upperBound)))
-            let range = Range(uncheckedBounds:bounds)
-            let start = index(self.startIndex, offsetBy: range.lowerBound)
-            let end = index(start, offsetBy: range.upperBound - range.lowerBound)
-            return String(self[start ..< end])
-        }
+    func substring(fromIndex: Int) -> String {
+        return self[min(fromIndex, self.count)..<self.count]
     }
+
+    func substring(toIndex: Int) -> String {
+        return self[0..<max(0, toIndex)]
+    }
+
+    subscript(r: Range<Int>) -> String {
+        let bounds = (lower: max(0, min(self.count, r.lowerBound)), upper: min(self.count, max(0, r.upperBound)))
+        let range = Range(uncheckedBounds:bounds)
+        let start = index(self.startIndex, offsetBy: range.lowerBound)
+        let end = index(start, offsetBy: range.upperBound - range.lowerBound)
+        return String(self[start ..< end])
+    }
+}
