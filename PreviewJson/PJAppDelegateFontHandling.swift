@@ -47,6 +47,7 @@ extension AppDelegate {
 
                 for font in fonts {
                     var fontRecord = PAFont()
+                    // We can be fairly sure the following a typeable as described
                     fontRecord.postScriptName = font[0] as? String ?? "error"
                     fontRecord.styleName = font[1] as? String ?? "error"
                     fontRecord.traits = font[3] as? UInt ?? 0

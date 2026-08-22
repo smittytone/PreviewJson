@@ -115,8 +115,8 @@ final class AppDelegate: NSResponder,
         self.defaultSettings.registerSettings(self.appSuiteName, getVersion())
 
         // Add the app's version number to the UI
-        let version: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown"
-        let build: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown"
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown"
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown"
         versionLabel.stringValue = "Version \(version) (\(build))"
 
         // Disable the Help menu Spotlight features
