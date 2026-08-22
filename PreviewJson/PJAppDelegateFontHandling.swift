@@ -1,5 +1,5 @@
 /*
- *  AppDelegateFontHandlingPJ.swift
+ *  PJAppDelegateFontHandling.swift
  *  PreviewJson
  *  Extension for AppDelegate providing font processing functionality.
  *

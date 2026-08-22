@@ -137,12 +137,8 @@ final class AppDelegate: NSResponder,
 
         // Add callback closures, one per tab, to the tab manager
         self.tabManager.callbacks.append(nil)   // Info tab
-        self.tabManager.callbacks.append {      // Settings tab
-            self.willShowSettingsPage()
-        }
-        self.tabManager.callbacks.append {
-            self.willShowFeedbackPage()         // Feedback tab
-        }
+        self.tabManager.callbacks.append { self.willShowSettingsPage() }
+        self.tabManager.callbacks.append { self.willShowFeedbackPage() }
 
         // Clear the Feedback tab
         // NOTE Don't initialise the Settings tab here too:
@@ -168,7 +164,7 @@ final class AppDelegate: NSResponder,
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
 
-        // When the main window closed, shut down the app
+        // When the main window is closed, shut down the app
         return true
     }
 
@@ -176,10 +172,10 @@ final class AppDelegate: NSResponder,
     // MARK: - Action Functions
 
     @IBAction
-    private func doClose(_ sender: Any) {
+    internal func doClose(_ sender: Any) {
 
-        closeBasics()
-        Task {
+        Task { @MainActor in
+            await closeBasics()
             await closeSettings()
         }
     }
@@ -190,7 +186,7 @@ final class AppDelegate: NSResponder,
 
      FROM 2.0.0
      */
-    internal func closeBasics() {
+    internal func closeBasics() async {
 
         // Close the What's New sheet if it's open
         if self.whatsNewWindow.isVisible {

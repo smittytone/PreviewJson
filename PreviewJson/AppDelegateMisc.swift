@@ -186,10 +186,7 @@ extension AppDelegate {
         // NOTE The above check will fail if there are settings changes and/or
         //      unsent feedback, in which case the following calls will trigger
         //      alerts
-        closeBasics()
-        Task {
-            await closeSettings()
-        }
+        doClose(self)
         return false
     }
 

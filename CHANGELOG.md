@@ -4,7 +4,7 @@
     - Improve Thumbnail Provider's thread safety.
     - Improve Thumbnail Provider's error handling.
     - Improve Preview Provider's error handling.
-    - Code clean-up.
+    - Code clean-up and reorganisation.
 - 2.0.2 *02 May 2026*
     - Fix font-size slider control’s colouring.
     - Sync UI with other PreviewApps.

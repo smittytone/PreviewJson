@@ -1,6 +1,6 @@
 /*
  *  AppDelegateFeedback.swift
- *  PreviewJson
+ *  PreviewApps
  *  Extension for AppDelegate providing feedback handling functionality.
  *
  *  Created by Tony Smith on 08/10/2024.
@@ -59,7 +59,7 @@ extension AppDelegate {
 
         let feedback = self.feedbackText.stringValue
         if !feedback.isEmpty  && !self.hasSentFeedback {
-            // FROM 2.0.0 -- Use Swift Concurrency
+            // Use Swift Concurrency
             // NOTE Use of Task and closure required because @IBAction functions
             //      cannot be `async`, but we make an `await` call later on
             Task { @MainActor in
@@ -97,7 +97,6 @@ extension AppDelegate {
         let alert = makeAlert("Feedback Could Not Be Sent",
                               "Unfortunately, your comments could not be send at this time. Please try again later.\n\nReason: \(error.localizedDescription)")
 
-        // FROM 2.0.3 -- convert to Swift Concurrency
         let _ = await alert.beginSheetModal(for: self.window)
         self.showPanelGenerators()
     }
@@ -105,15 +104,12 @@ extension AppDelegate {
 
     /**
      Present a message on successfully sending feedback.
-
-     FROM 2.0.0
      */
     internal func presentFeedbackSuccess() async {
 
         let alert = makeAlert("Thanks For Your Feedback!",
                               "Your comments have been received and we’ll take a look at them shortly.")
 
-        // FROM 2.0.3 -- convert to Swift Concurrency
         let _ = await alert.beginSheetModal(for: self.window)
         self.showPanelGenerators()
         self.hasSentFeedback = true
@@ -129,7 +125,6 @@ extension AppDelegate {
         // can be entered into the text field
 
         if self.feedbackText.stringValue.count > BUFFOON_CONSTANTS.MAX_FEEDBACK_SIZE {
-            // FROM 2.0.0
             // Chop the feedback field's attributed string, not its plain string
             let attStr = NSMutableAttributedString(attributedString: self.feedbackText.attributedStringValue)
             attStr.deleteCharacters(in: NSRange(location: BUFFOON_CONSTANTS.MAX_FEEDBACK_SIZE, length: attStr.length - BUFFOON_CONSTANTS.MAX_FEEDBACK_SIZE))
@@ -153,8 +148,6 @@ extension AppDelegate {
 
     /**
      Briefly set the Text Field's background to red.
-
-     FROM 2.0.0
      */
     func flashField() {
 
@@ -162,7 +155,6 @@ extension AppDelegate {
         guard self.timer == nil else { return }
 
         // Set the background to colour red
-        // Will run on `MainActor` as function is called by an NSTextFieldDelegate method
         // NOTE Already being run on `MainActor` as this function is called by an
         //      NSTextFieldDelegate method, `controlTextDidChange()`
         self.feedbackText.isEnabled = false
@@ -174,6 +166,7 @@ extension AppDelegate {
             timer.invalidate()
 
             // Must run on `MainActor` and we set `.high` so it's done immediately
+            // See Note above, but we follow that pattern here to silence build errors
             Task(priority: .high) {
                 await MainActor.run {
                     self.feedbackText.backgroundColor = .textBackgroundColor
