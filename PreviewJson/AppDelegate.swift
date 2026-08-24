@@ -105,7 +105,10 @@ final class AppDelegate: NSResponder,
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         
-        // Asynchronously get the list of code fonts
+        // Pre-load fonts in a separate thread
+        // NOTE This ultimately calls `AppDelegateSettings.loadSettings()`
+        //      which we delay until after the fonts have loaded asynchronously
+        //      because they reference loaded fonts.
         // FROM 2.0.0 - Use Swift Concurrency
         Task {
             asyncGetFonts()
@@ -114,13 +117,15 @@ final class AppDelegate: NSResponder,
         // Set application group-level defaults
         self.defaultSettings.registerSettings(self.appSuiteName, getVersion())
 
-        // Add the app's version number to the UI
-        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown"
-        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown"
-        versionLabel.stringValue = "Version \(version) (\(build))"
-
         // Disable the Help menu Spotlight features
         NSApplication.shared.helpMenu = NSMenu(title: "Dummy")
+
+        self.infoButton.toolTip = "About \(BUFFOON_CONSTANTS.APP_NAME) 2"
+        self.settingsButton.toolTip = "Set preview styles and content"
+        self.feedbackButton.toolTip = "Send feedback to the developer"
+        self.infoButton.alphaValue = 1.0
+        self.settingsButton.alphaValue = 1.0
+        self.feedbackButton.alphaValue = 1.0
 
         // FROM 2.0.0
         // Configure the tab manager
@@ -128,13 +133,6 @@ final class AppDelegate: NSResponder,
         self.tabManager.buttons.append(self.infoButton)
         self.tabManager.buttons.append(self.settingsButton)
         self.tabManager.buttons.append(self.feedbackButton)
-        self.infoButton.toolTip = "About PreviewJson 2"
-        self.settingsButton.toolTip = "Set preview styles and content"
-        self.feedbackButton.toolTip = "Send feedback to the developer"
-        self.infoButton.alphaValue = 1.0
-        self.settingsButton.alphaValue = 1.0
-        self.feedbackButton.alphaValue = 1.0
-
         // Add callback closures, one per tab, to the tab manager
         self.tabManager.callbacks.append(nil)   // Info tab
         self.tabManager.callbacks.append { self.willShowSettingsPage() }
@@ -144,6 +142,9 @@ final class AppDelegate: NSResponder,
         // NOTE Don't initialise the Settings tab here too:
         //      It must happen after we've got a list of fonts
         initialiseFeedback()
+
+        // Set the `Settings` tab's tooltips
+        initialiseSettings()
 
         // FROM 2.0.0
         // Set up advanced settings
@@ -155,7 +156,8 @@ final class AppDelegate: NSResponder,
         doShowWhatsNew(nil)
 
         // Centre the main window and display
-        setInfoText()
+        setInfoText(self.infoLabel)
+        setversionText(self.versionLabel)
         self.window.delegate = self
         self.window.center()
         self.window.makeKeyAndOrderFront(self)
@@ -251,38 +253,14 @@ final class AppDelegate: NSResponder,
     }
 
 
-    @IBAction
-    private func doSwitchTab(sender: NSButton) {
-
-        // FROM 2.0.0
-        self.tabManager.buttonClicked(sender)
-    }
-
-
-    @IBAction
-    private func doShowSettings(sender: Any) {
-
-        // FROM 2.0.0
-        self.tabManager.programmaticallyClickButton(at: 1)
-    }
-
-
-    @IBAction
-    private func doShowFeedback(sender: Any) {
-
-        // FROM 2.0.0
-        self.tabManager.programmaticallyClickButton(at: 2)
-    }
-
-
     /**
      Called from various **Help** items to open various websites.
 
      - Parameters:
         - sender: The source of the action.
      */
-    @IBAction
     @objc
+    @IBAction
     private func doShowSites(sender: Any) {
 
         // Open the websites for contributors, help and suc
@@ -299,7 +277,7 @@ final class AppDelegate: NSResponder,
         } else if item == self.helpMenuOthersPreviewCode {
             path = BUFFOON_CONSTANTS.APP_URLS.PC
         }
-        
+
         // Open the selected website
         // FROM 2.0.3 -- more safely
         if let url = URL(string: path) {
@@ -329,13 +307,48 @@ final class AppDelegate: NSResponder,
     }
 
 
+    /**
+     Open the System Preferences app at the Extensions pane.
+     */
+    @objc
+    @IBAction
+    private func doOpenSysPrefs(sender: Any) {
+
+        NSWorkspace.shared.open(URL(fileURLWithPath: "/System/Library/PreferencePanes/Extensions.prefPane"))
+    }
+
+
+    @IBAction
+    private func doSwitchTab(sender: NSButton) {
+
+        // FROM 2.0.0
+        self.tabManager.buttonClicked(sender)
+    }
+
+
+    @IBAction
+    private func doShowSettings(sender: Any) {
+
+        // FROM 2.0.0
+        self.tabManager.programmaticallyClickButton(at: 1)
+    }
+
+
+    @IBAction
+    private func doShowFeedback(sender: Any) {
+
+        // FROM 2.0.0
+        self.tabManager.programmaticallyClickButton(at: 2)
+    }
+
+
     // MARK: - Window Set Up Functions
 
     /**
      Create and display the information text label. This is done programmatically
      because we're using an NSAttributedString rather than a plain string.
      */
-    private func setInfoText() {
+    private func setInfoText(_ text: NSTextField) {
 
         // Set the attributes
         let bodyAtts: [NSAttributedString.Key: Any] = [
@@ -352,6 +365,17 @@ final class AppDelegate: NSResponder,
         let boldText = NSAttributedString(string: "System Settings > Extensions > Quick Look", attributes: boldAtts)
         infoText.append(boldText)
         infoText.append(NSAttributedString(string: ".\n\nCases where previews cannot be rendered can usually be resolved by logging out of your Mac, logging in again and running this app once more.", attributes: bodyAtts))
-        self.infoLabel.attributedStringValue = infoText
+        text.attributedStringValue = infoText
+    }
+
+
+    /**
+     Add the app's version number to the UI.
+     */
+    private func setversionText(_ text: NSTextField) {
+
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown"
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown"
+        text.stringValue = "Version \(version) (\(build))"
     }
 }

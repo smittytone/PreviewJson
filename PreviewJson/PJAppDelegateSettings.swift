@@ -12,6 +12,15 @@ extension AppDelegate {
 
     // MARK: - Operational Functions
 
+    /**
+     Initialise UI elements.
+
+     FROM 2.0.0
+     */
+    internal func initialiseSettings() {
+
+    }
+
 
     /**
      Update UI when we are about to switch to it.
@@ -35,8 +44,7 @@ extension AppDelegate {
             self.tintThumbnailsAdvancedSwitch.isEnabled = false
         }
 
-        // Disable the Feedback > Send button if we have sent a message.
-        // It will be re-enabled by typing something
+        // Enable the Apply button if something has changed
         self.applyButton.isEnabled = checkSettingsOnQuit()
 
         // Applied to enable keyboard control of the slider

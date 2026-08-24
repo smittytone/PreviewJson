@@ -150,4 +150,3 @@ struct BUFFOON_CONSTANTS {
     // FROM 2.0.3
     static let APP_NAME                         = "PreviewJson"
 }
-
