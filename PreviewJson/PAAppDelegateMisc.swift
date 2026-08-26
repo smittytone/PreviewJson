@@ -117,7 +117,7 @@ extension AppDelegate {
 
 
     // MARK: - Support Functions
-    
+
     /**
      Disable all panel-opening menu items.
      */
