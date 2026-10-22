@@ -36,102 +36,83 @@ class PreviewViewController: NSViewController,
          * Main entry point for the macOS preview system
          */
 
-        // Get an error ready for use
-        var reportError: NSError? = nil
-
-        // Load and process the source file
-        do {
-            // Get the file contents as a string
-            let data = try Data(contentsOf: url, options: [.uncached])
-            let encoding = data.stringEncoding ?? .utf8
-
-            guard let json = String(data: data, encoding: encoding) else {
-                // We couldn't convert to data to a valid encoding (custom error message)
-                let errDesc = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) unexpected encoding: \(encoding)"
-                reportError = NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,
-                                      code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING,
-                                      userInfo: [NSLocalizedDescriptionKey: errDesc])
-                throw reportError!
-            }
-
-            /*
-             Instantiate the common code within the closure
-             */
-            let common = Common(forThumbnail: false)
-
-            /*
-             Attributed string acquisition
-             */
-
-            // Get the preview string
-            var attributedJson = await common.getPreviewString(fromJson: json)
-            if attributedJson.length == 0 && common.settings.showRawJsonOnError {
-                attributedJson = await common.getPreviewString(fromJson: "{\"Could not parse the JSON\":\"\(json)\"}")
-            }
-
-            /*
-             Window and mode configuration
-             */
-
-            // FROM 2.0.0
-            // Set the parent window's size
-            setPreviewWindowSize(common.settings)
-
-            // FROM 2.0.0
-            // The force-light-mode-preview-in-dark-mode setting is now a general
-            // preview-colours-should-be-opposite-the-mode setting.
-            var renderPreviewLight = NSApp.inLightMode
-            if common.settings.doReverseMode {
-                // Invert the colour scheme based on the current mode
-                renderPreviewLight = !renderPreviewLight
-            }
-
-            // Update the view mode
-            self.renderTextView.backgroundColor = renderPreviewLight ? NSColor.white : NSColor.textBackgroundColor
-            self.renderTextScrollView.scrollerKnobStyle = renderPreviewLight ? .dark : .light
-            self.view.appearance = renderPreviewLight ? NSAppearance(named: .aqua) : NSAppearance(named: .darkAqua)
-
-            // FROM 2.0.0
-            // Add margin if required
-            if common.settings.previewMarginWidth > 0.0 {
-                self.renderTextView.textContainerInset = NSSize(width: common.settings.previewMarginWidth,
-                                                                height: common.settings.previewMarginWidth)
-            }
-
-            // Rescale the text view to match the width of a tabluted view
-            if common.tableWidth > self.renderTextView.frame.width {
-                self.renderTextView.setFrameSize(NSSize(width: common.tableWidth,
-                                                        height: self.renderTextView.frame.size.height))
-            }
-
-            /*
-             Attributed String Presentation
-             */
-
-            if let renderTextStorage = self.renderTextView.textStorage {
-                /*
-                 * NSTextStorage subclasses that return true from the fixesAttributesLazily
-                 * method should avoid directly calling fixAttributes(in:) or else bracket
-                 * such calls with beginEditing() and endEditing() messages.
-                 */
-                renderTextStorage.beginEditing()
-                renderTextStorage.setAttributedString(attributedJson)
-                renderTextStorage.endEditing()
-                return
-            }
-
-            // We can't access the preview NSTextView's NSTextStorage
-            reportError = makeError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
-        } catch {
-            // We couldn't read the file so set an appropriate error to report back
-            if reportError == nil {
-                reportError = makeError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
-            }
+        // Get the file contents as a string
+        guard let data = try? Data(contentsOf: url, options: [.uncached]) else {
+            throw makeError(BUFFOON_CONSTANTS.ERRORS.CODES.FILE_WONT_OPEN)
         }
 
+        let encoding = data.stringEncoding ?? .utf8
+        guard let json = String(data: data, encoding: encoding) else {
+            // We couldn't convert to data to a valid encoding (custom error message)
+            let errDesc = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) unexpected encoding: \(encoding)"
+            throw NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,
+                                  code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING,
+                                  userInfo: [NSLocalizedDescriptionKey: errDesc])
+        }
+
+        /*
+         * Attributed string acquisition
+         */
+
+        // Get the preview string
+        let common = Common(forThumbnail: false)
+        var attributedJson = await common.getPreviewString(fromJson: json)
+        if attributedJson.length == 0 && common.settings.showRawJsonOnError {
+            attributedJson = await common.getPreviewString(fromJson: "{\"Could not parse the JSON\":\"\(json)\"}")
+        }
+
+        /*
+         * Window and mode configuration
+         */
+
         // FROM 2.0.0
-        // Throw to indicate an error
-        throw reportError!
+        // Set the parent window's size
+        setPreviewWindowSize(common.settings)
+
+        // FROM 2.0.0
+        // The force-light-mode-preview-in-dark-mode setting is now a general
+        // preview-colours-should-be-opposite-the-mode setting.
+        var renderPreviewLight = NSApp.inLightMode
+        if common.settings.doReverseMode {
+            // Invert the colour scheme based on the current mode
+            renderPreviewLight = !renderPreviewLight
+        }
+
+        // Update the view mode
+        self.renderTextView.backgroundColor = renderPreviewLight ? NSColor.white : NSColor.textBackgroundColor
+        self.renderTextScrollView.scrollerKnobStyle = renderPreviewLight ? .dark : .light
+        self.view.appearance = renderPreviewLight ? NSAppearance(named: .aqua) : NSAppearance(named: .darkAqua)
+
+        // FROM 2.0.0
+        // Add margin if required
+        if common.settings.previewMarginWidth > 0.0 {
+            self.renderTextView.textContainerInset = NSSize(width: common.settings.previewMarginWidth,
+                                                            height: common.settings.previewMarginWidth)
+        }
+
+        // Rescale the text view to match the width of a tabluted view
+        if common.tableWidth > self.renderTextView.frame.width {
+            self.renderTextView.setFrameSize(NSSize(width: common.tableWidth,
+                                                    height: self.renderTextView.frame.size.height))
+        }
+
+        /*
+         * Attributed String Presentation
+         */
+
+        guard let renderTextStorage = self.renderTextView.textStorage else {
+            // We can't access the preview NSTextView's NSTextStorage
+            throw makeError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING)
+        }
+
+        /*
+         * NSTextStorage subclasses that return true from the fixesAttributesLazily
+         * method should avoid directly calling fixAttributes(in:) or else bracket
+         * such calls with beginEditing() and endEditing() messages.
+         */
+        renderTextStorage.beginEditing()
+        renderTextStorage.setAttributedString(attributedJson)
+        renderTextStorage.endEditing()
     }
 
 
