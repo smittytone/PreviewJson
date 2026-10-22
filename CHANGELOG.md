@@ -4,6 +4,7 @@
     - Improve JSON Thumbnailer’s thread safety.
     - Improve JSON Thumbnailer’s error handling.
     - Improve JSON Previewer’s error handling.
+    - Improve text-entry value checking.
     - Code clean-up and reorganisation.
 - 2.0.2 *02 May 2026*
     - Fix font-size slider control’s colouring.
