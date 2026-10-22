@@ -161,7 +161,7 @@ final class Common {
 
         // Parse the JSON data, bailing if this fails
         let renderedString = NSMutableAttributedString(string: "", attributes: self.scalarAttributes)
-        guard let json = parse(string: json)else {
+        guard let json = parse(string: json) else {
             return renderedString
         }
 
@@ -682,7 +682,7 @@ final class Common {
     }
 
 
-    // MARK: - Common Functions
+    // MARK: - Common JSON Functions
 
     /**
      Render a JSON scalar value as an attributed string.
