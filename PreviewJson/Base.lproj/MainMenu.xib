@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="24765" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="25098" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="24765"/>
-        <plugIn identifier="com.apple.WebKit2IBPlugin" version="24765"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="25098"/>
+        <plugIn identifier="com.apple.WebKit2IBPlugin" version="25098"/>
         <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -18,7 +19,7 @@
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="560" height="356"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1204"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1205"/>
             <value key="minSize" type="size" width="560" height="356"/>
             <value key="maxSize" type="size" width="560" height="356"/>
             <value key="minFullScreenContentSize" type="size" width="560" height="356"/>
@@ -343,7 +344,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="335" y="390" width="610" height="432"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1204"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1205"/>
             <value key="minSize" type="size" width="610" height="432"/>
             <value key="maxSize" type="size" width="610" height="432"/>
             <value key="minFullScreenContentSize" type="size" width="610" height="432"/>
@@ -502,7 +503,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="560" height="388"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1204"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1205"/>
             <value key="minSize" type="size" width="560" height="388"/>
             <value key="maxSize" type="size" width="560" height="388"/>
             <value key="minFullScreenContentSize" type="size" width="560" height="388"/>
@@ -801,7 +802,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="760" height="600"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1204"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1205"/>
             <value key="minSize" type="size" width="760" height="600"/>
             <value key="maxSize" type="size" width="760" height="600"/>
             <value key="minFullScreenContentSize" type="size" width="760" height="600"/>
@@ -854,7 +855,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="0.0" y="717" width="800" height="400"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1204"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1205"/>
             <value key="minSize" type="size" width="800" height="400"/>
             <value key="maxSize" type="size" width="800" height="400"/>
             <value key="minFullScreenContentSize" type="size" width="800" height="400"/>
@@ -1489,7 +1490,7 @@ running this app once more.</string>
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="206" width="600" height="220"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1204"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1205"/>
             <value key="minSize" type="size" width="600" height="220"/>
             <value key="maxSize" type="size" width="600" height="220"/>
             <value key="minFullScreenContentSize" type="size" width="600" height="220"/>
@@ -1560,7 +1561,7 @@ running this app once more.</string>
                         <constraints>
                             <constraint firstAttribute="height" constant="16" id="hhk-31-xgE"/>
                         </constraints>
-                        <textFieldCell key="cell" controlSize="mini" lineBreakMode="clipping" alignment="left" title="Valid range:  0-128" id="3gi-9t-n9X">
+                        <textFieldCell key="cell" controlSize="mini" lineBreakMode="clipping" alignment="left" title="Enter a value in the range:  0-128 points" id="3gi-9t-n9X">
                             <font key="font" metaFont="miniSystem"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>

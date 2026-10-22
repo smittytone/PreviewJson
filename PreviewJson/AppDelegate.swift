@@ -146,11 +146,6 @@ final class AppDelegate: NSResponder,
         // Set the `Settings` tab's tooltips
         initialiseSettings()
 
-        // FROM 2.0.0
-        // Set up advanced settings
-        self.previewMarginSizeText.delegate = self
-        self.previewMarginRangeText.stringValue = "Valid range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MAX)"
-
         // Show the 'What's New' panel if we need to
         // NOTE Has to take place at the end of the function
         doShowWhatsNew(nil)
