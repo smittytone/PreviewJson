@@ -34,7 +34,7 @@ class PJSettings {
     /*
      ADVANCED SETTINGS
      */
-    var previewMarginWidth: CGFloat         = BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH
+    var previewMarginWidth: CGFloat         = BUFFOON_CONSTANTS.PREVIEW_SIZE.MARGIN_WIDTH
     var previewWindowScale: CGFloat         = BUFFOON_CONSTANTS.SCALERS.WINDOW_SIZE_L
     var thumbnailMatchFinderMode: Bool      = false
 
@@ -238,7 +238,7 @@ class PJSettings {
             // ADVANCED - What margin size should we apply?
             let marginWidth: Any? = defaults.object(forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARGIN_WIDTH)
             if marginWidth == nil {
-                defaults.setValue(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH,
+                defaults.setValue(BUFFOON_CONSTANTS.PREVIEW_SIZE.MARGIN_WIDTH,
                                   forKey: BUFFOON_CONSTANTS.PREFS_IDS.PREVIEW_MARGIN_WIDTH)
             }
 

@@ -21,7 +21,7 @@ extension AppDelegate {
 
         // Set up advanced settings
         self.previewMarginSizeText.delegate = self
-        self.previewMarginRangeText.stringValue = "Enter a margin indent value in the range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MAX)"
+        self.previewMarginRangeText.stringValue = "Enter a margin indent value in the range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.MARGIN_WIDTH_MAX)"
     }
 
 
@@ -250,9 +250,9 @@ extension AppDelegate {
                 return true
             }
 
-            warningMessage = "The preview margin value is outside the range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MAX)"
+            warningMessage = "The preview margin value is outside the range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.MARGIN_WIDTH_MAX)"
         } else {
-            warningMessage = "The preview margin value must be a number in the range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MAX)"
+            warningMessage = "The preview margin value must be a number in the range \(BUFFOON_CONSTANTS.PREVIEW_SIZE.MARGIN_WIDTH_MIN)-\(BUFFOON_CONSTANTS.PREVIEW_SIZE.MARGIN_WIDTH_MAX)"
         }
 
         Task { @MainActor in
@@ -365,7 +365,7 @@ extension AppDelegate {
                 displayedSettings.previewWindowScale = BUFFOON_CONSTANTS.SCALERS.WINDOW_SIZE_S
         }
 
-        displayedSettings.previewMarginWidth = Double(self.previewMarginSizeText.stringValue) ?? BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH
+        displayedSettings.previewMarginWidth = Double(self.previewMarginSizeText.stringValue) ?? BUFFOON_CONSTANTS.PREVIEW_SIZE.MARGIN_WIDTH
 
         return displayedSettings
     }
@@ -515,8 +515,8 @@ extension AppDelegate {
         let textField = obj.object as? NSTextField ?? nil
         if textField == self.previewMarginSizeText {
             if let doubleValue = Double(textField!.stringValue) {
-                let min = Double(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MIN).rounded(.towardZero)
-                let max = Double(BUFFOON_CONSTANTS.PREVIEW_SIZE.PREVIEW_MARGIN_WIDTH_MAX).rounded(.towardZero)
+                let min = Double(BUFFOON_CONSTANTS.PREVIEW_SIZE.MARGIN_WIDTH_MIN).rounded(.towardZero)
+                let max = Double(BUFFOON_CONSTANTS.PREVIEW_SIZE.MARGIN_WIDTH_MAX).rounded(.towardZero)
 
                 if doubleValue > min && doubleValue <= max {
                     // Value within supported range, so write the formatted value back from where it will later be read
