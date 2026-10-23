@@ -1,9 +1,10 @@
-//
-//  PJAppDelegateSettings.swift
-//  PreviewJson
-//
-//  Created by Tony Smith on 19/03/2026.
-//
+/*
+ *  PJAppDelegateSettings.swift
+ *  PreviewJson
+ *
+ *  Created by Tony Smith on 19/03/2026.
+ *  Copyright © 2026 Tony Smith. All rights reserved.
+ */
 
 import AppKit
 

@@ -1,9 +1,10 @@
-//
-//  PJAppDelegateMisc.swift
-//  PreviewJson
-//
-//  Created by Tony Smith on 21/08/2026.
-//
+/*
+ *  PJAppDelegateMisc.swift
+ *  PreviewJson
+ *
+ *  Created by Tony Smith on 121/08/2026.
+ *  Copyright © 2026 Tony Smith. All rights reserved.
+ */
 
 import AppKit
 
