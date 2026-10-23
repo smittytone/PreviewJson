@@ -20,7 +20,7 @@ struct BUFFOON_CONSTANTS {
             static let FILE_INACCESSIBLE        = 400
             static let FILE_WONT_OPEN           = 401
             static let BAD_ENC_STRING           = 402
-            static let BAD_TS_STRING            = 404
+            static let BAD_TS_STRING            = 403
             static let BAD_JS_STRING            = 410
 
         }
