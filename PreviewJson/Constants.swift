@@ -19,16 +19,19 @@ struct BUFFOON_CONSTANTS {
             static let NONE                     = 0
             static let FILE_INACCESSIBLE        = 400
             static let FILE_WONT_OPEN           = 401
-            static let BAD_MD_STRING            = 402
-            static let BAD_TS_STRING            = 403
+            static let BAD_ENC_STRING           = 402
+            static let BAD_TS_STRING            = 404
+            static let BAD_JS_STRING            = 410
+
         }
 
         struct MESSAGES {
             static let NO_ERROR                 = "No error"
-            static let FILE_INACCESSIBLE        = "Can't access file"
-            static let FILE_WONT_OPEN           = "Can't open file"
-            static let BAD_MD_STRING            = "Can't get JSON data"
-            static let BAD_TS_STRING            = "Can't access NSTextView's TextStorage"
+            static let FILE_INACCESSIBLE        = "Can’t access file"
+            static let FILE_WONT_OPEN           = "Can’t open file"
+            static let BAD_ENC_STRING           = "File uses an unsupported text encoding"
+            static let BAD_TS_STRING            = "Can’t access NSTextView's TextStorage"
+            static let BAD_JS_STRING            = "Can’t decode JSON data"
         }
     }
 
@@ -149,4 +152,5 @@ struct BUFFOON_CONSTANTS {
 
     // FROM 2.0.3
     static let APP_NAME                         = "PreviewJson"
+
 }

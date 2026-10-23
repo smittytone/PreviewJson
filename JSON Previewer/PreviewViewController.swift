@@ -44,10 +44,7 @@ class PreviewViewController: NSViewController,
         let encoding = data.stringEncoding ?? .utf8
         guard let json = String(data: data, encoding: encoding) else {
             // We couldn't convert to data to a valid encoding (custom error message)
-            let errDesc = "\(BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING) unexpected encoding: \(encoding)"
-            throw NSError(domain: BUFFOON_CONSTANTS.APP_CODE_PREVIEWER,
-                                  code: BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING,
-                                  userInfo: [NSLocalizedDescriptionKey: errDesc])
+            throw makeError(BUFFOON_CONSTANTS.ERRORS.CODES.BAD_ENC_STRING, "unexpected encoding: \(encoding)")
         }
 
         /*
@@ -124,11 +121,14 @@ class PreviewViewController: NSViewController,
      Codes are listed in `Constants.swift`
 
      - Parameters:
-        - code: The internal error code.
+        - code:  The internal error code.
+        - extra: Additional text for specific errors
 
      - Returns: The described error as an NSError.
      */
-    func makeError(_ code: Int) -> NSError {
+    func makeError(_ code: Int, _ extra: String = "") -> NSError {
+
+        // NSError generation function
 
         var errDesc: String
 
@@ -139,8 +139,10 @@ class PreviewViewController: NSViewController,
                 errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.FILE_WONT_OPEN
             case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_TS_STRING:
                 errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_TS_STRING
-            case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_MD_STRING:
-                errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_MD_STRING
+            case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_ENC_STRING:
+                errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_ENC_STRING + " \(extra)"
+            case BUFFOON_CONSTANTS.ERRORS.CODES.BAD_JS_STRING:
+                errDesc = BUFFOON_CONSTANTS.ERRORS.MESSAGES.BAD_JS_STRING
             default:
                 errDesc = "UNKNOWN ERROR"
         }
