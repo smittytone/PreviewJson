@@ -12,6 +12,7 @@
 - 2.0.1 *16 April 2026*
     - Fix occasional thumbnailer crash when target file can’t be loaded.
 - 2.0.0 *10 April 2026*
+    - **BREAKING** Minimum macOS version is now macOS 12 Monterey.
     - Bring UI into line with other PreviewApps.
     - Rebuild rendering engine from the ground up.
     - Preview and thumbnail respect the order of keys and values in the source file.
@@ -19,7 +20,6 @@
     - Engine can make a stab at rendering bad JSON.
     - Support macOS Tahoe.
     - Migrate to Swift Concurrency.
-    - **BREAKING** Minimum macOS version is now macOS 12 Monterey.
 - 1.1.4 *12 April 2025*
     - Better Swift string and substring handling.
     - Correct outlet ownership to mitigate reference cycle formation.
