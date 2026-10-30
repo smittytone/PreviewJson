@@ -1,6 +1,6 @@
 ## Release Notes
 
-- 2.0.3 *Unreleased*
+- 2.0.3 *24 October 2026*
     - Improve JSON Thumbnailer’s thread safety.
     - Improve JSON Thumbnailer’s error handling.
     - Improve JSON Previewer’s error handling.
